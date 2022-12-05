@@ -2,7 +2,6 @@ require 'yaml'
 require 'pry'
 MESSAGES = YAML.load_file('calculator_messages.yml')
 language = 'en'
-# instance variable, so methods can access it
 
 # default language: english
 def messages(message, lang='en')
