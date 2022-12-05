@@ -1,0 +1,40 @@
+
+en:
+  choose_lang: "Enter 'en' for english:"
+  invalid_lang: "Invalid language, try again:"
+  welcome: "Welcome to Calculator! Enter name:"
+  invalid_name: "Make sure to use a valid name."
+  greeting: "Hello "
+  first_number: "What's the first number?"
+  second_number: "What's the second number?"
+  invalid_number: "Hmm... that doesn't look like a valid number"
+  operator: "What operation would you like to perform?\n
+    1) + add\n
+    2) - subtract\n
+    3) x multiply\n
+    4) / divide"
+  choose_operator: "Must choose 1, 2, 3, or 4"
+  numbers: " the two numbers..."
+  result: "The result is: "
+  calculate_again: "Do you want to perform another calculation? (Y to calculate again)"
+  goodbye: "Goodbye "
+
+fr:
+  choose_lang: "entrez 'fr' pour le français:"
+  invalid_lang: "Langue non valide, réessayez:"
+  welcome: "Bienvenue sur Calculatrice! Entrez le nom:"
+  invalid_name: "Assurez-vous d'utiliser un nom valide."
+  greeting: "Bonjour "
+  first_number: "Quel est le premier numéro?"
+  second_number: "Quel est le deuxième numéro?"
+  invalid_number: "Hmm... ça ne ressemble pas à un numéro valide."
+  operator: "Quelle opération souhaitez-vous effectuer ?\n
+    1) + ajout\n
+    2) - soustraire\n
+    3) x multiplier\n
+    4) / diviser"
+  choose_operator: "Vous devez choisir 1, 2, 3 ou 4"
+  numbers: " les deux nombres..."
+  result: "Le résultat est: "
+  calculate_again: "Souhaitez-vous effectuer un autre calcul? (Y pour recalculer)"
+  goodbye: "Au revoir "
