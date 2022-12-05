@@ -13,8 +13,13 @@ en:
     2) - subtract\n
     3) x multiply\n
     4) / divide"
+
+  add_nums: "Adding the two numbers..."
+  subtract_nums: "Subtracting the numbers..."
+  multiply_nums: "Multiplying the numbers..."
+  divide_nums: "Dividing the numbers"
+
   choose_operator: "Must choose 1, 2, 3, or 4"
-  numbers: " the two numbers..."
   result: "The result is: "
   calculate_again: "Do you want to perform another calculation? (Y to calculate again)"
   goodbye: "Goodbye "
@@ -33,8 +38,13 @@ fr:
     2) - soustraire\n
     3) x multiplier\n
     4) / diviser"
+
+  add_nums: "Additionner les deux nombres..."
+  subtract_nums: "Soustraire les nombres..."
+  multiply_nums: "Multiplier les nombres..."
+  divide_nums: "Diviser les nombres..."
+
   choose_operator: "Vous devez choisir 1, 2, 3 ou 4"
-  numbers: " les deux nombres..."
   result: "Le résultat est: "
   calculate_again: "Souhaitez-vous effectuer un autre calcul? (Y pour recalculer)"
   goodbye: "Au revoir "
