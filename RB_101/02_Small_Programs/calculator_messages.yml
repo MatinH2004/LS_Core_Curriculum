@@ -21,7 +21,8 @@ en:
 
   choose_operator: "Must choose 1, 2, 3, or 4"
   result: "The result is: "
-  calculate_again: "Do you want to perform another calculation? (Y to calculate again)"
+  calculate_again: "Do you want to perform another calculation? (yes/no):"
+  invalid_again?: "Invalid answer. Please select yes/no:"
   goodbye: "Goodbye "
 
 fr:
@@ -46,5 +47,6 @@ fr:
 
   choose_operator: "Vous devez choisir 1, 2, 3 ou 4"
   result: "Le résultat est: "
-  calculate_again: "Souhaitez-vous effectuer un autre calcul? (Y pour recalculer)"
+  calculate_again: "Souhaitez-vous effectuer un autre calcul? yes/no:"
+  invalid_again?: "Réponse invalide. Veuillez sélectionner yes/no:"
   goodbye: "Au revoir "

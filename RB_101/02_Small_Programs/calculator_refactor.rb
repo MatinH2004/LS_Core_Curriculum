@@ -13,21 +13,13 @@ def prompt(message)
 end
 
 # remove decimal if number is whole
-class Float
-  def prettify
-    to_i == self ? to_i : self
-  end
+def int_format(num)
+  num % 1 == 0 ? num.to_i() : num
 end
 
 # validate user number
 def number?(num)
-  if num.to_i() == num
-    num
-  elsif num.to_f() == num
-    num
-  else
-    false
-  end
+  (num.to_f.to_s == num || num.to_i.to_s == num)
 end
 
 def operation_to_message(op, lang)
@@ -45,7 +37,7 @@ prompt(MESSAGES['fr']['choose_lang'])
 
 language_pref = ''
 loop do
-  language_pref = Kernel.gets().chomp()
+  language_pref = Kernel.gets().chomp().strip()
   if language_pref.downcase() == 'en'
     language = 'en'
     break
@@ -60,7 +52,7 @@ prompt(messages('welcome', language))
 
 name = ''
 loop do
-  name = Kernel.gets().chomp()
+  name = Kernel.gets().chomp().strip()
 
   if name.empty?()
     prompt(messages('invalid_name', language))
@@ -75,21 +67,21 @@ loop do # main loop
   number1 = ''
   loop do
     prompt(messages('first_number', language))
-    number1 = Kernel.gets().chomp()
+    number1 = Kernel.gets().chomp().strip()
 
-    if number?(number1.to_f)
+    if number?(number1)
       break
     else
-      prompt(messages('invalid_name', language))
+      prompt(messages('invalid_number', language))
     end
   end
 
   number2 = ''
   loop do
     prompt(messages('second_number', language))
-    number2 = Kernel.gets().chomp()
+    number2 = Kernel.gets().chomp().strip()
 
-    if number?(number2.to_f)
+    if number?(number2)
       break
     else
       prompt(messages('invalid_number', language))
@@ -100,7 +92,7 @@ loop do # main loop
 
   operator = ''
   loop do
-    operator = Kernel.gets().chomp()
+    operator = Kernel.gets().chomp().strip()
 
     if %w(1 2 3 4).include?(operator)
       operation_to_message(operator, language)
@@ -117,11 +109,23 @@ loop do # main loop
            when '4' then number1.to_f() / number2.to_f()
            end
 
-  prompt(messages('result', language) + result.prettify.to_s())
+  prompt(messages('result', language) + int_format(result).to_s())
 
   prompt(messages('calculate_again', language))
-  answer = Kernel.gets().chomp()
-  break unless answer.downcase().start_with?('y')
+  exit_program = false
+  loop do
+    answer = Kernel.gets().chomp().downcase().strip()
+    if answer.start_with?('y')
+      system('clear')
+      break
+    elsif answer.start_with?('n')
+      exit_program = true
+      break
+    else
+      prompt(messages('invalid_again?', language))
+    end
+  end
+  break if exit_program
 end
 
 prompt(messages('goodbye', language) + "#{name}!")

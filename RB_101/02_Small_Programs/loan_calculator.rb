@@ -44,7 +44,7 @@ end
 prompt("Hello #{name}!")
 
 loop do # main loop
-  prompt(MESSAGES['loan_amount'])
+  prompt(MESSAGES['loan_amount']) # feat. accept _ : Ex. 20_000
   loan = ''
   loop do
     loan = gets.chomp
@@ -79,7 +79,7 @@ loop do # main loop
       break if valid_num?(months, false)
       prompt(MESSAGES['duration_invalid'])
     end
-    break unless years == '0' && months == '0'
+    break unless years == '0' && months == '0' # feat. reject negative numbers
     prompt(MESSAGES['zero_input'])
   end
 
