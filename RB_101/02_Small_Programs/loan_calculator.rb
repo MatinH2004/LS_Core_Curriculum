@@ -8,7 +8,7 @@ end
 # sub! method removes leading zeros
 def valid_num?(num, remove_zero=true)
   num.sub!(/^[0]+/, '') if remove_zero
-  (num.to_f.to_s == num || num.to_i.to_s == num)
+  (num.to_i.to_s == num || num.to_f.to_s == num)
 end
 
 def calculate(loan_amount, interest, duration)
@@ -44,10 +44,10 @@ end
 prompt("Hello #{name}!")
 
 loop do # main loop
-  prompt(MESSAGES['loan_amount']) # feat. accept _ : Ex. 20_000
+  prompt(MESSAGES['loan_amount']) 
   loan = ''
   loop do
-    loan = gets.chomp
+    loan = gets.chomp.tr('_', '')
     loan.delete!('$') if loan.include?('$')
     break unless loan.empty? || valid_num?(loan) == false
     prompt(MESSAGES['loan_invalid'])
