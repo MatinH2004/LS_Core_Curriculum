@@ -15,9 +15,9 @@ def valid_num?(num)
   new_num.to_i == new_num || new_num.to_f == new_num
 end
 
-def calculate(loan_amount, interest, duration)
-  interest_rate = ((interest / 12) / 100)
-  if interest > 0
+def calculate(loan_amount, apr, duration)
+  interest_rate = ((apr / 12) / 100)
+  if apr > 0
     payment = loan_amount *
               (interest_rate / (1 - (1 + interest_rate)**(-duration)))
   else
@@ -61,7 +61,7 @@ loop do # main loop
     break if valid_num?(loan)
     prompt(MESSAGES['loan_invalid'])
   end
-  
+
   prompt(MESSAGES['apr_rate'])
   apr = ''
   loop do
@@ -70,7 +70,7 @@ loop do # main loop
     break if valid_num?(apr) && apr.to_f >= 0
     prompt(MESSAGES['apr_invalid'])
   end
-  
+
   prompt(MESSAGES['loan_duration'])
   years = ''
   months = ''
@@ -81,14 +81,14 @@ loop do # main loop
       break if valid_num?(years)
       prompt(MESSAGES['duration_invalid'])
     end
-    
+
     prompt(MESSAGES['duration_months'])
     loop do
       months = gets.chomp.strip
       break if valid_num?(months)
       prompt(MESSAGES['duration_invalid'])
     end
-    
+
     break unless years <= '0' && months <= '0'
     prompt(MESSAGES['zero_input'])
   end
