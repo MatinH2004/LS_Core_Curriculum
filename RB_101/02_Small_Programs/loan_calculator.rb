@@ -23,10 +23,12 @@ def calculate(loan_amount, apr, duration)
   else
     payment = (loan_amount / duration)
   end
-
-  monthly_interest = (payment - (loan_amount / duration))
   total_payment = (duration * payment)
+  monthly_interest = (payment - (loan_amount / duration))
+  display(duration, total_payment, payment, monthly_interest)
+end
 
+def display(duration, total_payment, payment, monthly_interest)
   result = <<-MSG
   Loan summary:
   
