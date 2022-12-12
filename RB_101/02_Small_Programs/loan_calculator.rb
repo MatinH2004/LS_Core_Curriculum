@@ -1,20 +1,6 @@
 require 'yaml'
 MESSAGES = YAML.load_file('loan_calc_messages.yml')
 
-def prompt(message)
-  puts("\n=> #{message}")
-end
-
-def remove_zeros(num)
-  num.to_f * 1
-end
-
-def valid_num?(num)
-  return false if num.empty?
-  new_num = remove_zeros(num) # remove leading & trailing zeros
-  new_num.to_i == new_num || new_num.to_f == new_num
-end
-
 def calculate(loan_amount, apr, duration)
   interest_rate = ((apr / 12) / 100)
   if apr > 0
@@ -41,20 +27,33 @@ def display(duration, total_payment, payment, monthly_interest)
   prompt(result)
 end
 
-system('clear')
-prompt(MESSAGES['greeting'])
-prompt(MESSAGES['name_input'])
-
-name = ''
-loop do
-  name = gets.chomp.strip.capitalize
-  break unless name.empty?
-  prompt(MESSAGES['name_invalid'])
+def prompt(message)
+  puts("\n=> #{message}")
 end
 
-prompt("Hello #{name}!")
+def remove_zeros(num)
+  num.to_f * 1
+end
 
-loop do # main loop
+def valid_num?(num)
+  return false if num.empty?
+  new_num = remove_zeros(num) # remove leading & trailing zeros
+  new_num.to_i == new_num || new_num.to_f == new_num
+end
+
+def get_name()
+  prompt(MESSAGES['greeting'])
+  prompt(MESSAGES['name_input'])
+  name = ''
+  loop do
+    name = gets.chomp.strip.capitalize
+    break unless name.empty?
+    prompt(MESSAGES['name_invalid'])
+  end
+  name
+end
+
+def get_loan()
   prompt(MESSAGES['loan_amount'])
   loan = ''
   loop do
@@ -63,47 +62,69 @@ loop do # main loop
     break if valid_num?(loan)
     prompt(MESSAGES['loan_invalid'])
   end
+  loan
+end
 
+def get_apr()
   prompt(MESSAGES['apr_rate'])
   apr = ''
   loop do
     apr = gets.chomp.strip
-    apr.delete!('%') if apr.include?('%')
     break if valid_num?(apr) && apr.to_f >= 0
     prompt(MESSAGES['apr_invalid'])
   end
+  apr
+end
 
-  prompt(MESSAGES['loan_duration'])
+def get_years()
+  prompt(MESSAGES['duration_years'])
   years = ''
+  loop do
+    years = gets.chomp.strip
+    break if valid_num?(years)
+    prompt(MESSAGES['duration_invalid'])
+  end
+  years
+end
+
+def get_months()
+  prompt(MESSAGES['duration_months'])
   months = ''
   loop do
-    prompt(MESSAGES['duration_years'])
-    loop do
-      years = gets.chomp.strip
-      break if valid_num?(years)
-      prompt(MESSAGES['duration_invalid'])
-    end
+    months = gets.chomp.strip
+    break if valid_num?(months)
+    prompt(MESSAGES['duration_invalid'])
+  end
+  months
+end
 
-    prompt(MESSAGES['duration_months'])
-    loop do
-      months = gets.chomp.strip
-      break if valid_num?(months)
-      prompt(MESSAGES['duration_invalid'])
-    end
-
+def get_duration()
+  prompt(MESSAGES['loan_duration'])
+  years = nil
+  months = nil
+  loop do
+    years = get_years()
+    months = get_months()
     break unless years <= '0' && months <= '0'
     prompt(MESSAGES['zero_input'])
   end
-
   duration = ((years.to_i.abs * 12) + months.to_i.abs)
-  # to avoid errors, calculate using absolute values
-  # incase a negative number was inputted by accident
+end
+
+system('clear')
+name = get_name()
+prompt("Hello #{name}!")
+
+loop do # main loop
+  loan = get_loan()
+  apr = get_apr()
+  duration = get_duration()
+
   prompt(MESSAGES['calculating'])
   calculate(loan.to_f.abs, apr.to_f.abs, duration)
-
+  
   prompt(MESSAGES['calculate_again'])
   exit_program = false
-
   loop do
     answer = gets.chomp.strip.downcase
     if answer.start_with?('y')
