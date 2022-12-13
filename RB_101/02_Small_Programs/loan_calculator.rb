@@ -21,7 +21,7 @@ def display_results(data)
   duration = data[:duration]
   payment = data[:payment]
   total_payment = (duration * payment)
-  monthly_interest = (payment - (data[:loan] / data[:duration]))
+  monthly_interest = (payment - (data[:loan] / duration))
 
   result = <<-MSG
   Loan summary:
