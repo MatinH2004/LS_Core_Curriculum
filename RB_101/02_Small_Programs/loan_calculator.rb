@@ -46,6 +46,7 @@ end
 
 def valid_num?(num)
   return false if num.empty? || num =~ /[^\d.]/
+  # regex: only accept numeric & '.' inputs
   new_num = remove_zeros(num)
   new_num.to_i == new_num || new_num.to_f == new_num
 end
