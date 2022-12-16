@@ -1,0 +1,22 @@
+welcome: "Welcome to rock, paper, scissors, spock, lizard.\n First to 3 wins."
+rules: "Rules:\n\n
+        ROCK     beats  SCISSORS & LIZARD\n
+        PAPER    beats  ROCK & SPOCK\n
+        SCISSORS beats  PAPER & LIZARD\n
+        SPOCK    beats  SCISSORS & ROCK\n
+        LIZARD   beats  PAPER & SPOCK\n\n"
+win: "You win this round!"
+win_match: "WINNER :)"
+lose: "Computer wins this round!"
+lose_match: "YOU LOSE :("
+tie: "It's a tie!"
+invalid_choice: "That's not a valid choice."
+press_continue: "(press ENTER to continue)"
+play_again?: "Do you want to play again? y/n"
+goodbye: "Thanks for playing. Good bye!\n\n"
+choose_action: "Choose one:\n\n
+               'r' = rock\n
+               'p' = paper\n
+               'sc' = scissors\n
+               'sp' = spock\n
+               'l' = lizard\n\n"
