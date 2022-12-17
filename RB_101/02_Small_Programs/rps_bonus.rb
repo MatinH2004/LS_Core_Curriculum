@@ -1,7 +1,7 @@
 require 'yaml'
 MESSAGES = YAML.load_file('rps_messages.yml')
 CHOICES = %w(rock paper scissors spock lizard)
-VALID_INPUTS = %w(r p sc sp l)
+
 
 def prompt(message, yaml=true)
   if yaml
@@ -11,11 +11,16 @@ def prompt(message, yaml=true)
   end
 end
 
-def ask_player(choice, valid_inputs=VALID_INPUTS)
+def ask_player(choice, actions=ACTIONS)
   loop do
     prompt('choose_action')
     choice = gets.chomp.strip.downcase
-    break if valid_inputs.include?(choice)
+    if !search_by_abbr(choice).nil?
+      choice = search_by_abbr(choice)
+      break
+    elsif actions.keys.include?(choice)
+      break
+    end
     system 'clear'
     prompt('invalid_choice')
   end
@@ -25,7 +30,7 @@ end
 def win?(player, computer, score, actions=ACTIONS)
   if player == computer
     prompt('tie')
-  elsif actions[player].include?(computer)
+  elsif actions[player][:beats].include?(computer)
     score['player'] += 1
     prompt('win')
   else
@@ -34,14 +39,11 @@ def win?(player, computer, score, actions=ACTIONS)
   end
 end
 
-def input_format(choice)
-  case choice
-  when 'r' then 'rock'
-  when 'p' then 'paper'
-  when 'sc' then 'scissors'
-  when 'sp' then 'spock'
-  when 'l' then 'lizard'
+def search_by_abbr(choice, h=ACTIONS)
+  action = h.select do |_, hash|
+    hash[:abbr] == choice
   end
+  action.keys[0]
 end
 
 def display_score(score)
@@ -65,11 +67,11 @@ def continue
 end
 
 ACTIONS = {
-  'rock' => ['scissors', 'lizard'],
-  'paper' => ['rock', 'spock'],
-  'scissors' => ['paper', 'lizard'],
-  'spock' => ['scissors', 'rock'],
-  'lizard' => ['paper', 'spock']
+  'rock' => { abbr: 'r', beats: ['scissors', 'lizard'] },
+  'paper' => { abbr: 'p', beats: ['rock', 'spock'] },
+  'scissors' => { abbr: 'sc', beats: ['paper', 'lizard'] },
+  'spock' => { abbr: 'sp', beats: ['scissors', 'rock'] },
+  'lizard' => { abbr: 'l', beats: ['paper', 'spock'] }
 }
 
 score = {
@@ -85,7 +87,7 @@ loop do # main loop
     display_score(score)
     choice = ''
 
-    choice = input_format(ask_player(choice))
+    choice = ask_player(choice)
     computer_choice = CHOICES.sample
     prompt("You chose: #{choice}; computer chose: #{computer_choice}.", false)
 
