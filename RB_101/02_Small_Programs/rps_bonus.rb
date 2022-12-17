@@ -1,7 +1,5 @@
 require 'yaml'
 MESSAGES = YAML.load_file('rps_messages.yml')
-CHOICES = %w(rock paper scissors spock lizard)
-
 
 def prompt(message, yaml=true)
   if yaml
@@ -39,6 +37,7 @@ def win?(player, computer, score, actions=ACTIONS)
   end
 end
 
+# search action by abbreviation, 'r' => 'rock
 def search_by_abbr(choice, h=ACTIONS)
   action = h.select do |_, hash|
     hash[:abbr] == choice
@@ -88,7 +87,7 @@ loop do # main loop
     choice = ''
 
     choice = ask_player(choice)
-    computer_choice = CHOICES.sample
+    computer_choice = ACTIONS.keys.sample
     prompt("You chose: #{choice}; computer chose: #{computer_choice}.", false)
 
     win?(choice, computer_choice, score)
