@@ -37,7 +37,7 @@ def win?(player, computer, score, actions=ACTIONS)
   end
 end
 
-# search action by abbreviation, 'r' => 'rock
+# search action by abbreviation, 'r' => 'rock'
 def search_by_abbr(choice, h=ACTIONS)
   action = h.select do |_, hash|
     hash[:abbr] == choice
