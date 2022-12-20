@@ -22,6 +22,7 @@ def prompt(message, yaml=true)
   end
 end
 
+# ask player for choice; can input by name or ABBReviation
 def ask_player(choice, actions=ACTIONS)
   loop do
     prompt('choose_action')
@@ -32,7 +33,7 @@ def ask_player(choice, actions=ACTIONS)
     elsif actions.keys.include?(choice)
       break
     end
-    system 'clear'
+    system('clear')
     prompt('invalid_choice')
   end
   choice
@@ -46,18 +47,19 @@ def search_by_abbr(choice, h=ACTIONS)
   action.keys[0]
 end
 
+# determine winner of the round
 def determine_outcome(player, computer, score, actions=ACTIONS)
   if player == computer
-    display_outcome(true)
+    display_outcome()
   elsif actions[player][:beats].include?(computer)
-    display_outcome(false, 'player', score)
+    display_outcome('player', score)
   else
-    display_outcome(false, 'computer', score)
+    display_outcome('computer', score)
   end
 end
 
-def display_outcome(tie=false, winner='', score=0)
-  return prompt('tie') if tie
+def display_outcome(winner='', score=nil)
+  return prompt('tie') if winner.empty?
   update_score(winner, score)
   if winner == 'player'
     prompt('win')
@@ -79,7 +81,7 @@ def update_score(player, data)
 end
 
 def start
-  system 'clear'
+  system('clear')
   prompt('welcome')
   prompt('rules')
   continue()
@@ -92,7 +94,7 @@ end
 
 start()
 loop do # main loop
-  system 'clear'
+  system('clear')
   exit_program = false
   loop do
     display_score(score)
