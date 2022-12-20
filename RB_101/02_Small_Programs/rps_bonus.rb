@@ -1,5 +1,18 @@
 require 'yaml'
 MESSAGES = YAML.load_file('rps_messages.yml')
+MATCH_WINNING_SCORE = 3
+ACTIONS = {
+  'rock' => { abbr: 'r', beats: ['scissors', 'lizard'] },
+  'paper' => { abbr: 'p', beats: ['rock', 'spock'] },
+  'scissors' => { abbr: 'sc', beats: ['paper', 'lizard'] },
+  'spock' => { abbr: 'sp', beats: ['scissors', 'rock'] },
+  'lizard' => { abbr: 'l', beats: ['paper', 'spock'] }
+}
+
+score = {
+  'player' => 0,
+  'computer' => 0
+}
 
 def prompt(message, yaml=true)
   if yaml
@@ -12,7 +25,7 @@ end
 def ask_player(choice, actions=ACTIONS)
   loop do
     prompt('choose_action')
-    choice = gets.chomp.strip.downcase
+    choice = gets.strip.downcase
     if !search_by_abbr(choice).nil?
       choice = search_by_abbr(choice)
       break
@@ -25,18 +38,6 @@ def ask_player(choice, actions=ACTIONS)
   choice
 end
 
-def win?(player, computer, score, actions=ACTIONS)
-  if player == computer
-    prompt('tie')
-  elsif actions[player][:beats].include?(computer)
-    score['player'] += 1
-    prompt('win')
-  else
-    score['computer'] += 1
-    prompt('lose')
-  end
-end
-
 # search action by abbreviation, 'r' => 'rock'
 def search_by_abbr(choice, h=ACTIONS)
   action = h.select do |_, hash|
@@ -45,12 +46,36 @@ def search_by_abbr(choice, h=ACTIONS)
   action.keys[0]
 end
 
+def determine_outcome(player, computer, score, actions=ACTIONS)
+  if player == computer
+    display_outcome(true)
+  elsif actions[player][:beats].include?(computer)
+    display_outcome(false, 'player', score)
+  else
+    display_outcome(false, 'computer', score)
+  end
+end
+
+def display_outcome(tie=false, winner='', score=0)
+  return prompt('tie') if tie
+  update_score(winner, score)
+  if winner == 'player'
+    prompt('win')
+  else
+    prompt('lose')
+  end
+end
+
 def display_score(score)
   result = <<-MSG
   Your score: #{score['player']}
   Computer score: #{score['computer']}
   MSG
   puts result
+end
+
+def update_score(player, data)
+  data[player] += 1
 end
 
 def start
@@ -65,19 +90,6 @@ def continue
   gets
 end
 
-ACTIONS = {
-  'rock' => { abbr: 'r', beats: ['scissors', 'lizard'] },
-  'paper' => { abbr: 'p', beats: ['rock', 'spock'] },
-  'scissors' => { abbr: 'sc', beats: ['paper', 'lizard'] },
-  'spock' => { abbr: 'sp', beats: ['scissors', 'rock'] },
-  'lizard' => { abbr: 'l', beats: ['paper', 'spock'] }
-}
-
-score = {
-  'player' => 0,
-  'computer' => 0
-}
-
 start()
 loop do # main loop
   system 'clear'
@@ -90,23 +102,23 @@ loop do # main loop
     computer_choice = ACTIONS.keys.sample
     prompt("You chose: #{choice}; computer chose: #{computer_choice}.", false)
 
-    win?(choice, computer_choice, score)
+    determine_outcome(choice, computer_choice, score)
     continue()
 
-    if score['player'] > 2
+    if score['player'] == MATCH_WINNING_SCORE
       prompt('win_match')
       break
-    elsif score['computer'] > 2
+    elsif score['computer'] == MATCH_WINNING_SCORE
       prompt('lose_match')
       break
     end
-    system 'clear'
+    system('clear')
   end
 
   answer = ''
   loop do
     prompt('play_again?')
-    answer = gets.chomp.strip.downcase
+    answer = gets.strip.downcase
     if answer.start_with?('y')
       score['player'] = 0 && score['computer'] = 0
       break
