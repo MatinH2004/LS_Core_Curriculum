@@ -27,3 +27,13 @@ produce = {
 }
 
 p select_fruit(produce) # => {"apple"=>"Fruit", "pear"=>"Fruit"}
+
+=begin
+
+-- Simple solution:
+
+def select_fruit(hash)
+  new_hash = hash.keep_if {|_, v| v == 'Fruit'}
+end
+
+=end
