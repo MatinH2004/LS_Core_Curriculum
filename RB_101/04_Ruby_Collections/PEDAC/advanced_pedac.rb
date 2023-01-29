@@ -1,4 +1,5 @@
-# Given an array of n positive integers and a positive integer, find the minimal length of a contiguous subarray for which the sum >= integer.
+# Given an array of n positive integers and a positive integer, 
+# find the minimal length of a contiguous subarray for which the sum >= integer.
 
 # p minSubLength([2, 3, 1, 2, 4, 3], 7) == 2
 # p minSubLength([1, 10, 5, 2, 7], 9) == 1
@@ -7,7 +8,9 @@
 
 =begin
 ---------------- Problem
-Create a method that takes an array of positive integers as argument1 and a single positive integer as argument2. Find subarrays that have a sum >= to the 2nd argument. Return the length of the smallest of those subarrays.
+Create a method that takes an array of positive integers as 
+argument1 and a single positive integer as argument2. Find subarrays that have 
+a sum >= to the 2nd argument. Return the length of the smallest of those subarrays.
 
 Input: Array of positive integers
 Output: A single integer
