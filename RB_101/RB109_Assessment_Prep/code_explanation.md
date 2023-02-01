@@ -18,6 +18,8 @@ puts b
 
 On the first line, local variable `a` is assigned to the String object `"Hello"`. On the next line, local variable `b` is assigned to the object referenced by variable `a`, which is the String object `"Hello"`. On the following line, `a` is reassigned to `'Goodbye'`. Next, we call the method `puts` and pass the reference of variable `a`, which then `'Goodbye'` is output, and `nil` is returned. On the next line, similarly, the call the method `puts` and pass in the object variable `b` is referencing, which outputs `"Hello"` and returns `nil`.
 
+This problem demonstrates the concept of variables as pointers; specifically the fact that more than one variable can point to the same object, and later be reassigned to a new object.
+
 ### Example 2
 
 What does the following code return? What does it output? Why? What concept does it demonstrate?
@@ -36,7 +38,9 @@ puts a
 puts b
 ```
 
-On line 1, we assign local variable `a` to the Integer object `4`. On lines 3 to 8, we call the `loop` method, along with a `do/end` which defines a block. Within the block, our local variable `a` is reassigned to the Integer object `5`, and a new local variable `b` is bound to the Integer object `3`. Next, the program exits the loop from the `break` statement. Then, we call the `puts` method and pass in our local variable `a` as an argument, which outputs `5` to the console, and returns `nil`. On the next line, we call `puts` method again, but this time we pass in the variable `b` which we initialized previously, inside the block. This action would raise an exception, and throw the error 'undefined local variable `b' for main:Object'. This problem demonstrates the concept of variable scope, specifically the fact that variables created in an inner scope aren't available in the outer scope (the rest of our program).
+On line 1, we assign local variable `a` to the Integer object `4`. On lines 3 to 8, we call the `loop` method, along with a `do/end` which defines a block. Within the block, our local variable `a` is reassigned to the Integer object `5`, and a new local variable `b` is bound to the Integer object `3`. Next, the program exits the loop using the `break` keyword. Then, we call the `puts` method and pass in our local variable `a` as an argument, which outputs `5` to the console, and returns `nil`. On the next line, we call `puts` method again, but this time we pass in the variable `b` which we initialized previously, inside the block. This action would raise an exception, and throw the error 'undefined local variable or method `b' for main:Object'. 
+
+This problem demonstrates the concept of variable scope, specifically the fact that  local variables that are initialized in an inner scope CAN’T be accessed in the outer scope, but local variables that are initialized in the outer scope CAN be accessed in an inner scope.
 
 ### Example 3
 
@@ -56,9 +60,11 @@ puts a
 puts b
 ```
 
-The local variable `a` is assigned to Integer object `4`, and local variable `b` is assigned to Integer object `2` on lines 1 to 2. The `do..end` along side the `loop` method invocation on lines 4 to 8 defines a new block, where a new local variable `c` is assigned to Integer object `3`, and `a` is reassigned to the value referenced by `c`. `a` is now a new object and has a new value. Finally, we exit the loop from the `break` statement on line 7. On line 10, the `puts` method is called and `a` is passed in as an argument, which outputs `3`, and returns `nil`. Once again, the `puts` method is called again and `b` is passed in as an argument, which outputs `2` and returns `nil`. This problem demonstrates the concept of variable scope and reassignment.
+The local variable `a` is assigned to Integer object `4`, and local variable `b` is assigned to Integer object `2` on lines 1 to 2. The `do..end` along side the `loop` method invocation on lines 4 to 8 defines a new block, where a new local variable `c` is assigned to Integer object `3`, and `a` is reassigned to the value referenced by `c`. `a` is now a new object and has a new value. Finally, we exit the loop from the `break` statement on line 7. On line 10, the `puts` method is called and `a` is passed in as an argument, which outputs `3`, and returns `nil`. Once again, the `puts` method is called again and `b` is passed in as an argument, which outputs `2` and returns `nil`. 
 
-### Example 4
+This problem demonstrates the concept of variable scope and pointers, because we were able to reassign local variable `a` to point to a new object within the block.
+
+### Example 4 *
 
 What does the following code return? What does it output? Why? What concept does it demonstrate?
 
@@ -75,7 +81,13 @@ end
 example('hello')
 ```
 
-On line 1, we are defining a method called `example` which takes one parameter named `str`. The variable `i` is assigned to Integer object `3` which is scoped at the method-level, on line 2. The `do..end` alongside the `loop` method invocation defines a new block on lines 3 to 7. Within the block, the `puts` method is called and the method parameter `str` is passed in as an argument, which would output the object referenced, and return `nil`. Next line, we are reassigning the variable `i` to the return value of `Integer#-` method called on `i` with the integer `1` passed to it as an argument. We break out of the loop with the keyword `break` if the value of the object that local variable `i` is referencing is equal to `0`. Finally, we call the `example` method and pass the String object `'hello'` as an argument, which would output `'hello'` three times and return `nil`. This problem demonstrates the concept of variable scope within method definitions.
+On lines 1-8 we are defining the method `example` which takes 1 parameter named `str`. On line 10 we are calling the method `example` and passing in the string object `'hello'` as an argument.
+
+**Side note:** Methods are defined with **parameters**, but they are called with **arguments**.
+
+On line 2 of this code, we are initializing the local variable `i` (scoped at the method-level) and assigning to it an integer object with the value of `3`. On line 3, we are calling the method `loop` and **passing in** the `do..end` block as an argument. Within the block, on line 4, we are calling the `puts` method and passing in local variable `str` as an argument. On line 5, we invoke the `Integer#-` method on `i` with the integer `1` passed to it as an argument. On line 6, we break out of the loop using the `break` keyword if the value of the object that local variable `i` is referencing is equal to `0`. On line 10, we call the method `example` and pass in the string object `'hello'` as an argument.
+
+Finally, this code **outputs** string `'hello'` 3 times and **returns** `nil`, because the last evaluated expression is `break if i == 0`. This problem demonstrates the concept of variable scope within method definitions.
 
 ### Example 5
 
