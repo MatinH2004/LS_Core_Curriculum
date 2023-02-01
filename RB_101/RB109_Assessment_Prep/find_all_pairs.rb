@@ -89,6 +89,16 @@ Collect all the values from our hash, and store in another collection
 https://www.codewars.com/kata/5c55ad8c9d76d41a62b4ede3/train/ruby
 
 =end
+# Below: doesnt pass random tests
+# def pairs(arr)
+#   arr.each_with_object(pairs = Hash.new(0)) do |num, hash|
+#     if arr.count(num) >= 2
+#       hash[num] += 1
+#     end
+#   end
+#
+#   pairs.values.sum / 2
+# end 
 
 def pairs(arr)
   arr.each_with_object(pairs = Hash.new(0)) do |num, hash|
@@ -97,7 +107,9 @@ def pairs(arr)
     end
   end
 
-  pairs.values.sum / 2
+  pairs.values.map do |num|
+    num.odd? ? num - 1 : num
+  end.sum / 2
 end
 
 p pairs([1, 2, 5, 6, 5, 2]) == 2
