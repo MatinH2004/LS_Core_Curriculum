@@ -57,18 +57,18 @@ and item. It must return the text shown below in the 'Test Case' section.
 #  end
 # end
 
-# def likes(names)
-#   case names.size
-#   when 0 then return "no one likes this"
-#   when 1 then return "#{names[0]} likes this"
-#   when 2 then return "#{names[0]} and #{names[1]} like this"
-#   when 3 then return "#{names[0]}, #{names[1]} and #{names[2]} like this"
-#   else return "#{names[0]}, #{names[1]} and #{names.size - 2} others like this"
-#   end
-# end
+def likes(names)
+  case names.size
+  when 0 then return "no one likes this"
+  when 1 then return "#{names[0]} likes this"
+  when 2 then return "#{names[0]} and #{names[1]} like this"
+  when 3 then return "#{names[0]}, #{names[1]} and #{names[2]} like this"
+  else return "#{names[0]}, #{names[1]} and #{names.size - 2} others like this"
+  end
+end
 
-# p likes([]) == "no one likes this"
-# p likes(['Peter']) == "Peter likes this"
-# p likes(['Jacob', 'Alex']) == "Jacob and Alex like this"
-# p likes(['Max', 'John', 'Mark']) == "Max, John and Mark like this"
-# p likes(['Alex', 'Jacob', 'Mark', 'Max']) == "Alex, Jacob and 2 others like this"
+p likes([]) == "no one likes this"
+p likes(['Peter']) == "Peter likes this"
+p likes(['Jacob', 'Alex']) == "Jacob and Alex like this"
+p likes(['Max', 'John', 'Mark']) == "Max, John and Mark like this"
+p likes(['Alex', 'Jacob', 'Mark', 'Max']) == "Alex, Jacob and 2 others like this"
