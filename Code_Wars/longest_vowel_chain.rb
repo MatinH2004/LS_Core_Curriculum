@@ -29,25 +29,10 @@
     - iterate through string to find all substrings
       - if susbstring is all vowels
         - push string to `vowels_chain` array
-      - else, skip to the next iteration
 
     - return longest string from `vowels_chain`
 
 =end
-
-# def solve(word)
-#   vowels_chain = []
-
-#   0.upto(word.length - 1) do |i|
-#     i.upto(word.length - 1) do |j|
-#       if word[i..j].match?(/^[aeiouAEIOU]+$/)
-#         vowels_chain << word[i..j]
-#       end
-#     end
-#   end
-
-#   vowels_chain.max_by(&:length).size
-# end
 
 def solve(word)
   vowels_chain = []
