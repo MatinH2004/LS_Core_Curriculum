@@ -149,7 +149,7 @@ end
 p a
 ```
 
-The local variable `a` is assigned to the String object `'Bob'` on line 1. On line 3, the `Integer#times` method is invoked on the Integer object `5`, and passed in a `do..end` block as an argument. The block is defined on line 3 to 5, and contains the block parameter `x`. On line 4, our local variable `a` is reassigned to String object `'Bill'` five times until the iteration ends. We invoke the `p` method and pass in the local variable `a` as an argument, which will output `'Bill'` and return `Bill`. 
+The local variable `a` is assigned to the String object `'Bob'` on line 1. On line 3, the `Integer#times` method is invoked on the Integer object `5`, and passed in a `do..end` block as an argument. The block is defined on line 3 to 5, and contains the block parameter `x`. On line 4, our local variable `a` is reassigned to String object `'Bill'` five times until the iteration ends. We invoke the `p` method and pass in the local variable `a` as an argument, which will output `'Bill'` and returns `'Bill'`. 
 
 This problem demonstrates the concept of variable scope; specifically the fact that local variables initialized in our main program is accessible in inner scopes throughout the program.
 
