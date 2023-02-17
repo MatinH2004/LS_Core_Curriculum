@@ -35,7 +35,7 @@ end
 # refactor
 def mineLocation(arr)
   arr.each_with_index do |subarr, idx|
-    subarr.index(1) ? (return [idx, subarr.index(1)]) : next
+    return [idx, subarr.index(1)] if subarr.include?(1)
   end
 end
 
