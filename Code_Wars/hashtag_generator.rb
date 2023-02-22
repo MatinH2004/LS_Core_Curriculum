@@ -34,11 +34,18 @@ A: /* given a string */
 # end
 
 # refactor
-def generate_hashtag(str)
+def generateHashtag(str)
   res = str.split.map {|x| x.capitalize}.prepend('#').join
   return false if str.strip.empty? || res.size > 140; res
 end
 
-p generate_hashtag(" Hello there thanks for trying my Kata") == "#HelloThereThanksForTryingMyKata"
-p generate_hashtag(" Hello World ") == "#HelloWorld"
-p generate_hashtag("") == false
+p generateHashtag("") == false
+p generateHashtag(" " * 200) == false
+p generateHashtag("Do We have A Hashtag") == "#DoWeHaveAHashtag"
+p generateHashtag("Codewars") == "#Codewars"
+p generateHashtag("Codewars Is Nice") == "#CodewarsIsNice"
+p generateHashtag("Codewars is nice") == "#CodewarsIsNice"
+p generateHashtag("code" + " " * 140 + "wars") == "#CodeWars"
+p generateHashtag("Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Cat") == false
+p generateHashtag("a" * 139) == "#A" + "a" * 138
+p generateHashtag("a" * 140) == false
