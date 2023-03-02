@@ -10,3 +10,11 @@ letters.each do |letter|
 end
 
 p result
+# => {"F"=>1, "R"=>1, "T"=>1, "c"=>1, "e"=>2, "h"=>1, "i"=>1, "k"=>1, "l"=>1, "n"=>2, "o"=>2, "s"=>2, "t"=>2}
+
+# Solution using #each_with_object
+statement.split.join.chars.each_with_object(res={}) do |letter, hsh|
+  hsh[letter] = statement.count(letter)
+end
+
+p res
