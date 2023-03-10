@@ -3,6 +3,7 @@ require 'pry'
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
+MATCH_WINNING_SCORE = 5
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
@@ -45,7 +46,7 @@ end
 def player_places_peice!(brd)
   square = ''
   loop do
-    prompt "Choose a square (#{empty_squares(brd).join(', ')}):"
+    prompt "Choose a position to place a peice: (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
     prompt "Sorry, that's not a valid choice."
@@ -78,6 +79,11 @@ def detect_winner(brd)
   nil
 end
 
+def joinor(arr, char=', ', word='or')
+  arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
+end
+
+# main loop
 loop do
   board = initialize_board
 
