@@ -62,22 +62,26 @@ end
 def computer_places_peice!(brd)
   square = nil
 
-  # defense first
+  # play offensive move first
   WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
     break if square
   end
 
-  # offense
+  # defend after offensive move
   if !square
     WINNING_LINES.each do |line|
-      square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
       break if square
     end
   end
   
-  # pick random square
-  if !square
+  # binding.pry
+
+  # pick square 5 if available else pick random
+  if !square && empty_squares(brd).include?(5)
+    square = 5
+  elsif !square
     square = empty_squares(brd).sample
   end
 
