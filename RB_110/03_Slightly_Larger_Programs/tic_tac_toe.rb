@@ -3,7 +3,6 @@ require 'pry'
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
-MATCH_WINNING_SCORE = 5
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
@@ -14,7 +13,7 @@ def prompt(msg)
 end
 
 # rubocop:disable Metrics/AbcSize
-def display_board(brd)
+def display_board(brd, score)
   system 'clear'
   puts "You're an #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
   puts ""
@@ -29,6 +28,9 @@ def display_board(brd)
   puts "     |     |"
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
+  puts ""
+  puts "Player Score: #{score['Player']}"
+  puts "Computer Score: #{score['Computer']}"
   puts ""
 end
 # rubocop:enable Metrics/AbcSize
@@ -83,27 +85,45 @@ def joinor(arr, char=', ', word='or')
   arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
 end
 
-# main loop
+def continue
+  prompt('press [enter] to proceed')
+  gets
+end
+
 loop do
-  board = initialize_board
+  score = {'Player' => 0, 'Computer' => 0}
+  winner = ''
 
-  loop do
-    display_board(board)
+  until score['Player'] == 5 || score['Computer'] == 5
+    board = initialize_board
+    
+    loop do
+      display_board(board, score)
+      
+      player_places_peice!(board)
+      break if someone_won?(board) || board_full?(board)
+      
+      computer_places_peice!(board)
+      break if someone_won?(board) || board_full?(board)
+    end
 
-    player_places_peice!(board)
-    break if someone_won?(board) || board_full?(board)
+    display_board(board, score)
 
-    computer_places_peice!(board)
-    break if someone_won?(board) || board_full?(board)
+    if someone_won?(board)
+      winner = detect_winner(board)
+      score[winner] += 1
+      prompt "#{detect_winner(board)} won this round."
+      continue()
+    else
+      prompt "It's a tie!"
+      continue()
+    end
   end
+  
+  display_board(board, score)
 
-  display_board(board)
-
-  if someone_won?(board)
-    prompt "#{detect_winner(board)} won!"
-  else
-    prompt "It's a tie!"
-  end
+  prompt "Final score: #{score['Player']} - #{score['Computer']}"
+  prompt "#{winner} won the match!"
 
   prompt "Play again? (y or n)"
   answer = gets.chomp
