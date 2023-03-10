@@ -1,21 +1,23 @@
 require 'pry'
+require 'pry-doc'
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
+WINNING_SCORE = 2
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
 
 def prompt(msg)
-  puts "=> #{msg}"
+  puts "\n=> #{msg}"
 end
 
 # rubocop:disable Metrics/AbcSize
 def display_board(brd, score)
   system 'clear'
-  puts "You're an #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
+  puts "You are #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}"
@@ -58,16 +60,36 @@ def player_places_peice!(brd)
 end
 
 def computer_places_peice!(brd)
-  square = empty_squares(brd).sample
+  square = nil
+
+  # defense first
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    break if square
+  end
+
+  # offense
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+      break if square
+    end
+  end
+  
+  # pick random square
+  if !square
+    square = empty_squares(brd).sample
+  end
+
   brd[square] = COMPUTER_MARKER
 end
 
-def board_full?(brd)
-  empty_squares(brd).empty?
-end
-
-def someone_won?(brd)
-  !!detect_winner(brd)
+def find_at_risk_square(line, brd, marker)
+  if brd.values_at(*line).count(marker) == 2
+    brd.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys[0]
+  else
+    nil
+  end
 end
 
 def detect_winner(brd)
@@ -81,12 +103,21 @@ def detect_winner(brd)
   nil
 end
 
+def board_full?(brd)
+  empty_squares(brd).empty?
+end
+
+def someone_won?(brd)
+  !!detect_winner(brd)
+end
+
+
 def joinor(arr, char=', ', word='or')
   arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
 end
 
 def continue
-  prompt('press [enter] to proceed')
+  prompt('Press [enter] to proceed')
   gets
 end
 
@@ -94,9 +125,8 @@ loop do
   score = {'Player' => 0, 'Computer' => 0}
   winner = ''
 
-  until score['Player'] == 5 || score['Computer'] == 5
+  until score['Player'] == WINNING_SCORE || score['Computer'] == WINNING_SCORE
     board = initialize_board
-    
     loop do
       display_board(board, score)
       
@@ -112,19 +142,19 @@ loop do
     if someone_won?(board)
       winner = detect_winner(board)
       score[winner] += 1
-      prompt "#{detect_winner(board)} won this round."
+      prompt "#{detect_winner(board)} won this round"
       continue()
     else
       prompt "It's a tie!"
       continue()
     end
   end
-  
+
   display_board(board, score)
 
   prompt "Final score: #{score['Player']} - #{score['Computer']}"
   prompt "#{winner} won the match!"
-
+  continue()
   prompt "Play again? (y or n)"
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
