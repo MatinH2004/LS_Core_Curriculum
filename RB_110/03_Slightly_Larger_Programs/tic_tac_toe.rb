@@ -1,9 +1,14 @@
+require 'yaml'
 require 'pry'
 require 'pry-doc'
+
+MSG = YAML.load_file('ttt_msg.yaml')
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
+
+SCORE = {'Player' => 0, 'Computer' => 0, 'Tie' => 0}
 
 WINNING_SCORE = 2
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
@@ -33,6 +38,7 @@ def display_board(brd, score)
   puts ""
   puts "Player Score: #{score['Player']}"
   puts "Computer Score: #{score['Computer']}"
+  puts "Tie: #{score['Tie']}"
   puts ""
 end
 # rubocop:enable Metrics/AbcSize
@@ -75,8 +81,6 @@ def computer_places_peice!(brd)
       break if square
     end
   end
-  
-  # binding.pry
 
   # pick square 5 if available else pick random
   if !square && empty_squares(brd).include?(5)
@@ -126,13 +130,12 @@ def continue
 end
 
 loop do
-  score = {'Player' => 0, 'Computer' => 0}
   winner = ''
 
-  until score['Player'] == WINNING_SCORE || score['Computer'] == WINNING_SCORE
+  until SCORE['Player'] == WINNING_SCORE || SCORE['Computer'] == WINNING_SCORE
     board = initialize_board
     loop do
-      display_board(board, score)
+      display_board(board, SCORE)
       
       player_places_peice!(board)
       break if someone_won?(board) || board_full?(board)
@@ -141,22 +144,23 @@ loop do
       break if someone_won?(board) || board_full?(board)
     end
 
-    display_board(board, score)
+    display_board(board, SCORE)
 
     if someone_won?(board)
       winner = detect_winner(board)
-      score[winner] += 1
+      SCORE[winner] += 1
       prompt "#{detect_winner(board)} won this round"
       continue()
     else
+      SCORE['Tie'] += 1
       prompt "It's a tie!"
       continue()
     end
   end
 
-  display_board(board, score)
+  display_board(board, SCORE)
 
-  prompt "Final score: #{score['Player']} - #{score['Computer']}"
+  prompt "Final score: #{SCORE['Player']} - #{SCORE['Computer']}"
   prompt "#{winner} won the match!"
   continue()
   prompt "Play again? (y or n)"
