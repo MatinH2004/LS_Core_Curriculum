@@ -19,6 +19,7 @@ def initialize_game(name)
   system 'clear'
   game_start_msg
   get_name!(name)
+  display_game_rules
 end
 
 # methods for outputting game info
@@ -28,9 +29,20 @@ def prompt(msg)
 end
 
 def game_start_msg
-  puts "Tic Tac Toe - Matin H."
-  puts "Created: March 11, 2023"
-  puts "Version 1.0.0\n"
+  puts MSG['game_info']
+end
+
+def display_game_rules
+  prompt MSG['rules_h1']
+  sleep 1
+  prompt MSG['rules_p1']
+  sleep 2
+  prompt MSG['rules_p2']
+  sleep 2
+  prompt MSG['rules_p3']
+  sleep 2
+  prompt MSG['rules_p4']
+  continue
 end
 
 def output_score
@@ -69,6 +81,13 @@ def display_board(brd)
 end
 # rubocop:enable Metrics/AbcSize
 
+def countdown
+  prompt MSG['new_game']
+  123.digits.each { |i| prompt i; sleep 1}
+end
+
+# initialize an empty board
+
 def initialize_board
   new_board = {}
   (1..9).each { |num| new_board[num] = INITIAL_MARKER }
@@ -86,7 +105,7 @@ end
 def first_move
   answer = ''
   loop do
-    prompt "Who goes first? [player / computer / random]"
+    prompt MSG['first_move']
     answer = gets.chomp.downcase
     if answer.start_with?('p')
       return 'Player'
@@ -95,7 +114,7 @@ def first_move
     elsif answer.start_with?('r')
       return ['Player', 'Computer'].sample
     end
-    prompt 'Invalid choice, try again.'
+    prompt MSG['invalid_choice']
   end
 end
 
@@ -116,7 +135,7 @@ def player_places_peice!(brd)
     prompt "Choose a square: (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
-    prompt "Sorry, that's not a valid choice."
+    prompt MSG['invalid_choice']
   end
 
   brd[square] = PLAYER_MARKER
@@ -194,16 +213,16 @@ end
 # pace of gameplay controlled by user using [enter] inputs
 
 def continue
-  prompt 'Press [enter] to continue'
+  prompt MSG['press_enter']
   gets
 end
 
 # player info
 
 def get_name!(name)
-  prompt 'Welcome to Tic Tac Toe!'
+  prompt MSG['welcome_msg']
   loop do
-    prompt "Please enter your name:"
+    prompt MSG['enter_name']
     name << gets.chomp.strip.capitalize
     break unless name.empty?
     prompt "Invalid input."
@@ -241,11 +260,12 @@ loop do
       prompt "#{detect_winner(board)} won this round!"
     else
       SCORE['Tie'] += 1
-      prompt "It's a tie!"
+      prompt MSG['tie']
     end
     continue
   end
 
+  display_board(board)
   output_match_result(winner)
 
   # play again loop
@@ -253,7 +273,7 @@ loop do
   exit_game = false
 
   loop do
-    prompt "Play again? [yes / no]"
+    prompt MSG['play_again']
     choice = gets.chomp.strip.downcase
 
     if choice.chr == 'y'
@@ -262,7 +282,7 @@ loop do
       prompt "Thanks for playing! Goodbye #{player_name}!"
       exit_game = true
     else
-      prompt "Invalid choice, must enter [yes / no]"
+      prompt MSG['invalid_choice']
       next
     end
 
@@ -270,4 +290,5 @@ loop do
   end
 
   break if exit_game
+  countdown
 end

@@ -1,0 +1,17 @@
+game_info: "Tic Tac Toe - Matin H.\nCreated: March 11, 2023\nVersion 1.0.01\n"
+
+rules_h1: "Tic Tac Toe Rules:\n"
+rules_p1: "- Each player takes a turn and marks a square on the board."
+rules_p2: "- First player to reach 3 squares in a row, including diagonals, wins."
+rules_p3: "- If all 9 squares are marked and no player has 3 squares in a row, then the game is a tie."
+rules_p4: "- First player to win 3 rounds wins the match. Good luck!"
+
+welcome_msg: "Welcome to Tic Tac Toe!"
+enter_name: "Please enter your name:"
+first_move: "Who goes first? [player / computer / random]"
+invalid_choice: "Invalid choice, try again."
+press_enter: "Press [enter] to continue"
+
+tie: "It's a tie!"
+play_again: "Play again? [yes / no]"
+new_game: "Game starting in...."
