@@ -52,8 +52,7 @@ end
 # rubocop:disable Metrics/AbcSize
 def display_board(brd)
   system 'clear'
-  puts "You are #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
-  puts ""
+  puts "You are #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}.\n\n"
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}"
   puts "     |     |"
@@ -66,7 +65,7 @@ def display_board(brd)
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
   puts ""
-  output_score()
+  output_score
 end
 # rubocop:enable Metrics/AbcSize
 
@@ -143,7 +142,7 @@ def offensive_strategy(brd)
       square = line.at(tictactoe.index { |i| i == INITIAL_MARKER })
     end
   end
-  
+
   square
 end
 
@@ -224,7 +223,7 @@ loop do
 
   # rounds loop
 
-  until SCORE.any? {|k, v| v == WINNING_SCORE unless k == 'Tie'}
+  until SCORE.any? { |k, v| v == WINNING_SCORE unless k == 'Tie' }
     board = initialize_board
 
     loop do
@@ -256,7 +255,7 @@ loop do
   loop do
     prompt "Play again? [yes / no]"
     choice = gets.chomp.strip.downcase
-  
+
     if choice.chr == 'y'
       SCORE.each { |k, _| SCORE[k] = 0 }
     elsif choice.chr == 'n'
@@ -266,7 +265,7 @@ loop do
       prompt "Invalid choice, must enter [yes / no]"
       next
     end
-    
+
     break
   end
 
