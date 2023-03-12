@@ -1,6 +1,4 @@
 require 'yaml'
-require 'pry'
-require 'pry-doc'
 
 MSG = YAML.load_file('ttt_msg.yaml')
 
@@ -10,21 +8,45 @@ COMPUTER_MARKER = 'O'
 
 SCORE = { 'Player' => 0, 'Computer' => 0, 'Tie' => 0 }
 
-WINNING_SCORE = 2
+WINNING_SCORE = 1
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
 
-# Methods for outputting information
+# initialize before game starts
+
+def initialize_game(name)
+  system 'clear'
+  game_start_msg
+  get_name!(name)
+end
+
+# methods for outputting game info
 
 def prompt(msg)
   puts "\n=> #{msg}"
+end
+
+def game_start_msg
+  puts "Tic Tac Toe - Matin H."
+  puts "Created: March 11, 2023"
+  puts "Version 1.0.0\n"
 end
 
 def output_score
   puts "Player: #{SCORE['Player']}"
   puts "Computer: #{SCORE['Computer']}"
   puts "Ties: #{SCORE['Tie']}"
+end
+
+def output_match_result(winner)
+  prompt "Final score: #{SCORE['Player']} - #{SCORE['Computer']}"
+  prompt "#{winner} won the match!"
+  continue
+end
+
+def joinor(arr, char = ', ', word = 'or')
+  arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
 end
 
 # rubocop:disable Metrics/AbcSize
@@ -60,80 +82,6 @@ def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
-def player_places_peice!(brd)
-  square = ''
-  loop do
-    prompt "Choose a square: (#{joinor(empty_squares(brd))}):"
-    square = gets.chomp.to_i
-    break if empty_squares(brd).include?(square)
-    prompt "Sorry, that's not a valid choice."
-  end
-
-  brd[square] = PLAYER_MARKER
-end
-
-def computer_places_peice!(brd)
-  square = nil
-
-  # play offensive move first
-  WINNING_LINES.each do |line|
-    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
-    break if square
-  end
-
-  # defend after offensive move
-  if !square
-    WINNING_LINES.each do |line|
-      square = find_at_risk_square(line, brd, PLAYER_MARKER)
-      break if square
-    end
-  end
-
-  # pick square 5 if available else pick random
-  if !square && empty_squares(brd).include?(5)
-    square = 5
-  elsif !square
-    square = empty_squares(brd).sample
-  end
-
-  brd[square] = COMPUTER_MARKER
-end
-
-def find_at_risk_square(line, brd, marker)
-  if brd.values_at(*line).count(marker) == 2
-    return brd.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys[0]
-  end
-  nil
-end
-
-def detect_winner(brd)
-  WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 3
-      return 'Player'
-    elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
-      return 'Computer'
-    end
-  end
-  nil
-end
-
-def board_full?(brd)
-  empty_squares(brd).empty?
-end
-
-def someone_won?(brd)
-  !!detect_winner(brd)
-end
-
-def joinor(arr, char = ', ', word = 'or')
-  arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
-end
-
-def continue
-  prompt 'Press [enter] to continue'
-  gets
-end
-
 # determine who makes the first move
 
 def first_move
@@ -161,6 +109,59 @@ def place_peice!(brd, player)
   end
 end
 
+# player's move
+
+def player_places_peice!(brd)
+  square = ''
+  loop do
+    prompt "Choose a square: (#{joinor(empty_squares(brd))}):"
+    square = gets.chomp.to_i
+    break if empty_squares(brd).include?(square)
+    prompt "Sorry, that's not a valid choice."
+  end
+
+  brd[square] = PLAYER_MARKER
+end
+
+def computer_places_peice!(brd)
+  square = offensive_strategy(brd)
+  square ||= defensive_strategy(brd)
+  square ||= empty_squares(brd).select { |s| s == 5 }[0]
+  square ||= empty_squares(brd).sample
+
+  brd[square] = COMPUTER_MARKER
+end
+
+def offensive_strategy(brd)
+  square = nil
+
+  WINNING_LINES.each do |line|
+    tictactoe = brd.values_at(*line)
+
+    if (tictactoe.count(COMPUTER_MARKER) == 2) &&
+       (tictactoe.count(INITIAL_MARKER) == 1)
+      square = line.at(tictactoe.index { |i| i == INITIAL_MARKER })
+    end
+  end
+  
+  square
+end
+
+def defensive_strategy(brd)
+  square = nil
+
+  WINNING_LINES.each do |line|
+    tictactoe = brd.values_at(*line)
+
+    if (tictactoe.count(PLAYER_MARKER) == 2) &&
+       (tictactoe.count(INITIAL_MARKER) == 1)
+      square = line.at(tictactoe.index { |i| i == INITIAL_MARKER })
+    end
+  end
+
+  square
+end
+
 # switch current player after every turn
 
 def alternate_player(current_player)
@@ -170,13 +171,62 @@ def alternate_player(current_player)
   end
 end
 
+# check for round winner
+
+def detect_winner(brd)
+  WINNING_LINES.each do |line|
+    if brd.values_at(*line).count(PLAYER_MARKER) == 3
+      return 'Player'
+    elsif brd.values_at(*line).count(COMPUTER_MARKER) == 3
+      return 'Computer'
+    end
+  end
+  nil
+end
+
+def someone_won?(brd)
+  !!detect_winner(brd)
+end
+
+def board_full?(brd)
+  empty_squares(brd).empty?
+end
+
+# pace of gameplay controlled by user using [enter] inputs
+
+def continue
+  prompt 'Press [enter] to continue'
+  gets
+end
+
+# player info
+
+def get_name!(name)
+  prompt 'Welcome to Tic Tac Toe!'
+  loop do
+    prompt "Please enter your name:"
+    name << gets.chomp.strip.capitalize
+    break unless name.empty?
+    prompt "Invalid input."
+  end
+  prompt "Hello #{name}!"
+end
+
+player_name = ''
+
+initialize_game(player_name)
+
+# main loop
+
 loop do
   winner = ''
   current_player = first_move
 
-  # refactor score
+  # rounds loop
+
   until SCORE.any? {|k, v| v == WINNING_SCORE unless k == 'Tie'}
     board = initialize_board
+
     loop do
       display_board(board)
       place_peice!(board, current_player)
@@ -189,7 +239,7 @@ loop do
     if someone_won?(board)
       winner = detect_winner(board)
       SCORE[winner] += 1
-      prompt "#{detect_winner(board)} won this round"
+      prompt "#{detect_winner(board)} won this round!"
     else
       SCORE['Tie'] += 1
       prompt "It's a tie!"
@@ -197,27 +247,26 @@ loop do
     continue
   end
 
-  prompt "Final score: #{SCORE['Player']} - #{SCORE['Computer']}"
-  prompt "#{winner} won the match!"
-  continue
+  output_match_result(winner)
 
   # play again loop
+
   exit_game = false
 
   loop do
     prompt "Play again? [yes / no]"
-    choice = gets.chomp.downcase
-
-    case choice
-    when 'y', 'yes'
+    choice = gets.chomp.strip.downcase
+  
+    if choice.chr == 'y'
       SCORE.each { |k, _| SCORE[k] = 0 }
-    when 'n', 'no'
-      prompt 'Thanks for playing! Goodbye!'
+    elsif choice.chr == 'n'
+      prompt "Thanks for playing! Goodbye #{player_name}!"
       exit_game = true
     else
       prompt "Invalid choice, must enter [yes / no]"
       next
     end
+    
     break
   end
 
