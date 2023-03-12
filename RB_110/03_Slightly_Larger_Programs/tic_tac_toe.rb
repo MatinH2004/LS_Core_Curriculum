@@ -8,7 +8,7 @@ COMPUTER_MARKER = 'O'
 
 SCORE = { 'Player' => 0, 'Computer' => 0, 'Tie' => 0 }
 
-WINNING_SCORE = 1
+WINNING_SCORE = 3
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
                 [[1, 5, 9], [3, 5, 7]]              # diagonals
@@ -83,7 +83,11 @@ end
 
 def countdown
   prompt MSG['new_game']
-  123.digits.each { |i| prompt i; sleep 1}
+  sleep 1
+  3.downto(1) do |i|
+    prompt i
+    sleep 1
+  end
 end
 
 # initialize an empty board
@@ -106,12 +110,12 @@ def first_move
   answer = ''
   loop do
     prompt MSG['first_move']
-    answer = gets.chomp.downcase
-    if answer.start_with?('p')
+    answer = gets.chomp.strip.downcase
+    if answer.chr == 'p'
       return 'Player'
-    elsif answer.start_with?('c')
+    elsif answer.chr == 'c'
       return 'Computer'
-    elsif answer.start_with?('r')
+    elsif answer.chr == 'r'
       return ['Player', 'Computer'].sample
     end
     prompt MSG['invalid_choice']
