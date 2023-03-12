@@ -32,6 +32,10 @@ def game_start_msg
   puts MSG['game_info']
 end
 
+def joinor(arr, char = ', ', word = 'or')
+  arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
+end
+
 def display_game_rules
   prompt MSG['rules_h1']
   sleep 1
@@ -45,20 +49,15 @@ def display_game_rules
   continue
 end
 
-def output_score
+def display_score
   puts "Player: #{SCORE['Player']}"
   puts "Computer: #{SCORE['Computer']}"
   puts "Ties: #{SCORE['Tie']}"
 end
 
-def output_match_result(winner)
+def display_match_result(winner)
   prompt "Final score: #{SCORE['Player']} - #{SCORE['Computer']}"
   prompt "#{winner} won the match!"
-  continue
-end
-
-def joinor(arr, char = ', ', word = 'or')
-  arr.size > 2 ? arr.join(char).insert(-3, " #{word}") : arr.join(" #{word} ")
 end
 
 # rubocop:disable Metrics/AbcSize
@@ -77,9 +76,17 @@ def display_board(brd)
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
   puts ""
-  output_score
+  display_score
 end
 # rubocop:enable Metrics/AbcSize
+
+def display_winner(brd)
+  if someone_won?(brd)
+    prompt "#{detect_winner(brd)} won this round!"
+  else
+    prompt MSG['tie']
+  end
+end
 
 def countdown
   prompt MSG['new_game']
@@ -214,6 +221,14 @@ def board_full?(brd)
   empty_squares(brd).empty?
 end
 
+def keep_score!(winner)
+  if winner
+    SCORE[winner] += 1
+  else
+    SCORE['Tie'] += 1
+  end
+end
+
 # pace of gameplay controlled by user using [enter] inputs
 
 def continue
@@ -258,21 +273,19 @@ loop do
 
     display_board(board)
 
-    if someone_won?(board)
-      winner = detect_winner(board)
-      SCORE[winner] += 1
-      prompt "#{detect_winner(board)} won this round!"
-    else
-      SCORE['Tie'] += 1
-      prompt MSG['tie']
-    end
+    winner = detect_winner(board)
+
+    display_winner(board)
+    keep_score!(winner)
+
     continue
   end
 
   display_board(board)
-  output_match_result(winner)
+  display_match_result(winner)
+  continue
 
-  # play again loop
+  # user wants to play again?
 
   exit_game = false
 
@@ -282,15 +295,14 @@ loop do
 
     if choice.chr == 'y'
       SCORE.each { |k, _| SCORE[k] = 0 }
+      break
     elsif choice.chr == 'n'
       prompt "Thanks for playing! Goodbye #{player_name}!"
       exit_game = true
-    else
-      prompt MSG['invalid_choice']
-      next
+      break
     end
 
-    break
+    prompt MSG['invalid_choice']
   end
 
   break if exit_game
