@@ -22,6 +22,10 @@ def display_rules
   system("clear") || system("cls")
   puts RULES.read
   gets
+
+  system('clear') || system('cls')
+  prompt "Dealing cards...\n\n"
+  sleep 2
 end
 
 def display_cards(dealer, player, reveal_card = false)
@@ -86,11 +90,11 @@ def dealer_turn(deck, dealer_hand)
   prompt "Dealer's turn..."
   loop do
     if total(dealer_hand) < 17
-      prompt "The dealer hits."
+      prompt "The dealer hits!"
       deal_card(deck, dealer_hand)
       sleep 1
       dealer_values = dealer_hand.map { |card| card[1] }.join(', ')
-      prompt "Dealer's cards are now: #{dealer_values}."
+      prompt "Dealer's cards are now: #{dealer_values}.\n\n"
       break if busted?(dealer_hand) || blackjack?(dealer_hand)
     elsif total(dealer_hand) >= 17
       prompt "The dealer stays.\n\n"
@@ -166,38 +170,25 @@ def play_again?
   end
 end
 
-# main loop
-
 display_rules
 
 loop do
-  system('clear') || system('cls')
-
   deck = initialize_deck
 
-  prompt "Dealing cards...\n\n"
-  sleep 2
-
-  # For testing: [["Diamonds", "Ace"], ["Spades", "10"]]
   player_hand = initial_deal(deck)
   dealer_hand = initial_deal(deck)
 
   display_cards(dealer_hand, player_hand)
   player_turn(deck, player_hand)
-  
-  if busted?(player_hand)
-    prompt "Busted! Dealer wins."
-    play_again? ? next : break
-  else
-    prompt "You chose to stay!\n\n"
-  end
-
-  dealer_turn(deck, dealer_hand)
+  dealer_turn(deck, dealer_hand) unless busted?(player_hand) ||
+                                        blackjack?(player_hand)
 
   display_cards(dealer_hand, player_hand, true)
   display_result(dealer_hand, player_hand)
 
   break unless play_again?
+
+  system('clear') || system('cls')
 end
 
 prompt "Thanks for playing! Goodbye."
