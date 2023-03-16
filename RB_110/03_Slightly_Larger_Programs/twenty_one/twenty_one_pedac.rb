@@ -50,4 +50,8 @@ Display results:
   1. compare cards for winner
   2. display who won
   3. show both hands and total
+
+Busted?:
+  1. if hand > 21, busted! return true
+  2. else return false
 =end
