@@ -86,6 +86,7 @@ def player_turn(deck, player_hand)
   end
 end
 
+# rubocop:disable Metrics/AbcSize
 def dealer_turn(deck, dealer_hand)
   prompt MSG['dealer_turn']
   loop do
@@ -102,6 +103,7 @@ def dealer_turn(deck, dealer_hand)
     end
   end
 end
+# rubocop:enable Metrics/AbcSize
 
 # method for summing player/dealer hands
 
@@ -111,16 +113,16 @@ def total(hand)
 
   values.each do |value|
     sum += if value == 'Ace'
-            11
+             11
            elsif value.to_i == 0 # J, Q, K
-            10
+             10
            else
-            value.to_i
+             value.to_i
            end
   end
 
   # correct for aces
-  values.select { |value| value == 'Ace'}.count.times do
+  values.select { |value| value == 'Ace' }.count.times do
     sum -= 10 if sum > 21
   end
 
