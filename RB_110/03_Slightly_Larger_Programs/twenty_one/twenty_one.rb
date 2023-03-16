@@ -178,7 +178,8 @@ loop do
   prompt "Dealing cards...\n\n"
   sleep 2
 
-  player_hand = [["Diamonds", "Ace"], ["Spades", "10"]] #initial_deal(deck)
+  # For testing: [["Diamonds", "Ace"], ["Spades", "10"]]
+  player_hand = initial_deal(deck)
   dealer_hand = initial_deal(deck)
 
   display_cards(dealer_hand, player_hand)
@@ -187,10 +188,6 @@ loop do
   if busted?(player_hand)
     prompt "Busted! Dealer wins."
     play_again? ? next : break
-  # elsif blackjack?(player_hand)
-  #   prompt "Blackjack! You win!"
-  #   display_result(dealer_hand, player_hand)
-  #   play_again? ? next : break
   else
     prompt "You chose to stay!\n\n"
   end
