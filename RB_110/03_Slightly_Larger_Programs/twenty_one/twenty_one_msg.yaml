@@ -1,0 +1,16 @@
+initial_deal: "Dealing cards...\n\n"
+invalid_choice: "Invalid choice. Try again please."
+
+player_turn: "Player's turn: [hit] or [stay]?"
+dealer_turn: "Dealer's turn..."
+dealer_hits: "The dealer hits!"
+dealer_stays: "The dealer stays.\n\n"
+
+player_bust: "You busted! Dealer wins!\n\n"
+dealer_bust: "Dealer busted! You win!\n\n"
+player_win: "You win!\n\n"
+dealer_win: "Dealer wins!\n\n"
+tie: "It's a tie!\n\n"
+
+play_again: "Would you like to play again? [yes / no]"
+goodbye: "Thanks for playing! Goodbye."

@@ -24,7 +24,7 @@ def display_rules
   gets
 
   system('clear') || system('cls')
-  prompt "Dealing cards...\n\n"
+  prompt MSG['initial_deal']
   sleep 2
 end
 
@@ -45,11 +45,11 @@ end
 
 def display_result(dealer, player)
   case detect_result(dealer, player)
-  when :player_busted then prompt "You busted! Dealer wins!\n\n"
-  when :dealer_busted then prompt "Dealer busted! You win!\n\n"
-  when :player then prompt "You win!\n\n"
-  when :dealer then prompt "Dealer wins!\n\n"
-  when :tie then prompt "It's a tie!\n\n"
+  when :player_busted then prompt MSG['player_bust']
+  when :dealer_busted then prompt MSG['dealer_bust']
+  when :player        then prompt MSG['player_win']
+  when :dealer        then prompt MSG['dealer_win']
+  when :tie           then prompt MSG['tie']
   end
 end
 
@@ -72,7 +72,7 @@ end
 def player_turn(deck, player_hand)
   answer = nil
   loop do
-    prompt "Player's turn: [hit] or [stay]?"
+    prompt MSG['player_turn']
     answer = gets.chomp.downcase
     if answer.chr == 'h'
       deal_card(deck, player_hand)
@@ -81,23 +81,23 @@ def player_turn(deck, player_hand)
     elsif answer.chr == 's'
       break
     else
-      prompt 'invalid choice.'
+      prompt MSG['invalid_choice']
     end
   end
 end
 
 def dealer_turn(deck, dealer_hand)
-  prompt "Dealer's turn..."
+  prompt MSG['dealer_turn']
   loop do
     if total(dealer_hand) < 17
-      prompt "The dealer hits!"
+      prompt MSG['dealer_hits']
       deal_card(deck, dealer_hand)
       sleep 1
       dealer_values = dealer_hand.map { |card| card[1] }.join(', ')
       prompt "Dealer's cards are now: #{dealer_values}.\n\n"
       break if busted?(dealer_hand) || blackjack?(dealer_hand)
     elsif total(dealer_hand) >= 17
-      prompt "The dealer stays.\n\n"
+      prompt MSG['dealer_stays']
       break
     end
   end
@@ -159,14 +159,14 @@ end
 def play_again?
   answer = nil
   loop do
-    prompt "Would you like to play again? [yes / no]"
+    prompt MSG['play_again']
     answer = gets.chomp.strip.downcase
     if answer.chr == 'y'
       return true
     elsif answer.chr == 'n'
       return false
     end
-    prompt "Invalid choice."
+    prompt MSG['invalid_choice']
   end
 end
 
@@ -191,4 +191,4 @@ loop do
   system('clear') || system('cls')
 end
 
-prompt "Thanks for playing! Goodbye."
+prompt MSG['goodbye']
