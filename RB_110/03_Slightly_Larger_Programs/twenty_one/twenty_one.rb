@@ -1,12 +1,55 @@
 require 'yaml'
 require 'pry'
 
+MSG = YAML.load_file('twenty_one_msg.yaml')
+RULES = File.open('twenty_one_rules.txt', 'r')
+
 SUITS = %w(Clovers Diamonds Hearts Spades)
 VALUES = %w(Ace 2 3 4 5 6 7 8 9 10 Jack King Queen)
 
+# methods for displaying information
+
 def prompt(msg)
-  puts "\n=> #{msg}"
+  puts "=> #{msg}"
 end
+
+def new_card_msg(hand)
+  prompt "You were dealt the #{hand[-1][0]} of #{hand[-1][1]}."
+  prompt "Your total is #{total(hand)}\n\n"
+end
+
+def display_rules
+  system("clear") || system("cls")
+  puts RULES.read
+  gets
+end
+
+def display_cards(dealer, player, reveal_card = false)
+  dealer_values = dealer.map { |card| card[1] }
+  player_values = player.map { |card| card[1] }
+
+  if reveal_card
+    prompt "Dealer has: #{dealer_values.join(', ')}."
+    prompt "You have: #{player_values.join(', ')}.\n\n"
+    prompt "Your total: #{total(player)}; Dealer total: #{total(dealer)}\n\n"
+  else
+    prompt "Dealer has: #{dealer_values[0]} and unknown card."
+    prompt "You have: #{player_values.join(' and ')}.\n\n"
+    prompt "Your total: #{total(player)}; Dealer total: (?)\n\n"
+  end
+end
+
+def display_result(dealer, player)
+  case detect_result(dealer, player)
+  when :player_busted then prompt "You busted! Dealer wins!\n\n"
+  when :dealer_busted then prompt "Dealer busted! You win!\n\n"
+  when :player then prompt "You win!\n\n"
+  when :dealer then prompt "Dealer wins!\n\n"
+  when :tie then prompt "It's a tie!\n\n"
+  end
+end
+
+# methods for handling the deck and hands
 
 def initialize_deck
   SUITS.product(VALUES).shuffle
@@ -20,23 +63,7 @@ def deal_card(deck, hand)
   hand << deck.shift
 end
 
-def new_card_msg(hand)
-  prompt "You were dealt the #{hand[-1][0]} of #{hand[-1][1]}."
-  prompt "Your total is #{total(hand)}"
-end
-
-def display_cards(player, dealer, reveal_card = false)
-  dealer = dealer.map { |card| card[1] }
-  player = player.map { |card| card[1] }
-
-  if reveal_card
-    prompt "Dealer has: #{dealer.join(', ')}."
-    prompt "You have: #{player.join(', ')}."
-  else
-    prompt "Dealer has: #{dealer[0]} and unknown card."
-    prompt "You have: #{player.join(', ')}."
-  end
-end
+# methods for handling player/dealer actions
 
 def player_turn(deck, player_hand)
   answer = nil
@@ -56,25 +83,30 @@ def player_turn(deck, player_hand)
 end
 
 def dealer_turn(deck, dealer_hand)
-  prompt "Dealer's turn."
+  prompt "Dealer's turn..."
   loop do
     if total(dealer_hand) < 17
       prompt "The dealer hits."
       deal_card(deck, dealer_hand)
+      sleep 1
+      dealer_values = dealer_hand.map { |card| card[1] }.join(', ')
+      prompt "Dealer's cards are now: #{dealer_values}."
       break if busted?(dealer_hand) || blackjack?(dealer_hand)
     elsif total(dealer_hand) >= 17
-      prompt "The dealer stays."
+      prompt "The dealer stays.\n\n"
       break
     end
   end
 end
 
-def total(cards)
-  values = cards.map { |card| card[1] }
+# method for summing player/dealer hands
+
+def total(hand)
+  values = hand.map { |card| card[1] }
   sum = 0
 
   values.each do |value|
-    sum += if value == 'A'
+    sum += if value == 'Ace'
             11
            elsif value.to_i == 0 # J, Q, K
             10
@@ -84,12 +116,14 @@ def total(cards)
   end
 
   # correct for aces
-  values.select { |value| value == 'A'}.count.times do
+  values.select { |value| value == 'Ace'}.count.times do
     sum -= 10 if sum > 21
   end
 
   sum
 end
+
+# methods for determining winner / loser
 
 def busted?(hand)
   total(hand) > 21
@@ -99,53 +133,74 @@ def blackjack?(hand)
   total(hand) == 21
 end
 
-def compare_cards(player, dealer)
-  case total(player) <=> total(dealer)
-  when -1 then prompt "Dealer wins!"
-  when 0 then prompt "Tie..."
-  when 1 then prompt "You win!"
+def detect_result(dealer, player)
+  player_total = total(player)
+  dealer_total = total(dealer)
+
+  if player_total > 21
+    :player_busted
+  elsif dealer_total > 21
+    :dealer_busted
+  elsif dealer_total < player_total
+    :player
+  elsif dealer_total > player_total
+    :dealer
+  else
+    :tie
+  end
+end
+
+# method asks user to play again or leave
+
+def play_again?
+  answer = nil
+  loop do
+    prompt "Would you like to play again? [yes / no]"
+    answer = gets.chomp.strip.downcase
+    if answer.chr == 'y'
+      return true
+    elsif answer.chr == 'n'
+      return false
+    end
+    prompt "Invalid choice."
   end
 end
 
 # main loop
 
+display_rules
+
 loop do
   system('clear') || system('cls')
 
-  # dislay welcome msg + game rules
-
-
-  # initialize deck
   deck = initialize_deck
 
-  player_hand = initial_deal(deck)
+  prompt "Dealing cards...\n\n"
+  sleep 2
+
+  player_hand = [["Diamonds", "Ace"], ["Spades", "10"]] #initial_deal(deck)
   dealer_hand = initial_deal(deck)
 
-  # display dealer + player cards
-  display_cards(player_hand, dealer_hand)
-
-  # loop: player turn: hit or stay
+  display_cards(dealer_hand, player_hand)
   player_turn(deck, player_hand)
   
-
-  # play again or exit if busted
   if busted?(player_hand)
     prompt "Busted! Dealer wins."
-    break
-    # play again? - go to NEXT iteration
-    # end game? - BREAK out of loop
-  elsif blackjack?(player_hand)
-    prompt "Blackjack! You win!"
-    break
+    play_again? ? next : break
+  # elsif blackjack?(player_hand)
+  #   prompt "Blackjack! You win!"
+  #   display_result(dealer_hand, player_hand)
+  #   play_again? ? next : break
   else
-    prompt "You chose to stay!"
+    prompt "You chose to stay!\n\n"
   end
 
-  # loop: dealer turn: hit or stay until >= 17
   dealer_turn(deck, dealer_hand)
 
-  # compare cards, determine winner or tie
-  compare_cards(player_hand, dealer_hand)
-  display_cards(player_hand, dealer_hand, true)
-  break
+  display_cards(dealer_hand, player_hand, true)
+  display_result(dealer_hand, player_hand)
+
+  break unless play_again?
 end
+
+prompt "Thanks for playing! Goodbye."

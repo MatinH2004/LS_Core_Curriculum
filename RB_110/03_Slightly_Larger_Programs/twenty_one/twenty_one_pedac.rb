@@ -43,6 +43,11 @@ Player turn:
 
 Dealer turn:
   1. hit if total less than 17
-  2. if stay, stop asking
-  3. 
+  3. show cards when hit
+  2. if stay, compare cards
+
+Display results:
+  1. compare cards for winner
+  2. display who won
+  3. show both hands and total
 =end
