@@ -1,5 +1,6 @@
 initial_deal: "Dealing cards...\n\n"
-invalid_choice: "Invalid choice. Try again please."
+invalid_choice: "Invalid choice. Try again please.\n\n"
+continue: "(press enter to continue)"
 
 player_turn: "Player's turn: [hit] or [stay]?"
 dealer_turn: "Dealer's turn..."
