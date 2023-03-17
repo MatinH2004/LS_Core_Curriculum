@@ -7,13 +7,30 @@ RULES = File.open('twenty_one_rules.txt', 'r')
 SUITS = %w(Clovers Diamonds Hearts Spades)
 VALUES = %w(Ace 2 3 4 5 6 7 8 9 10 Jack King Queen)
 
+STATS = {
+  'Player Wins' => 0,
+  'Dealer Wins' => 0,
+  'Ties' => 0
+}
+
+def initialize_round
+  system('clear') || system('cls') # new method
+  prompt MSG['initial_deal']
+  sleep 2
+end
+
+def continue
+  prompt MSG['continue']
+  gets
+end
+
 # methods for displaying information
 
 def prompt(msg)
   puts "=> #{msg}"
 end
 
-def new_card_msg(hand)
+def display_new_card(hand)
   prompt "You were dealt the #{hand[-1][0]} of #{hand[-1][1]}."
   prompt "Your total is #{total(hand)}\n\n"
 end
@@ -22,10 +39,6 @@ def display_rules
   system("clear") || system("cls")
   puts RULES.read
   gets
-
-  system('clear') || system('cls')
-  prompt MSG['initial_deal']
-  sleep 2
 end
 
 def display_cards(dealer, player, reveal_card = false)
@@ -43,6 +56,15 @@ def display_cards(dealer, player, reveal_card = false)
   end
 end
 
+def display_score
+  puts "=============="
+  prompt "Scoreboard:\n\n"
+  STATS.each do |k, v|
+    puts "#{k}: #{v}"
+  end
+  puts "==============\n\n"
+end
+
 def display_result(dealer, player)
   case detect_result(dealer, player)
   when :player_busted then prompt MSG['player_bust']
@@ -53,7 +75,11 @@ def display_result(dealer, player)
   end
 end
 
-# methods for handling the deck and hands
+def display_grand_winner
+  # winner 
+end
+
+# methods for handling the deck, hands, and score
 
 def initialize_deck
   SUITS.product(VALUES).shuffle
@@ -67,6 +93,16 @@ def deal_card(deck, hand)
   hand << deck.shift
 end
 
+def update_score(result)
+  if result == :player_busted || result == :dealer
+    STATS['Dealer Wins'] += 1
+  elsif result == :dealer_busted || result == :player
+    STATS['Player Wins'] += 1
+  else
+    STATS['Ties'] += 1
+  end
+end
+
 # methods for handling player/dealer actions
 
 def player_turn(deck, player_hand)
@@ -76,7 +112,7 @@ def player_turn(deck, player_hand)
     answer = gets.chomp.downcase
     if answer.chr == 'h'
       deal_card(deck, player_hand)
-      new_card_msg(player_hand)
+      display_new_card(player_hand)
       break if busted?(player_hand) || blackjack?(player_hand)
     elsif answer.chr == 's'
       break
@@ -172,21 +208,28 @@ def play_again?
   end
 end
 
-display_rules
+display_rules()
 
 loop do
-  deck = initialize_deck
+  until STATS.any? { |k, v| v == 5 unless k == 'Ties' }
+    initialize_round
 
-  player_hand = initial_deal(deck)
-  dealer_hand = initial_deal(deck)
+    deck = initialize_deck
+    player_hand = initial_deal(deck)
+    dealer_hand = initial_deal(deck)
 
-  display_cards(dealer_hand, player_hand)
-  player_turn(deck, player_hand)
-  dealer_turn(deck, dealer_hand) unless busted?(player_hand) ||
-                                        blackjack?(player_hand)
+    display_cards(dealer_hand, player_hand)
+    player_turn(deck, player_hand)
+    dealer_turn(deck, dealer_hand) unless busted?(player_hand) ||
+                                          blackjack?(player_hand)
 
-  display_cards(dealer_hand, player_hand, true)
-  display_result(dealer_hand, player_hand)
+    display_cards(dealer_hand, player_hand, true)
+    display_result(dealer_hand, player_hand)
+    update_score(detect_result(dealer_hand, player_hand))
+
+    display_score
+    continue
+  end
 
   break unless play_again?
 
