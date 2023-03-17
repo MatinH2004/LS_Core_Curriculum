@@ -29,7 +29,8 @@
   flip over their unknown card.
 
   At the end of the dealer's turn, both player's card 
-  totals will be calculated and the winner will be 
-  announced!
+  totals will be calculated and the round winner will 
+  be announced! First player to 5 wins is the grand
+  winner!
 
               (press any key to proceed)
