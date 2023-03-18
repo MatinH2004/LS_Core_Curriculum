@@ -1,5 +1,4 @@
 require 'yaml'
-require 'pry'
 
 MSG = YAML.load_file('twenty_one_msg.yaml')
 RULES = File.open('twenty_one_rules.txt', 'r')
@@ -7,14 +6,19 @@ RULES = File.open('twenty_one_rules.txt', 'r')
 SUITS = %w(Clovers Diamonds Hearts Spades)
 VALUES = %w(Ace 2 3 4 5 6 7 8 9 10 Jack King Queen)
 
+MIN_DEALER_VALUE = 17
+BLACKJACK = 21
+
+WINNING_SCORE = 5
+
 STATS = {
-  'Player Wins' => 0,
-  'Dealer Wins' => 0,
+  'Player' => 0,
+  'Dealer' => 0,
   'Ties' => 0
 }
 
 def initialize_round
-  system('clear') || system('cls') # new method
+  system('clear') || system('cls')
   prompt MSG['initial_deal']
   sleep 2
 end
@@ -41,28 +45,39 @@ def display_rules
   gets
 end
 
-def display_cards(dealer, player, reveal_card = false)
+def display_hands(dealer, player)
   dealer_values = dealer.map { |card| card[1] }
   player_values = player.map { |card| card[1] }
+  {
+    all: ["Dealer cards: #{dealer_values.join(', ')}.",
+          "Your cards: #{player_values.join(', ')}.\n\n",
+          "Your total: #{total(player)}; Dealer total: #{total(dealer)}\n\n"],
+    player: ["Your cards: #{player_values.join(', ')}.\n\n"],
+    dealer: ["Dealer now has: #{dealer_values.join(', ')}.\n\n"],
+    dealer_secret: ["Dealer cards: #{dealer_values[0]} and unknown card.",
+                    "Your cards: #{player_values.join(' and ')}.\n\n",
+                    "Your total: #{total(player)}; Dealer total: (?)\n\n"]
+  }
+end
 
-  if reveal_card
-    prompt "Dealer has: #{dealer_values.join(', ')}."
-    prompt "You have: #{player_values.join(', ')}.\n\n"
-    prompt "Your total: #{total(player)}; Dealer total: #{total(dealer)}\n\n"
-  else
-    prompt "Dealer has: #{dealer_values[0]} and unknown card."
-    prompt "You have: #{player_values.join(' and ')}.\n\n"
-    prompt "Your total: #{total(player)}; Dealer total: (?)\n\n"
+# params initialized to empty arrays incase we don't need to display all hands
+
+def display_cards(reveal_card, dealer = [], player = [])
+  display_hands(dealer, player)[reveal_card].each do |str|
+    prompt str
   end
 end
 
 def display_score
-  puts "=============="
+  puts "==============".rjust(17)
   prompt "Scoreboard:\n\n"
   STATS.each do |k, v|
-    puts "#{k}: #{v}"
+    case k
+    when 'Ties' then puts "#{k}: #{v}".rjust(10)
+    else puts "#{k} Wins: #{v}".rjust(17)
+    end
   end
-  puts "==============\n\n"
+  puts "==============\n\n".rjust(19)
 end
 
 def display_result(dealer, player)
@@ -73,10 +88,15 @@ def display_result(dealer, player)
   when :dealer        then prompt MSG['dealer_win']
   when :tie           then prompt MSG['tie']
   end
+  sleep 1.5
 end
 
 def display_grand_winner
-  # winner 
+  STATS.each do |k, v|
+    if v == WINNING_SCORE
+      prompt "Grand winner: #{k}!" unless k == 'Ties'
+    end
+  end
 end
 
 # methods for handling the deck, hands, and score
@@ -95,51 +115,57 @@ end
 
 def update_score(result)
   if result == :player_busted || result == :dealer
-    STATS['Dealer Wins'] += 1
+    STATS['Dealer'] += 1
   elsif result == :dealer_busted || result == :player
-    STATS['Player Wins'] += 1
+    STATS['Player'] += 1
   else
     STATS['Ties'] += 1
   end
 end
 
-# methods for handling player/dealer actions
+# methods for handling player/dealer moves
 
 def player_turn(deck, player_hand)
-  answer = nil
+  choice = ''
   loop do
-    prompt MSG['player_turn']
-    answer = gets.chomp.downcase
-    if answer.chr == 'h'
-      deal_card(deck, player_hand)
-      display_new_card(player_hand)
-      break if busted?(player_hand) || blackjack?(player_hand)
-    elsif answer.chr == 's'
-      break
-    else
-      prompt MSG['invalid_choice']
-    end
+    choice = player_action(deck, player_hand)
+    break if busted?(player_hand) ||
+             blackjack?(player_hand) ||
+             choice == 's'
   end
 end
 
-# rubocop:disable Metrics/AbcSize
+def player_action(deck, player_hand)
+  prompt "Player's turn: [hit] or [stay]?"
+  case gets.chomp.strip.downcase.chr
+  when 'h'
+    deal_card(deck, player_hand)
+    display_new_card(player_hand)
+  when 's' then 's'
+  else prompt MSG['invalid_choice']
+  end
+end
+
 def dealer_turn(deck, dealer_hand)
   prompt MSG['dealer_turn']
   loop do
-    if total(dealer_hand) < 17
-      prompt MSG['dealer_hits']
-      deal_card(deck, dealer_hand)
-      sleep 1
-      dealer_values = dealer_hand.map { |card| card[1] }.join(', ')
-      prompt "Dealer's cards are now: #{dealer_values}.\n\n"
-      break if busted?(dealer_hand) || blackjack?(dealer_hand)
-    elsif total(dealer_hand) >= 17
-      prompt MSG['dealer_stays']
-      break
-    end
+    choice = dealer_action(deck, dealer_hand)
+    break if busted?(dealer_hand) ||
+             blackjack?(dealer_hand) ||
+             choice == 's'
   end
 end
-# rubocop:enable Metrics/AbcSize
+
+def dealer_action(deck, dealer)
+  if total(dealer) < MIN_DEALER_VALUE
+    prompt MSG['dealer_hits']
+    deal_card(deck, dealer)
+    display_cards(:dealer, dealer)
+  elsif total(dealer) >= MIN_DEALER_VALUE
+    prompt MSG['dealer_stays']
+    's'
+  end
+end
 
 # method for summing player/dealer hands
 
@@ -150,16 +176,16 @@ def total(hand)
   values.each do |value|
     sum += if value == 'Ace'
              11
-           elsif value.to_i == 0 # J, Q, K
+           elsif value.to_i == 0 # Jack, Queen, King
              10
            else
              value.to_i
            end
   end
 
-  # correct for aces
+  # correct for Aces
   values.select { |value| value == 'Ace' }.count.times do
-    sum -= 10 if sum > 21
+    sum -= 10 if sum > BLACKJACK
   end
 
   sum
@@ -168,20 +194,20 @@ end
 # methods for determining winner / loser
 
 def busted?(hand)
-  total(hand) > 21
+  total(hand) > BLACKJACK
 end
 
 def blackjack?(hand)
-  total(hand) == 21
+  total(hand) == BLACKJACK
 end
 
 def detect_result(dealer, player)
   player_total = total(player)
   dealer_total = total(dealer)
 
-  if player_total > 21
+  if player_total > BLACKJACK
     :player_busted
-  elsif dealer_total > 21
+  elsif dealer_total > BLACKJACK
     :dealer_busted
   elsif dealer_total < player_total
     :player
@@ -200,6 +226,7 @@ def play_again?
     prompt MSG['play_again']
     answer = gets.chomp.strip.downcase
     if answer.chr == 'y'
+      STATS.each { |k, _| STATS[k] = 0 }
       return true
     elsif answer.chr == 'n'
       return false
@@ -208,22 +235,30 @@ def play_again?
   end
 end
 
-display_rules()
+def goodbye
+  system('clear') || system('cls')
+  puts MSG['final_score']
+  display_score
+  prompt MSG['goodbye']
+end
+
+display_rules
 
 loop do
-  until STATS.any? { |k, v| v == 5 unless k == 'Ties' }
+  deck = initialize_deck
+
+  until STATS.any? { |k, v| v == WINNING_SCORE unless k == 'Ties' }
     initialize_round
 
-    deck = initialize_deck
     player_hand = initial_deal(deck)
     dealer_hand = initial_deal(deck)
 
-    display_cards(dealer_hand, player_hand)
+    display_cards(:dealer_secret, dealer_hand, player_hand)
     player_turn(deck, player_hand)
     dealer_turn(deck, dealer_hand) unless busted?(player_hand) ||
                                           blackjack?(player_hand)
 
-    display_cards(dealer_hand, player_hand, true)
+    display_cards(:all, dealer_hand, player_hand)
     display_result(dealer_hand, player_hand)
     update_score(detect_result(dealer_hand, player_hand))
 
@@ -231,9 +266,9 @@ loop do
     continue
   end
 
+  display_grand_winner
   break unless play_again?
-
   system('clear') || system('cls')
 end
 
-prompt MSG['goodbye']
+goodbye
