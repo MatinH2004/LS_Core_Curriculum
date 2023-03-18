@@ -14,4 +14,5 @@ dealer_win: "Dealer wins!\n\n"
 tie: "It's a tie!\n\n"
 
 play_again: "Would you like to play again? [yes / no]"
+final_score: "--- FINAL SCORE ---\n\n"
 goodbye: "Thanks for playing! Goodbye."
