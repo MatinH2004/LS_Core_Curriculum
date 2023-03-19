@@ -30,8 +30,8 @@ end
 
 # methods for displaying information
 
-def prompt(msg)
-  puts "=> #{msg}"
+def prompt(str)
+  puts "=> #{str}"
 end
 
 def display_new_card(hand)
@@ -45,7 +45,7 @@ def display_rules
   gets
 end
 
-def display_hands(dealer, player)
+def construct_card_msg(dealer, player)
   dealer_values = dealer.map { |card| card[1] }
   player_values = player.map { |card| card[1] }
   {
@@ -63,7 +63,7 @@ end
 # params initialized to empty arrays incase we don't need to display all hands
 
 def display_cards(reveal_card, dealer = [], player = [])
-  display_hands(dealer, player)[reveal_card].each do |str|
+  construct_card_msg(dealer, player)[reveal_card].each do |str|
     prompt str
   end
 end
@@ -71,10 +71,10 @@ end
 def display_score
   puts "==============".rjust(17)
   prompt "Scoreboard:\n\n"
-  STATS.each do |k, v|
-    case k
-    when 'Ties' then puts "#{k}: #{v}".rjust(10)
-    else puts "#{k} Wins: #{v}".rjust(17)
+  STATS.each do |key, score|
+    case key
+    when 'Ties' then puts "#{key}: #{score}".rjust(10)
+    else puts "#{key} Wins: #{score}".rjust(17)
     end
   end
   puts "==============\n\n".rjust(19)
@@ -92,9 +92,9 @@ def display_result(dealer, player)
 end
 
 def display_grand_winner
-  STATS.each do |k, v|
-    if v == WINNING_SCORE
-      prompt "Grand winner: #{k}!" unless k == 'Ties'
+  STATS.each do |key, score|
+    if score == WINNING_SCORE
+      prompt "Grand winner: #{key}!" unless key == 'Ties'
     end
   end
 end
@@ -105,11 +105,11 @@ def initialize_deck
   SUITS.product(VALUES).shuffle
 end
 
-def initial_deal(deck)
+def initial_deal!(deck)
   deck.shift(2)
 end
 
-def deal_card(deck, hand)
+def deal_card!(deck, hand)
   hand << deck.shift
 end
 
@@ -139,7 +139,7 @@ def player_action(deck, player_hand)
   prompt "Player's turn: [hit] or [stay]?"
   case gets.chomp.strip.downcase.chr
   when 'h'
-    deal_card(deck, player_hand)
+    deal_card!(deck, player_hand)
     display_new_card(player_hand)
   when 's' then 's'
   else prompt MSG['invalid_choice']
@@ -159,7 +159,7 @@ end
 def dealer_action(deck, dealer)
   if total(dealer) < MIN_DEALER_VALUE
     prompt MSG['dealer_hits']
-    deal_card(deck, dealer)
+    deal_card!(deck, dealer)
     display_cards(:dealer, dealer)
   elsif total(dealer) >= MIN_DEALER_VALUE
     prompt MSG['dealer_stays']
@@ -226,7 +226,7 @@ def play_again?
     prompt MSG['play_again']
     answer = gets.chomp.strip.downcase
     if answer.chr == 'y'
-      STATS.each { |k, _| STATS[k] = 0 }
+      STATS.each { |key, _| STATS[key] = 0 }
       return true
     elsif answer.chr == 'n'
       return false
@@ -247,11 +247,11 @@ display_rules
 loop do
   deck = initialize_deck
 
-  until STATS.any? { |k, v| v == WINNING_SCORE unless k == 'Ties' }
+  until STATS.any? { |key, score| score == WINNING_SCORE unless key == 'Ties' }
     initialize_round
 
-    player_hand = initial_deal(deck)
-    dealer_hand = initial_deal(deck)
+    player_hand = initial_deal!(deck)
+    dealer_hand = initial_deal!(deck)
 
     display_cards(:dealer_secret, dealer_hand, player_hand)
     player_turn(deck, player_hand)
