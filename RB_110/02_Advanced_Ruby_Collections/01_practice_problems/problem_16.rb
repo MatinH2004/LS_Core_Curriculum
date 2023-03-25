@@ -1,6 +1,6 @@
 
 def generate_UUID
-  characters = ('0'..'9').zip('a'..'f').flatten.reject {|x| x.nil?}
+  characters = ('0'..'9').zip('a'..'f').flatten.compact
   uuid = ''
 
   sections = [8, 4, 4, 4, 12]
