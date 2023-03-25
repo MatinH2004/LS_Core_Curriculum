@@ -74,3 +74,18 @@ p array == [1, 2, 4, 6, 7]
 array = %w(Sue Pete Alice Tyler Rachel Kim Bonnie)
 bubble_sort!(array)
 p array == %w(Alice Bonnie Kim Pete Rachel Sue Tyler)
+
+# further optimised solution
+def bubble_sort2!(arr)
+  n = arr.size - 1
+  while n > 1
+    unsorted = 0
+    n.times do |i|
+      if arr[i] > arr[i + 1]
+        arr[i], arr[i + 1] = arr[i + 1], arr[i]
+        unsorted = i
+      end
+    end
+    n = unsorted
+  end
+end
