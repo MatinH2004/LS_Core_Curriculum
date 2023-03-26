@@ -198,3 +198,43 @@ You should be familiar with Ruby syntax and operators, and be able to clearly ex
 
 * `values`
   * returns array of all values in hsh
+
+## Shallow & Deep Copy
+
+**Shallow copy:** creates a new object that is a copy of the original object, however, any references to objects inside the original object are not copied.
+
+```
+original_array = [1, 2, [3, 4]]
+copied_array = original_array.clone
+
+# modify the inner array of the copied array
+copied_array[2][0] = 5
+
+puts original_array.inspect #=> [1, 2, [5, 4]]
+puts copied_array.inspect #=> [1, 2, [5, 4]]
+```
+
+**Deep copy:** A deep copy, on the other hand, creates a new object that is a copy of the original object, including all the referenced objects inside the original object. Any changes made to the referenced objects in the copied object will not affect the original object.
+
+```
+original_array = [1, 2, [3, 4]]
+copied_array = Marshal.load(Marshal.dump(original_array))
+
+# modify the inner array of the copied array
+copied_array[2][0] = 5
+
+puts original_array.inspect #=> [1, 2, [3, 4]]
+puts copied_array.inspect #=> [1, 2, [5, 4]]
+```
+
+**Copy using `freeze`:**
+
+```
+original_array = [1, 2, [3, 4]].freeze
+
+copy1 = original_array.dup
+copy2 = original_array.clone
+
+copy1 << [5] # dup allows you to modify frozen obj
+copy2 << [5] # FrozenError, cant modify frozen obj using clone
+```
