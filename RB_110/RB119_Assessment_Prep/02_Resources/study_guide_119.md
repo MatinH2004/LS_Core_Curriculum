@@ -203,7 +203,7 @@ You should be familiar with Ruby syntax and operators, and be able to clearly ex
 
 **Shallow copy:** creates a new object that is a copy of the original object, however, any references to objects inside the original object are not copied.
 
-```
+```ruby
 original_array = [1, 2, [3, 4]]
 copied_array = original_array.clone
 
@@ -216,7 +216,7 @@ puts copied_array.inspect #=> [1, 2, [5, 4]]
 
 **Deep copy:** A deep copy, on the other hand, creates a new object that is a copy of the original object, including all the referenced objects inside the original object. Any changes made to the referenced objects in the copied object will not affect the original object.
 
-```
+```ruby
 original_array = [1, 2, [3, 4]]
 copied_array = Marshal.load(Marshal.dump(original_array))
 
@@ -229,7 +229,7 @@ puts copied_array.inspect #=> [1, 2, [5, 4]]
 
 **Copy using `freeze`:**
 
-```
+```ruby
 original_array = [1, 2, [3, 4]].freeze
 
 copy1 = original_array.dup
