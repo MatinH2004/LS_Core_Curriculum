@@ -49,6 +49,8 @@ You should be familiar with Ruby syntax and operators, and be able to clearly ex
 
 * `replace`
   * replaces the contents of string with the corresponding values of arg
+  * mutates the original string
+    * This means that any other references to the original string object will also reflect the changes made by replace
 
 * `reverse` & `reverse!`
   * returns new string with characters in reverse order
@@ -61,7 +63,7 @@ You should be familiar with Ruby syntax and operators, and be able to clearly ex
 * `slice` & `slice!`
   * when passed in a single arg, returns character at that index
   * when passed in passed in two args -> (start, length)
-  * if called with `!`, the slice is removed from original string
+  * if called with `!`, the sliced str is removed from original string
 
 * `split`
   * takes delimiter as arg
