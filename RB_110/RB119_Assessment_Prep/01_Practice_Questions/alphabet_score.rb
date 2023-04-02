@@ -20,6 +20,18 @@ def alphabet_score(str)
   words[first_max.compact[0]]
 end
 
+# Solution 2
+
+def alphabet_score(str)
+  alphabet = ('a'..'z').zip(1..26).to_h
+
+  str.split.each_with_object(scores = {}) do |word, hsh|
+    hsh[word] = word.chars.reduce(0) { |sum, char| sum + alphabet[char]}
+  end
+
+  scores.each { |word, score| return word if score == scores.values.max }
+end
+
 p alphabet_score('man i need a taxi up to ubud') == 'taxi'
 p alphabet_score('what time are we climbing up the volcano') == 'volcano'
 p alphabet_score('take me to semynak') == 'semynak'
