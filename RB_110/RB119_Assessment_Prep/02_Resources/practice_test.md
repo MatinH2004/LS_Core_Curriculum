@@ -160,7 +160,7 @@ end
 
 In this code, the TypeError is thrown, beacause on line 14, `nil` is being concatnated with a string object, which does not work. The issue is that the `colors` array is one element larger than the `things` array. There are two ways to fix this.
 
-**Solution 1**
+**Solution 1:**
 Change `break if i > colors.length` to `break if i >= colors.length - 1` to match the size of the `things` array. Note that the `>` operator was changed to `>=`.
 
 ```ruby
@@ -177,7 +177,7 @@ loop do
 end
 ```
 
-**Solution 2**
+**Solution 2:**
 In this solution, the loop stops iterating once all elements from the `things` array have been output. Note that the `>` operator was changed to `>=`.
 
 ```ruby
@@ -342,6 +342,8 @@ my_value(a)
 puts a
 ```
 
+On line 1, local variable `a` is initialized to the integer object `7`. On lines 3 to 5, the `my_value` method is defined taking a parameter, `b`. On line 7, the `my_value` method is called an `a` is passed into the method. Within the method, `a` is bound to method parameter `b`. On line 4, `b` is reassigned to the return value of `Integer#+` method called on `a` and `a` is passed as an argument. This raises the NameError exception, due to `a` not being visible at the method-level scope. The program stops executing here, and any code further is not ran.
+
 ### 17. The output of the code below tells you that you have around $70. However it should be $238.
 
 ```ruby
@@ -385,6 +387,14 @@ puts balance
 
 ```
 
+The problem here is that on line 34, the `balance` is reassigned to the return value of `calculate_balance` method, so the reason we end up with $70 is because that is because that is our balance for the last month, which is `march`. To fix this problem, instead of using the assignment on line 34, `#=`, we must increment the `balance` variable, so it adds the balance from each month.
+
+```ruby
+[january, february, march].each do |month|
+  balance += calculate_balance(month)
+end
+```
+
 ### 18. What does the following code return? What does it output? Why? What concept does it demonstrate?
 
 ```ruby
@@ -400,6 +410,8 @@ end
 puts a
 puts b
 ```
+
+On line 1, local variable `a` is assigned to the integer object `4`. On line 2, local variable `b` is assigned to the integer object `2`. On line 4, the `loop` method is invoked, and a `do..end` block is passed as an argument on lines 4 to 8. Within the block, local variable `c` is initialized to the integer object `3`, and on the next line, `a` is reassiged to the integer object referenced by `c`. On line 7, we exit out of the loop using the `break` keyword. On line 10, the `puts` method is invoked and `a` is passed as an argument. This outputs `3`, because `a` was reassigned to the object refernced by `c` in the block. `nil` is returend. On line 11, the `puts` method is called once again, and `b` is passed into the method. This outputs `2` and returns `nil`.
 
 ### 19. We started writing an RPG game, but we have already run into an error message. Find the problem and fix it.
 
@@ -426,6 +438,20 @@ puts 'Your character stats:'
 puts player
 ```
 
+There is two problems with the code here. First, when we merge the `player` hash with the new one to change the value to `20`, a new hash is returned by `#merge`, and `player` still references the unchanged hash. To fix this we must call the destructive `#merge!` method, or reassigned `player` to the return value of `#merge` method.
+
+```ruby
+player.merge!(character_classes[input])
+# or
+player = player.merge(character_classes[input])
+```
+
+The other problem is that the object referenced by `input` is a string, and to reference the key values from the `#character_classes` we need to convert `input` into a symbol object.
+
+```ruby
+player.merge!(character_classes[input.to_sym])
+```
+
 ### 20. Explain `Hash#each_with_object` method and what it's doing in this code.
 
 ```ruby
@@ -433,6 +459,10 @@ puts player
   array << pair.last
 end
 ```
+
+On line 1, the `each_with_object` method is called upon a hash object: `{ a: "ant", b: "bear", c: "cat" }`. The method takes a `do..end` block and a `[]` argument, which creates an empty array. The empty array is passed into the block, and block parameter `array` points toward it. The block parameter `pair` points to an array object containing the key-value pair: `[key, value]`. On line 2, the shovel `<<` method is called on `array` and the return value of `#last` called on `pair` is passed as an argument. The `last` method returns the last or -1 index element of the array. The return value of `each_with_object` method is the array referenced by `array`, which contains every value from the calling hash object on line 1.
+
+Result: `['ant', 'bear', 'cat']`
 
 ### 21. What will the following code print, and why?
 
@@ -447,6 +477,8 @@ end
 puts a
 ```
 
+On line 1, local variable `a` is initialized to the integer object `7`. On line 2, local variable `array` is initialized to an array object containing integer values: `[1, 2, 3]`. On line 4, the `each` method is called on the `array` object, and a `do..end` block is passed in as an argument on lines 4 to 6. Each integer value of the calling array object is sent into the block and are referenced by `n`. On line 5, the `Integer#+` method is called on `a` and integer value `1` is passed as an argument, which then the return value is reassigned back to `a`. This increments `a` by 1. On line 8, the `puts` method is called and `a` is passed as an argument. This outputs `7` and returns `nil`. This would be an example of variable shadowing, as `a` and the block parameter, `a` share the same name, so local variable `a` is left unchanged.
+
 ### 22. Magdalena has just adopted a new pet! She wants to add her new dog, Bowser, to the pets hash. After doing so, she realizes that her dogs Sparky and Fido have been mistakenly removed. Help Magdalena fix her code so that all three of her dogs' names will be associated with the key :dog in the pets hash.
 
 ```ruby
@@ -457,3 +489,11 @@ pets[:dog] = 'bowser'
 p pets #=> {:cat=>"fluffy", :dog=>"bowser", :fish=>"oscar"}
 ```
 
+In the code above, the `:dog` key in the `pets` hash is being reassigned to `'bowser'` instead of being added to the hash. To fix this, instead of using `=` assignmnet on line 3, we must use the shovel `<<` method to push `'bowser'` into the `:dog` array.
+
+```ruby
+pets[:dog] << 'bowser'
+
+# similiar solution:
+pets[:dog].push('bowser')
+```
