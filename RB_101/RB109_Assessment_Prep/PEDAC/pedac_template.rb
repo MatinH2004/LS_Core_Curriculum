@@ -1,5 +1,7 @@
 =begin
 
+Start time: 
+
 # --------------------------- Problem
   Restate the problem:
 
@@ -9,20 +11,13 @@
   Output:
 
 # --------------------------- Test Cases + Rules
-
-
+  Explicit:
+  Implicit:
 
 # --------------------------- Data Structure
 
-
-
-# --------------------------- Scrapbook
-
-
+# --------------------------- Scratch Book
 
 # --------------------------- Algorithm
-
-
-
 
 =end
