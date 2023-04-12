@@ -10,7 +10,7 @@ def to_weird_case(str)
     else 
       word
     end
-  end.flatten.join(' ')
+  end.join(' ')
 end
 
 p to_weird_case('Lorem Ipsum is simply dummy text of the printing') ==
