@@ -53,6 +53,18 @@ def closest_numbers(array)
   array.map { |num| num if res.include?(num) }.compact
 end
 
+# refactor
+
+def closest_numbers(array)
+  result = []
+  (0..array.size-2).each do |index|
+    (index..array.size-2).each do |idx|
+      result << [array[index], array[idx+1]]
+    end
+  end
+  result.min_by { |subarr| (subarr[0]-subarr[1])**2}
+end
+
 p closest_numbers([5, 25, 15, 11, 20]) == [15, 11]
 p closest_numbers([19, 25, 32, 4, 27, 16]) == [25, 27]
 p closest_numbers([12, 7, 17]) == [12, 7]
