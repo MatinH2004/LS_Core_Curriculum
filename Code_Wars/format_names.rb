@@ -32,7 +32,7 @@ Start time: 2:15
         - last element should be seperated by ampersand
       - if array contains 2 names
         - seperate with ampersand
-      
+
 =end
 
 def list(arr)
