@@ -45,3 +45,20 @@ def minimum_number(numbers)
   sum = numbers.sum
   Prime.find{ |x| x >= sum } - sum
 end
+
+# Nick's solution:
+
+def is_prime?(num)
+  !((2...num).any? { |i| num % i == 0 })
+end
+
+def minimum_number(arr)
+  sum = arr.sum
+  current_num = 0
+
+  until is_prime?(sum + current_num)
+    current_num +=1
+  end
+
+  current_num
+end
