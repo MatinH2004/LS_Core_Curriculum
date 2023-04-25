@@ -64,6 +64,21 @@ def minimum_sum(input)
   end.sort_by { |a| a.sum }.first.sum
 end
 
+# refactor
+
+def minimum_sum(arr)
+  return nil if arr.size < 5
+  sub_arrays = []
+
+  (0...arr.size).each do |i|
+    (0...arr.size).each do |j|
+      sub_arrays << arr[i..j] if arr[i..j].size == 5
+    end
+  end
+
+  sub_arrays.min_by(&:sum).sum
+end
+
 p minimum_sum([1, 2, 3, 4]) == nil
 p minimum_sum([1, 2, 3, 4, 5, 6]) == 15
 p minimum_sum([55, 2, 6, 5, 1, 2, 9, 3, 5, 100]) == 16
