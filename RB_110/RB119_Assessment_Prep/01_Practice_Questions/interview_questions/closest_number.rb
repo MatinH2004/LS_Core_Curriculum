@@ -65,6 +65,14 @@ def closest_numbers(array)
   result.min_by { |subarr| (subarr[0]-subarr[1])**2}
 end
 
+# further refactor
+
+def closest_numbers(arr)
+  arr.combination(2).map {|x| x}.min_by do |a|
+    a.sort[1] - a.sort[0]
+  end
+end
+
 p closest_numbers([5, 25, 15, 11, 20]) == [15, 11]
 p closest_numbers([19, 25, 32, 4, 27, 16]) == [25, 27]
 p closest_numbers([12, 7, 17]) == [12, 7]
