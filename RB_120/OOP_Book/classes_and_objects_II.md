@@ -49,6 +49,10 @@ This is an example of using a class variable and a class method to keep track of
 
 We can define **constants** in our class, by declaring a variable with all letters uppercased. Constants are variables that will never change, although it is possible to reassign them.
 
+If you want to access a constant outside of the class then you would have to use **classname::constant**
+
+Class constants are inherited and can be overridden like instance methods.
+
 For example:
 
 ```ruby
@@ -65,6 +69,8 @@ end
 
 sparky = GoodDog.new("Sparky", 4)
 puts sparky.age             # => 28
+
+puts GoodDog::DOG_YEARS # => 7
 ```
 
 ## The `to_s` Method
