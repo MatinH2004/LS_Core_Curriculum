@@ -114,7 +114,7 @@ end
 class RPSGame
   attr_accessor :human, :computer
 
-  WIN_SCORE = 2
+  WIN_SCORE = 1
 
   def initialize
     @human = Human.new
@@ -147,7 +147,7 @@ class RPSGame
       computer.update_score
       puts "\n#{computer.name} won!"
     else
-      puts "It's a tie!"
+      puts "\nIt's a tie!"
     end
   end
 
@@ -176,35 +176,35 @@ class RPSGame
       puts "Sorry, must be y or n"
     end
     [human, computer].each { |player| player.reset_score }
-    answer == 'y'
+    answer == 'y' ? true : display_goodbye_message
   end
 
-  def display_actions
+  def game_over?
+    [human, computer].any? { |player| player.score == WIN_SCORE}
+  end
+
+  def display_round_results
     display_moves
     display_winner
     display_score
     continue
   end
 
-  # rubocop:disable Metrics/MethodLength
-  def play
-    loop do
-      display_welcome_message
-
-      until [human, computer].any? { |player| player.score == WIN_SCORE}
-        human.choose
-        computer.choose
-        display_actions
-      end
-
-      display_score
-      display_grand_winner
-      break unless play_again?
-    end
-
-    display_goodbye_message
+  def players_choose
+    human.choose
+    computer.choose
   end
-  # rubocop:enable Metrics/MethodLength
+
+  def play
+    display_welcome_message
+    while !game_over?
+      players_choose
+      display_round_results
+    end
+    display_score
+    display_grand_winner
+    play if play_again?
+  end
 end
 
 RPSGame.new.play
