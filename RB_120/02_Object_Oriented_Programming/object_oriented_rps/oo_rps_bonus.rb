@@ -1,3 +1,25 @@
+require 'pry'
+
+class Score
+  attr_reader :value
+
+  def initialize
+    @value = 0
+  end
+
+  def increment
+    @value += 1
+  end
+
+  def reset
+    @value = 0
+  end
+
+  def to_s
+    "#{value}"
+  end
+end
+
 class Move
   VALUES = ['rock', 'paper', 'scissors']
 
@@ -35,10 +57,23 @@ class Move
 end
 
 class Player
-  attr_accessor :name, :move
+  attr_accessor :name, :move, :score
 
   def initialize
     set_name
+    @score = Score.new
+  end
+
+  def update_score
+    @score.increment
+  end
+
+  def reset_score
+    @score.reset
+  end
+
+  def score
+    @score.value
   end
 end
 
@@ -78,14 +113,12 @@ end
 
 class RPSGame
   attr_accessor :human, :computer
-  attr_reader :score
 
-  WIN_SCORE = 1
+  WIN_SCORE = 2
 
   def initialize
     @human = Human.new
     @computer = Computer.new
-    @score = { @human => 0, @computer => 0 }
   end
 
   def display_welcome_message
@@ -104,11 +137,14 @@ class RPSGame
   end
 
   def display_winner
-    if human.move > computer.move
-      score[@human] += 1
+    human_move = human.move
+    computer_move = computer.move
+
+    if human_move > computer_move
+      human.update_score
       puts "\n#{human.name} won!"
-    elsif human.move < computer.move
-      score[@computer] += 1
+    elsif human_move < computer_move
+      computer.update_score
       puts "\n#{computer.name} won!"
     else
       puts "It's a tie!"
@@ -116,13 +152,13 @@ class RPSGame
   end
 
   def display_grand_winner
-    winner = score.key(score.values.max)
+    winner = human.score > computer.score ? human : computer
     puts "\n#{winner.name} is the grand winner!"
   end
 
   def display_score
-    puts "\n#{human.name}: #{score[@human]}"
-    puts "#{computer.name}: #{score[@computer]}"
+    puts "\n#{human.name}: #{human.score}"
+    puts "#{computer.name}: #{computer.score}"
   end
 
   def continue
@@ -139,7 +175,7 @@ class RPSGame
       break if ['y', 'n'].include?(answer)
       puts "Sorry, must be y or n"
     end
-    score.each { |k, _| score[k] = 0 }
+    [human, computer].each { |player| player.reset_score }
     answer == 'y'
   end
 
@@ -155,7 +191,7 @@ class RPSGame
     loop do
       display_welcome_message
 
-      until score.any? { |_, v| v == WIN_SCORE }
+      until [human, computer].any? { |player| player.score == WIN_SCORE}
         human.choose
         computer.choose
         display_actions
