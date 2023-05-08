@@ -78,7 +78,7 @@ class Human < Player
     system('clear') || system('cls')
     n = nil
     loop do
-      puts "What's your name?"
+      puts "\nHello, please enter your name:"
       n = gets.chomp.strip.capitalize
       break unless n.empty?
       puts "Sorry, must enter a value."
@@ -128,6 +128,7 @@ class RPSGame
   attr_accessor :human, :computer
 
   WIN_SCORE = 3
+  RULES = File.open('oo_rps_text.txt', 'r')
 
   def initialize
     @human = Human.new
@@ -149,12 +150,13 @@ class RPSGame
 
   def display_welcome_message
     system('clear') || system('cls')
-    puts "Welcome to Rock, Paper, Scissors!"
-    puts "First one to win #{WIN_SCORE} times wins!"
+    puts RULES.read
+    puts "\nFirst one to win #{WIN_SCORE} times wins!"
+    continue
   end
 
   def display_goodbye_message
-    puts "Thanks for playing Rock Paper Scissors, goodbye!"
+    puts "Thanks for playing RPSSL, goodbye!"
   end
 
   def display_moves
@@ -195,6 +197,7 @@ class RPSGame
   end
 
   def continue
+    sleep(1.5)
     puts "\npress [enter] to continue"
     gets
     system('clear') || system('cls')
