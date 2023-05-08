@@ -1,5 +1,76 @@
 require 'pry'
 
+module Displayable
+  def prompt_name
+    puts "\nHello, please enter your name:"
+  end
+
+  def prompt_invalid(n=1)
+    case n
+    when 1 then puts "Sorry, invalid choice."
+    when 2 then puts "Sorry, must enter a value."
+    when 3 then puts "Sorry, must be y or n."
+    end
+  end
+
+  def prompt_choose
+    puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
+  end
+
+  def prompt_history
+    puts "\nView move history:\n\n"
+  end
+
+  def prompt_rule
+    puts "\nFirst one to win #{RPSGame::WIN_SCORE} times wins!"
+  end
+
+  def prompt_play_again
+    puts "\nWould you like to play again? (y/n)"
+  end
+
+  def display_goodbye_message
+    puts "Thanks for playing RPSSL, goodbye #{human.name}!"
+  end
+
+  def display_moves
+    puts "\n#{human.name} chose #{human.move}."
+    puts "#{computer.name} chose #{computer.move}."
+  end
+  
+  def display_score
+    puts "\n#{human.name}: #{human.score}"
+    puts "#{computer.name}: #{computer.score}"
+  end
+
+  def display_round_results
+    display_moves
+    determine_winner
+    display_score
+    continue
+  end
+
+  def display_grand_winner
+    winner = human.score > computer.score ? human : computer
+    puts "\n#{winner.name} is the grand winner!"
+  end
+
+  def determine_winner
+    human_move = human.move
+    computer_move = computer.move
+
+    if human_move > computer_move
+      human.update_score
+      puts "\n#{human.name} won!"
+    elsif human_move < computer_move
+      computer.update_score
+      puts "\n#{computer.name} won!"
+    else
+      puts "\nIt's a tie!"
+    end
+  end
+end
+
 class Score
   attr_reader :value
 
@@ -77,14 +148,15 @@ class Player
 end
 
 class Human < Player
+  include Displayable
   def set_name
     system('clear') || system('cls')
     n = nil
     loop do
-      puts "\nHello, please enter your name:"
+      prompt_name
       n = gets.chomp.strip.capitalize
       break unless n.empty?
-      puts "Sorry, must enter a value."
+      prompt_invalid(2)
     end
     self.name = n
   end
@@ -92,11 +164,11 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
+      prompt_choose
       choice = gets.chomp.strip.downcase
       next if display_history(choice)
       break if valid_move?(choice)
-      puts "Sorry, invalid choice."
+      prompt_invalid
     end
     self.move = Move.new(valid_move?(choice))
   end
@@ -119,7 +191,7 @@ class Human < Player
 
   def display_history(choice)
     return if choice.chr != 'h'
-    puts "\nMove history:\n\n"
+    prompt_history
     Move::HISTORY.each_with_index do |move, idx|
       next if idx.odd?
       puts "#{move} - #{Move::HISTORY[idx+1]}"
@@ -138,6 +210,7 @@ class Computer < Player
 end
 
 class RPSGame
+  include Displayable
   attr_accessor :human, :computer
 
   WIN_SCORE = 3
@@ -164,49 +237,8 @@ class RPSGame
   def display_welcome_message
     system('clear') || system('cls')
     puts RULES.read
-    puts "\nFirst one to win #{WIN_SCORE} times wins!"
+    prompt_rule
     continue
-  end
-
-  def display_goodbye_message
-    puts "Thanks for playing RPSSL, goodbye #{human.name}!"
-  end
-
-  def display_moves
-    puts "\n#{human.name} chose #{human.move}."
-    puts "#{computer.name} chose #{computer.move}."
-  end
-  
-  def display_score
-    puts "\n#{human.name}: #{human.score}"
-    puts "#{computer.name}: #{computer.score}"
-  end
-
-  def display_round_results
-    display_moves
-    determine_winner
-    display_score
-    continue
-  end
-
-  def display_grand_winner
-    winner = human.score > computer.score ? human : computer
-    puts "\n#{winner.name} is the grand winner!"
-  end
-
-  def determine_winner
-    human_move = human.move
-    computer_move = computer.move
-
-    if human_move > computer_move
-      human.update_score
-      puts "\n#{human.name} won!"
-    elsif human_move < computer_move
-      computer.update_score
-      puts "\n#{computer.name} won!"
-    else
-      puts "\nIt's a tie!"
-    end
   end
 
   def continue
@@ -228,10 +260,10 @@ class RPSGame
   def play_again?
     answer = nil
     loop do
-      puts "\nWould you like to play again? (y/n)"
+      prompt_play_again
       answer = gets.chomp.strip.downcase
       break if ['y', 'n'].include?(answer)
-      puts "Sorry, must be y or n."
+      prompt_invalid(3)
     end
     [human, computer].each { |player| player.reset_score }
     answer == 'y' ? true : display_goodbye_message
