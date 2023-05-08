@@ -127,12 +127,25 @@ end
 class RPSGame
   attr_accessor :human, :computer
 
-  WIN_SCORE = 1
+  WIN_SCORE = 3
 
   def initialize
     @human = Human.new
     @computer = Computer.new
   end
+  
+  def play
+    display_welcome_message
+    while !game_over?
+      players_choose
+      display_round_results
+    end
+    display_score
+    display_grand_winner
+    play if play_again?
+  end
+
+  private
 
   def display_welcome_message
     system('clear') || system('cls')
@@ -148,8 +161,25 @@ class RPSGame
     puts "\n#{human.name} chose #{human.move}."
     puts "#{computer.name} chose #{computer.move}."
   end
+  
+  def display_score
+    puts "\n#{human.name}: #{human.score}"
+    puts "#{computer.name}: #{computer.score}"
+  end
 
-  def display_winner
+  def display_round_results
+    display_moves
+    determine_winner
+    display_score
+    continue
+  end
+
+  def display_grand_winner
+    winner = human.score > computer.score ? human : computer
+    puts "\n#{winner.name} is the grand winner!"
+  end
+
+  def determine_winner
     human_move = human.move
     computer_move = computer.move
 
@@ -164,20 +194,19 @@ class RPSGame
     end
   end
 
-  def display_grand_winner
-    winner = human.score > computer.score ? human : computer
-    puts "\n#{winner.name} is the grand winner!"
-  end
-
-  def display_score
-    puts "\n#{human.name}: #{human.score}"
-    puts "#{computer.name}: #{computer.score}"
-  end
-
   def continue
     puts "\npress [enter] to continue"
     gets
     system('clear') || system('cls')
+  end
+
+  def game_over?
+    [human, computer].any? { |player| player.score == WIN_SCORE}
+  end
+
+  def players_choose
+    human.choose
+    computer.choose
   end
 
   def play_again?
@@ -190,33 +219,6 @@ class RPSGame
     end
     [human, computer].each { |player| player.reset_score }
     answer == 'y' ? true : display_goodbye_message
-  end
-
-  def game_over?
-    [human, computer].any? { |player| player.score == WIN_SCORE}
-  end
-
-  def display_round_results
-    display_moves
-    display_winner
-    display_score
-    continue
-  end
-
-  def players_choose
-    human.choose
-    computer.choose
-  end
-
-  def play
-    display_welcome_message
-    while !game_over?
-      players_choose
-      display_round_results
-    end
-    display_score
-    display_grand_winner
-    play if play_again?
   end
 end
 
