@@ -16,39 +16,31 @@ class Score
   end
 
   def to_s
-    "#{value}"
+    value
   end
 end
 
 class Move
-  VALUES = ['rock', 'paper', 'scissors']
+  attr_reader :value
+
+  VALUES = {
+    'rock'     => {abbr: 'r',  beats: ['scissors', 'lizard']},
+    'paper'    => {abbr: 'p',  beats: ['rock', 'spock']},
+    'scissors' => {abbr: 'sc', beats: ['paper', 'lizard']},
+    'lizard'   => {abbr: 'l',  beats: ['paper', 'spock']},
+    'spock'    => {abbr: 'sp', beats: ['scissors', 'rock']}
+  }
 
   def initialize(value)
     @value = value
   end
 
-  def rock?
-    @value == 'rock'
-  end
-
-  def paper?
-    @value == 'paper'
-  end
-
-  def scissors?
-    @value == 'scissors'
-  end
-
   def >(other_move)
-    (rock? && other_move.scissors?) ||
-      (paper? && other_move.rock?) ||
-      (scissors? && other_move.paper?)
+    VALUES[value][:beats].include?(other_move)
   end
 
   def <(other_move)
-    (rock? && other_move.paper?) ||
-      (paper? && other_move.scissors?) ||
-      (scissors? && other_move.rock?)
+    VALUES[other_move][:beats].include?(value)
   end
 
   def to_s
@@ -75,10 +67,15 @@ class Player
   def score
     @score.value
   end
+
+  def move
+    @move.value
+  end
 end
 
 class Human < Player
   def set_name
+    system('clear') || system('cls')
     n = nil
     loop do
       puts "What's your name?"
@@ -92,13 +89,29 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      puts "\nPlease choose rock, paper, or scissors:"
-      choice = gets.chomp
-      break if Move::VALUES.include?(choice)
+      puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, or [l]izard:"
+      choice = gets.chomp.strip.downcase
+      break if valid_move?(choice)
       puts "Sorry, invalid choice."
     end
-    self.move = Move.new(choice)
+    self.move = Move.new(valid_move?(choice))
   end
+
+  def search_by_abbr(choice)
+    action = Move::VALUES.select do |_, hsh|
+      hsh[:abbr] == choice
+    end
+
+    action.keys.first
+  end
+
+  def valid_move?(choice)
+    if !search_by_abbr(choice).nil?
+      search_by_abbr(choice)
+    elsif Move::VALUES.keys.include?(choice)
+      choice
+    end
+  end # if not valid, nil is returned
 end
 
 class Computer < Player
@@ -107,7 +120,7 @@ class Computer < Player
   end
 
   def choose
-    self.move = Move.new(Move::VALUES.sample)
+    self.move = Move.new(Move::VALUES.keys.sample)
   end
 end
 
@@ -173,7 +186,7 @@ class RPSGame
       puts "\nWould you like to play again? (y/n)"
       answer = gets.chomp.strip.downcase
       break if ['y', 'n'].include?(answer)
-      puts "Sorry, must be y or n"
+      puts "Sorry, must be y or n."
     end
     [human, computer].each { |player| player.reset_score }
     answer == 'y' ? true : display_goodbye_message
