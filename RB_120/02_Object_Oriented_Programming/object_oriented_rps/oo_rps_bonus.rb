@@ -23,6 +23,8 @@ end
 class Move
   attr_reader :value
 
+  HISTORY = []
+
   VALUES = {
     'rock'     => {abbr: 'r',  beats: ['scissors', 'lizard']},
     'paper'    => {abbr: 'p',  beats: ['rock', 'spock']},
@@ -33,6 +35,7 @@ class Move
 
   def initialize(value)
     @value = value
+    HISTORY << value
   end
 
   def >(other_move)
@@ -89,8 +92,9 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, or [l]izard:"
+      puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
       choice = gets.chomp.strip.downcase
+      next if display_history(choice)
       break if valid_move?(choice)
       puts "Sorry, invalid choice."
     end
@@ -112,6 +116,15 @@ class Human < Player
       choice
     end
   end # if not valid, nil is returned
+
+  def display_history(choice)
+    return if choice.chr != 'h'
+    puts "\nMove history:\n\n"
+    Move::HISTORY.each_with_index do |move, idx|
+      next if idx.odd?
+      puts "#{move} - #{Move::HISTORY[idx+1]}"
+    end
+  end
 end
 
 class Computer < Player
@@ -156,7 +169,7 @@ class RPSGame
   end
 
   def display_goodbye_message
-    puts "Thanks for playing RPSSL, goodbye!"
+    puts "Thanks for playing RPSSL, goodbye #{human.name}!"
   end
 
   def display_moves
