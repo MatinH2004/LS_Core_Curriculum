@@ -1,0 +1,13 @@
+
+Made by Matin H. | 05/2023
+
+Welcome to Rock Paper Scissors Spock Lizard!
+Game Rules:
+
+- ROCK      beats SCISSORS  and LIZARD
+- PAPER     beats ROCK      and Spock
+- SCISSORS  beats PAPER     and LIZARD
+- SPOCK     beats SCISSORS  and ROCK
+- LIZARD    beats PAPER     and SPOCK
+
+GOOD LUCK!
