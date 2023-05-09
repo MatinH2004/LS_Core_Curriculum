@@ -193,8 +193,7 @@ class Human < Player
     return if choice.chr != 'h'
     prompt_history
     Move::HISTORY.each_with_index do |move, idx|
-      next if idx.odd?
-      puts "#{move} - #{Move::HISTORY[idx+1]}"
+      idx.odd? ? next : (puts "#{move} - #{Move::HISTORY[idx+1]}")
     end
   end
 end
@@ -213,7 +212,7 @@ class RPSGame
   include Displayable
   attr_accessor :human, :computer
 
-  WIN_SCORE = 3
+  WIN_SCORE = 1
   RULES = File.open('oo_rps_text.txt', 'r')
 
   def initialize
