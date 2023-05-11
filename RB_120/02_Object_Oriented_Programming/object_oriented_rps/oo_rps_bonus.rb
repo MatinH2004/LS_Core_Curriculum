@@ -122,11 +122,11 @@ class Move
   end
 
   def >(other_move)
-    VALUES[@value][:beats].include?(other_move.value)
+    VALUES[value][:beats].include?(other_move.value)
   end
 
   def <(other_move)
-    VALUES[other_move.value][:beats].include?(@value)
+    VALUES[other_move.value][:beats].include?(value)
   end
 
   def to_s
@@ -197,7 +197,6 @@ class Human < Player
     action = Move::VALUES.select do |_, hsh|
       hsh[:abbr] == choice
     end
-
     action.keys.first
   end
 
@@ -331,15 +330,15 @@ class RPSGame
   end
 
   def play_again?
-    answer = nil
+    choice = nil
     loop do
       prompt_play_again
-      answer = gets.chomp.strip.downcase
-      break if ['y', 'n'].include?(answer)
+      choice = gets.chomp.strip.downcase
+      break if ['y', 'n'].include?(choice)
       prompt_invalid(3)
     end
     [human, computer].each(&:reset_score)
-    answer == 'y' ? true : display_goodbye_message
+    choice == 'y' ? true : display_goodbye_message
   end
 end
 
