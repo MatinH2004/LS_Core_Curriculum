@@ -5,16 +5,19 @@ module Displayable
     puts "\nHello, please enter your name:"
   end
 
-  def prompt_invalid(n=1)
-    case n
+  def prompt_invalid(x=1)
+    case x
     when 1 then puts "Sorry, invalid choice."
     when 2 then puts "Sorry, must enter a value."
     when 3 then puts "Sorry, must be y or n."
     end
   end
 
-  def prompt_choose
-    puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
+  def prompt_choose(x=1)
+    case x
+    when 1 then puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
+    when 2 then puts "\nPlease choose an opponent (1, 2, or 3):"
+    end
   end
 
   def prompt_history
@@ -49,13 +52,28 @@ module Displayable
     display_score
     continue
   end
+  
+  def display_opponents
+    mode = ['Impossible', 'Medium', 'Easy Peazy']
+    puts "# | Opponent | Difficulty"
+    puts "--+----------+-----------"
+    RPSGame::BOTS.each_with_index do |opp, idx|
+      puts "#{idx+1}.  #{opp.name}" + "(#{mode[idx]})".rjust(16)
+    end
+  end
+
+  def prompt_winner(n)
+    case n
+    when 1 then puts "\n#{human.name} won!"
+    when 2 then puts "\n#{computer.name} won!"
+    when 3 then puts "\nIt's a tie!"
+    end
+  end
 
   def display_grand_winner
     winner = human.score > computer.score ? human : computer
     puts "\n#{winner.name} is the grand winner!"
   end
-
-  
 end
 
 class Score
@@ -232,16 +250,19 @@ class RPSGame
   include Displayable
   attr_accessor :human, :computer
 
-  WIN_SCORE = 3
   RULES = File.open('oo_rps_text.txt', 'r')
+  BOTS = [ChatGPT, Siri, Rocky]
+  WIN_SCORE = 3
 
   def initialize
     @human = Human.new
-    @computer = ChatGPT.new#[Rocky.new, ChatGPT.new, Siri.new].sample
+    @computer = nil
   end
   
   def play
     display_welcome_message
+    display_opponents
+    choose_opponent
     while !game_over?
       players_choose
       display_round_results
@@ -267,7 +288,21 @@ class RPSGame
     system('clear') || system('cls')
   end
 
+  def choose_opponent
+    choice = nil
+    loop do
+      prompt_choose(2)
+      choice = gets.chomp.strip
+      if (1..3).include?(choice.to_i)
+        @computer = BOTS[choice.to_i - 1].new
+        break
+      end
+      prompt_invalid(1)
+    end
+  end
+
   def players_choose
+    system('clear') || system('cls')
     human.choose
     computer.choose
   end
@@ -278,18 +313,18 @@ class RPSGame
 
     if human_move > computer_move
       human.update_score
-      puts "\n#{human.name} won!"
+      prompt_winner(1)
     elsif human_move < computer_move
       computer.update_score
-      puts "\n#{computer.name} won!"
+      prompt_winner(2)
     else
-      puts "\nIt's a tie!"
+      prompt_winner(3)
     end
   end
   
 
   def game_over?
-    [human, computer].any? { |player| player.score == WIN_SCORE}
+    [human, computer].any? { |player| player.score == WIN_SCORE} rescue false
   end
 
   def play_again?
