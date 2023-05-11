@@ -1,5 +1,3 @@
-require 'pry'
-
 module Displayable
   def prompt_name
     puts "\nHello, please enter your name:"
@@ -15,7 +13,9 @@ module Displayable
 
   def prompt_choose(x=1)
     case x
-    when 1 then puts "\nPlease choose [r]ock, [p]aper, [sc]issors, [sp]ock, [l]izard, or [h]istory:"
+    when 1
+      puts "\nPlease choose [r]ock, [p]aper, " \
+      "[sc]issors, [sp]ock, [l]izard, or [h]istory:"
     when 2 then puts "\nPlease choose an opponent (1, 2, or 3):"
     end
   end
@@ -40,7 +40,7 @@ module Displayable
     puts "\n#{human.name} chose #{human.show_move}."
     puts "#{computer.name} chose #{computer.show_move}."
   end
-  
+
   def display_score
     puts "\n#{human.name}: #{human.score}"
     puts "#{computer.name}: #{computer.score}"
@@ -48,17 +48,17 @@ module Displayable
 
   def display_round_results
     display_moves
-    determine_winner
+    determine_winner(human.move, computer.move)
     display_score
     continue
   end
-  
+
   def display_opponents
     mode = ['Impossible', 'Medium', 'Easy Peazy']
     puts "# | Opponent | Difficulty"
     puts "--+----------+-----------"
     RPSGame::BOTS.each_with_index do |opp, idx|
-      puts "#{idx+1}.  #{opp.name}" + "(#{mode[idx]})".rjust(16)
+      puts "#{idx + 1}.  #{opp.name}" + "(#{mode[idx]})".rjust(16)
     end
   end
 
@@ -101,13 +101,20 @@ class Move
 
   HISTORY = []
 
+  # rubocop:disable Layout/HashAlignment
   VALUES = {
-    'rock'     => {abbr: 'r',  beats: ['scissors', 'lizard']},
-    'paper'    => {abbr: 'p',  beats: ['rock', 'spock']},
-    'scissors' => {abbr: 'sc', beats: ['paper', 'lizard']},
-    'lizard'   => {abbr: 'l',  beats: ['paper', 'spock']},
-    'spock'    => {abbr: 'sp', beats: ['scissors', 'rock']}
+    'rock'     => { abbr: 'r',
+                    beats: ['scissors', 'lizard'] },
+    'paper'    => { abbr: 'p',
+                    beats: ['rock', 'spock'] },
+    'scissors' => { abbr: 'sc',
+                    beats: ['paper', 'lizard'] },
+    'lizard'   => { abbr: 'l',
+                    beats: ['paper', 'spock'] },
+    'spock'    => { abbr: 'sp',
+                    beats: ['scissors', 'rock'] }
   }
+  # rubocop:enable Layout/HashAlignment
 
   def initialize(value)
     @value = value
@@ -128,23 +135,23 @@ class Move
 end
 
 class Player
-  attr_accessor :name, :move, :score
+  attr_accessor :name, :move, :_score
 
   def initialize
     set_name
-    @score = Score.new
+    @_score = Score.new
   end
 
   def update_score
-    @score.increment
+    @_score.increment
   end
 
   def reset_score
-    @score.reset
+    @_score.reset
   end
 
   def score
-    @score.value
+    @_score.value
   end
 
   def show_move
@@ -183,7 +190,7 @@ class Human < Player
       prompt_invalid
     end
     self.move = Move.new(valid_move?(choice))
-    @@human_move = self.move
+    @@human_move = move
   end
 
   def search_by_abbr(choice)
@@ -205,8 +212,8 @@ class Human < Player
   def display_history(choice)
     return if choice.chr != 'h'
     prompt_history
-    Move::HISTORY.each_with_index do |move, idx|
-      idx.odd? ? next : (puts "#{move} - #{Move::HISTORY[idx+1]}")
+    Move::HISTORY.each_with_index do |move, i|
+      i.odd? ? next : (puts "#{move} - #{Move::HISTORY[i + 1]}")
     end
   end
 end
@@ -258,7 +265,7 @@ class RPSGame
     @human = Human.new
     @computer = nil
   end
-  
+
   def play
     display_welcome_message
     display_opponents
@@ -307,10 +314,7 @@ class RPSGame
     computer.choose
   end
 
-  def determine_winner
-    human_move = human.move
-    computer_move = computer.move
-
+  def determine_winner(human_move, computer_move)
     if human_move > computer_move
       human.update_score
       prompt_winner(1)
@@ -321,10 +325,9 @@ class RPSGame
       prompt_winner(3)
     end
   end
-  
 
   def game_over?
-    [human, computer].any? { |player| player.score == WIN_SCORE} rescue false
+    [human, computer].any? { |player| player.score == WIN_SCORE }
   end
 
   def play_again?
@@ -335,7 +338,7 @@ class RPSGame
       break if ['y', 'n'].include?(answer)
       prompt_invalid(3)
     end
-    [human, computer].each { |player| player.reset_score }
+    [human, computer].each(&:reset_score)
     answer == 'y' ? true : display_goodbye_message
   end
 end
