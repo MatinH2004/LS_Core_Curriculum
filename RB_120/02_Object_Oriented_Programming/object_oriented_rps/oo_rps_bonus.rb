@@ -3,20 +3,20 @@ module Displayable
     puts "\nHello, please enter your name:"
   end
 
-  def prompt_invalid(x=1)
+  def prompt_invalid(x=:invalid)
     case x
-    when 1 then puts "Sorry, invalid choice."
-    when 2 then puts "Sorry, must enter a value."
-    when 3 then puts "Sorry, must be y or n."
+    when :invalid then puts "Sorry, invalid choice."
+    when :enter then puts "Sorry, must enter a value."
+    when :yn then puts "Sorry, must be y or n."
     end
   end
 
-  def prompt_choose(x=1)
+  def prompt_choose(x)
     case x
-    when 1
+    when :move
       puts "\nPlease choose [r]ock, [p]aper, " \
       "[sc]issors, [sp]ock, [l]izard, or [h]istory:"
-    when 2 then puts "\nPlease choose an opponent (1, 2, or 3):"
+    when :opp then puts "\nPlease choose an opponent (1, 2, or 3):"
     end
   end
 
@@ -62,11 +62,11 @@ module Displayable
     end
   end
 
-  def prompt_winner(n)
-    case n
-    when 1 then puts "\n#{human.name} won!"
-    when 2 then puts "\n#{computer.name} won!"
-    when 3 then puts "\nIt's a tie!"
+  def prompt_winner(x)
+    case x
+    when :human    then puts "\n#{human.name} won!"
+    when :computer then puts "\n#{computer.name} won!"
+    when :tie      then puts "\nIt's a tie!"
     end
   end
 
@@ -171,7 +171,7 @@ class Human < Player
       prompt_name
       n = gets.chomp.strip.capitalize
       break unless n.empty?
-      prompt_invalid(2)
+      prompt_invalid(:enter)
     end
     self.name = n
   end
@@ -179,7 +179,7 @@ class Human < Player
   def choose
     choice = nil
     loop do
-      prompt_choose
+      prompt_choose(:move)
       choice = gets.chomp.strip.downcase
       next if display_history(choice)
       break if valid_move?(choice)
@@ -293,13 +293,13 @@ class RPSGame
   def choose_opponent
     choice = nil
     loop do
-      prompt_choose(2)
+      prompt_choose(:opp)
       choice = gets.chomp.strip
       if (1..3).include?(choice.to_i)
         @computer = BOTS[choice.to_i - 1].new
         break
       end
-      prompt_invalid(1)
+      prompt_invalid
     end
   end
 
@@ -312,12 +312,12 @@ class RPSGame
   def determine_winner(human_move, computer_move)
     if human_move > computer_move
       human.update_score
-      prompt_winner(1)
+      prompt_winner(:human)
     elsif computer_move > human_move
       computer.update_score
-      prompt_winner(2)
+      prompt_winner(:computer)
     else
-      prompt_winner(3)
+      prompt_winner(:tie)
     end
   end
 
@@ -331,7 +331,7 @@ class RPSGame
       prompt_play_again
       choice = gets.chomp.strip.downcase
       break if ['y', 'n'].include?(choice)
-      prompt_invalid(3)
+      prompt_invalid(:yn)
     end
     [human, computer].each(&:reset_score)
     choice == 'y' ? true : display_goodbye_message
