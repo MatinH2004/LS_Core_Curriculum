@@ -125,10 +125,6 @@ class Move
     VALUES[value][:beats].include?(other_move.value)
   end
 
-  def <(other_move)
-    VALUES[other_move.value][:beats].include?(value)
-  end
-
   def to_s
     @value
   end
@@ -317,7 +313,7 @@ class RPSGame
     if human_move > computer_move
       human.update_score
       prompt_winner(1)
-    elsif human_move < computer_move
+    elsif computer_move > human_move
       computer.update_score
       prompt_winner(2)
     else
