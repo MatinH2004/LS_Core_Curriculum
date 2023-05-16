@@ -10,6 +10,8 @@ class Board
     reset
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def draw
     puts "     |     |"
     puts "  #{@squares[1]}  |  #{@squares[2]}  |  #{@squares[3]}"
@@ -23,6 +25,8 @@ class Board
     puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
     puts "     |     |"
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def []=(key, marker)
     @squares[key].marker = marker
@@ -51,13 +55,12 @@ class Board
     nil
   end
 
-  
   def reset
     (1..9).each { |key| @squares[key] = Square.new }
   end
-  
+
   private
-  
+
   def three_identical_markers?(squares)
     markers = squares.select(&:marked?).collect(&:marker)
     return false if markers.size != 3
@@ -108,17 +111,12 @@ class TTTGame
     @computer = Player.new(COMPUTER_MARKER)
     @current_marker = FIRST_TO_MOVE
   end
-  
+
   def play
     display_welcome_message
-    
     loop do
       display_board
-      loop do
-        current_player_moves
-        break if board.someone_won? || board.full?
-        clear_and_display_board if human_turn?
-      end
+      player_move
       display_result
       break unless play_again?
       reset
@@ -143,7 +141,7 @@ class TTTGame
   end
 
   def display_goodbye_message
-    puts "\nThanks for playing Tic Tac Toe! Goodbye!"  
+    puts "\nThanks for playing Tic Tac Toe! Goodbye!"
   end
 
   def display_board
@@ -183,6 +181,14 @@ class TTTGame
     else
       computer_moves
       @current_marker = HUMAN_MARKER
+    end
+  end
+
+  def player_move
+    loop do
+      current_player_moves
+      break if board.someone_won? || board.full?
+      clear_and_display_board if human_turn?
     end
   end
 
