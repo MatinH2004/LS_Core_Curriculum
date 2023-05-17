@@ -1,5 +1,17 @@
 require 'pry'
 
+module Names
+  NAMES = [
+    "Liam", "Olivia", "Noah", "Emma", "Oliver", "Ava", "Elijah", "Charlotte",
+    "William", "Sophia", "James", "Amelia", "Benjamin", "Isabella", "Lucas",
+    "Mia", "Henry", "Harper", "Alexander", "Evelyn", "Sebastian", "Abigail",
+    "Jack", "Emily", "Daniel", "Elizabeth", "Michael", "Mila", "Matthew",
+    "Ella", "Jackson", "Avery", "Logan", "Sofia", "David", "Camila", "Joseph",
+    "Scarlett", "Samuel", "Luna", "Owen", "Grace", "John", "Chloe", "Luke",
+    "Victoria", "Gabriel", "Penelope", "Anthony", "Layla"
+  ]
+end
+
 class Board
   attr_reader :squares
 
@@ -110,7 +122,6 @@ end
 
 class Player
   attr_accessor :name, :marker
-  attr_reader :score
 
   COMPUTER_MARKER = 'O'
 
@@ -165,11 +176,12 @@ class Computer < Player
   def initialize
     super
     @marker = COMPUTER_MARKER
-    @name = ['Michael', 'Dwight', 'Jim', 'Pam', 'Stanley'].sample
   end
 end
 
 class TTTGame
+  include Names
+
   WIN_SCORE = 3
 
   attr_reader :board, :human, :computer
@@ -183,9 +195,7 @@ class TTTGame
   end
 
   def play
-    display_welcome_message
-    human_setup
-    who_goes_first
+    init_game
     while !game_over?
       clear_and_display_board
       player_move
@@ -196,6 +206,13 @@ class TTTGame
   end
 
   private
+
+  def init_game
+    display_welcome_message
+    human_setup if human.name.nil?
+    who_goes_first
+    search_for_player
+  end
 
   def clear
     system('clear') || system('cls')
@@ -232,6 +249,23 @@ class TTTGame
     display_board
   end
 
+  def clear_board
+    press_enter
+    board.reset
+  end
+
+  def search_for_player
+    puts "\nSearching for player:\n\n"
+    NAMES.each_with_index do |name, idx|
+      sleep(0.8 / (idx + 1))
+      sleep(0.5) if idx == name.length - 1
+      print "\r#{name}        "
+      $stdout.flush
+      computer.name = name
+    end
+    press_enter
+  end
+
   def display_grand_winner
     winner = human.score > computer.score ? human.name : computer.name
     clear_and_display_board
@@ -245,20 +279,19 @@ class TTTGame
   def who_goes_first
     choice = nil
     loop do
-      puts "\nWho goes first?: human / computer / random"
-      choice = choose_player(choice)
+      puts "\nWho goes first?: [human] | [computer] | [random]"
+      choice = choose_player
       break unless choice.nil?
       puts "\nInvalid choice, try again."
     end
     self.current_marker = choice
   end
-  
-  def choose_player(choice)
+
+  def choose_player
     case gets.chomp.downcase.strip.chr
     when 'h' then human.marker
     when 'c' then computer.marker
     when 'r' then [human.marker, computer.marker].sample
-    else nil
     end
   end
 
@@ -268,7 +301,7 @@ class TTTGame
   end
 
   def human_moves
-    puts "Choose a square between #{joinor(board.unmarked_keys)}:" 
+    puts "Choose a square between #{joinor(board.unmarked_keys)}:"
     square = nil
     loop do
       square = gets.chomp.to_i
@@ -293,7 +326,7 @@ class TTTGame
 
     square
   end
-  
+
   def defensive_strategy
     square = nil
 
@@ -301,7 +334,7 @@ class TTTGame
       tictactoe = board.squares.values_at(*line).map(&:marker)
 
       if (tictactoe.count(human.marker) == 2) &&
-        (tictactoe.count(Square::INITIAL_MARKER) == 1)
+         (tictactoe.count(Square::INITIAL_MARKER) == 1)
         square = line.at(tictactoe.index { |i| i == Square::INITIAL_MARKER })
       end
     end
@@ -340,19 +373,27 @@ class TTTGame
     end
   end
 
+  def round_results(winner)
+    case winner
+    when :player
+      human.update_score
+      puts "#{human.name} won!"
+    when :computer
+      computer.update_score
+      puts "#{computer.name} won!"
+    end
+  end
+
   def display_result
     clear_and_display_board
     case board.winning_marker
     when human.marker
-      human.update_score
-      puts "#{human.name} won!"
+      round_results(:player)
     when computer.marker
-      computer.update_score
-      puts "#{computer.name} won!"
+      round_results(:computer)
     else puts "It's a tie!"
     end
-    press_enter
-    board.reset
+    clear_board
   end
 
   def game_over?
@@ -373,6 +414,7 @@ class TTTGame
   def reset
     clear
     puts "Let's play again!\n\n"
+    NAMES.shuffle!
     board.reset
     [human, computer].each(&:reset_score)
   end
