@@ -1,6 +1,8 @@
 require 'pry'
 
 class Board
+  attr_reader :squares
+
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # cols
                   [[1, 5, 9], [3, 5, 7]]              # diagonals
@@ -168,7 +170,7 @@ class Computer < Player
 end
 
 class TTTGame
-  WIN_SCORE = 1
+  WIN_SCORE = 3
 
   attr_reader :board, :human, :computer
   attr_writer :current_marker
@@ -277,8 +279,43 @@ class TTTGame
     board[square] = human.marker
   end
 
+  def offensive_strategy
+    square = nil
+
+    Board::WINNING_LINES.each do |line|
+      tictactoe = board.squares.values_at(*line).map(&:marker)
+
+      if (tictactoe.count(computer.marker) == 2) &&
+         (tictactoe.count(Square::INITIAL_MARKER) == 1)
+        square = line.at(tictactoe.index { |i| i == Square::INITIAL_MARKER })
+      end
+    end
+
+    square
+  end
+  
+  def defensive_strategy
+    square = nil
+
+    Board::WINNING_LINES.each do |line|
+      tictactoe = board.squares.values_at(*line).map(&:marker)
+
+      if (tictactoe.count(human.marker) == 2) &&
+        (tictactoe.count(Square::INITIAL_MARKER) == 1)
+        square = line.at(tictactoe.index { |i| i == Square::INITIAL_MARKER })
+      end
+    end
+
+    square
+  end
+
   def computer_moves
-    board[board.unmarked_keys.sample] = computer.marker
+    square = offensive_strategy
+    square ||= defensive_strategy
+    square ||= board.unmarked_keys.select { |sqr| sqr == 5 }[0]
+    square ||= board.unmarked_keys.sample
+
+    board[square] = computer.marker
   end
 
   def human_turn?
@@ -319,7 +356,7 @@ class TTTGame
   end
 
   def game_over?
-    [human, computer].any? { |player| player.score == WIN_SCORE}
+    [human, computer].any? { |player| player.score == WIN_SCORE }
   end
 
   def play_again?
@@ -337,7 +374,7 @@ class TTTGame
     clear
     puts "Let's play again!\n\n"
     board.reset
-    [human, computer].each { |player| player.reset_score }
+    [human, computer].each(&:reset_score)
   end
 end
 
