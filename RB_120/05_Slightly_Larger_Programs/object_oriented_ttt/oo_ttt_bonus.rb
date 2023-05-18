@@ -50,7 +50,7 @@ module Displayable
   def prompt_search_for_player
     puts "\nSearching for player:\n\n"
   end
-  
+
   def press_enter
     puts "\nPress [enter] to continue"
     gets
