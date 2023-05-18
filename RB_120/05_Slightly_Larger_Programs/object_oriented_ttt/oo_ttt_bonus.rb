@@ -8,8 +8,12 @@ module Names
     "Jack", "Emily", "Daniel", "Elizabeth", "Michael", "Mila", "Matthew",
     "Ella", "Jackson", "Avery", "Logan", "Sofia", "David", "Camila", "Joseph",
     "Scarlett", "Samuel", "Luna", "Owen", "Grace", "John", "Chloe", "Luke",
-    "Victoria", "Gabriel", "Penelope", "Anthony", "Layla"
+    "Victoria", "Gabriel", "Penelope", "Anthony", "Chris Lee"
   ]
+end
+
+module Displayable
+
 end
 
 class Board
@@ -208,8 +212,10 @@ class TTTGame
   private
 
   def init_game
-    display_welcome_message
-    human_setup if human.name.nil?
+    if human.name.nil? # skip if playing again
+      display_welcome_message
+      human_setup
+    end
     who_goes_first
     search_for_player
   end
