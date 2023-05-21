@@ -6,9 +6,9 @@ module Names
     "William", "Sophia", "James", "Amelia", "Benjamin", "Isabella", "Lucas",
     "Mia", "Henry", "Harper", "Alexander", "Evelyn", "Sebastian", "Abigail",
     "Jack", "Emily", "Daniel", "Elizabeth", "Michael", "Mila", "Matthew",
-    "Ella", "Jackson", "Avery", "Logan", "Sofia", "David", "Camila", "Joseph",
-    "Scarlett", "Samuel", "Luna", "Owen", "Grace", "John", "Chloe", "Luke",
-    "Victoria", "Gabriel", "Penelope", "Anthony", "Chris Lee"
+    "Ella", "Jackson", "Avery", "Logan", "Sofia", "Korey", "Camila", "Dylan",
+    "David", "Srdjan", "Pete", "Christopher", "Patrick", "Matic", "Rachele",
+    "Clare", "Brandi", "Sean", "AJ", "Nick", "Chris Lee"
   ]
 end
 
@@ -71,6 +71,7 @@ module Displayable
   end
 
   def display_board
+    puts "First to win 3 rounds wins!\n\n"
     print "#{human.name} is #{human.marker}. "
     print "#{computer.name} is #{computer.marker}.\n\n"
     puts "\n#{board.draw}"
@@ -199,8 +200,6 @@ end
 class Player
   attr_accessor :name, :marker
 
-  COMPUTER_MARKER = 'O'
-
   def initialize
     @score = Score.new
   end
@@ -250,13 +249,6 @@ class Human < Player
   end
 end
 
-class Computer < Player
-  def initialize
-    super
-    @marker = COMPUTER_MARKER
-  end
-end
-
 class TTTGame
   include Names
   include Displayable
@@ -269,7 +261,7 @@ class TTTGame
   def initialize
     @board = Board.new
     @human = Human.new
-    @computer = Computer.new
+    @computer = Player.new
     @current_marker = nil
   end
 
@@ -290,6 +282,7 @@ class TTTGame
     if human.name.nil? # skip if playing again
       display_welcome_message
       human_init
+      computer_init
     end
     who_goes_first
     search_for_player
@@ -345,6 +338,13 @@ class TTTGame
     human.set_marker
   end
 
+  def computer_init
+    loop do
+      computer.marker = ('A'..'Z').to_a.sample
+      break unless computer.marker == human.marker
+    end
+  end
+
   def human_moves
     prompt_input(:choose_move)
     square = nil
@@ -390,7 +390,7 @@ class TTTGame
   def computer_moves
     square = offensive_strategy
     square ||= defensive_strategy
-    square ||= board.unmarked_keys.select { |sqr| sqr == 5 }[0]
+    square ||= board.unmarked_keys.select { |sqr| sqr == 5 }[0] # center square
     square ||= board.unmarked_keys.sample
 
     board[square] = computer.marker
