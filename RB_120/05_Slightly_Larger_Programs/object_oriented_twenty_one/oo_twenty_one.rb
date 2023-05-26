@@ -26,16 +26,18 @@ module Displayable
     clear_screen
     puts "Dealing cards..."
     sleep(2)
-    [human, dealer].each { |player| player.show_flop }
+    [human, dealer].each(&:show_flop)
   end
 
   def display_hands
     clear_screen
     puts "\n***** GAME RESULT *****"
-    [human, dealer].each { |player| player.show_hand}
+    [human, dealer].each(&:show_hand)
     sleep(1)
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def display_result
     if human.total > 21
       puts "\nYou busted! #{dealer.name} wins!"
@@ -49,6 +51,18 @@ module Displayable
       puts "\nIt's a tie!"
     end
     pause
+  end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+
+  def display_player_turn
+    puts "\n#{human.name}'s turn: (h)it or (s)tay?"
+  end
+
+  def display_dealer_turn
+    clear_screen
+    puts "\n#{dealer.name}'s turn..."
+    sleep(1)
   end
 end
 
@@ -87,7 +101,7 @@ class Card
   def ace?
     face == 'Ace'
   end
-  
+
   def jack?
     face == 'Jack'
   end
@@ -133,18 +147,19 @@ module Hand
     puts "=> Total: #{total}\n"
   end
 
+  # rubocop:disable Metrics/MethodLength
   def total
     total = 0
     cards.each do |card|
-      if card.ace?
-        total += 11
-      elsif card.jack? || card.queen? || card.king?
-        total += 10
-      else
-        total += card.face.to_i
-      end
+      total += if card.ace?
+                 11
+               elsif card.jack? || card.queen? || card.king?
+                 10
+               else
+                 card.face.to_i
+               end
     end
-    
+
     # correct for Aces
     cards.select(&:ace?).count.times do
       break if total <= 21
@@ -153,6 +168,7 @@ module Hand
 
     total
   end
+  # rubocop:enable Metrics/MethodLength
 
   def add_card(new_card)
     cards << new_card
@@ -240,9 +256,9 @@ class TwentyOne
 
   def game_over?
     human.busted? ||
-    human.twenty_one? ||
-    dealer.busted? ||
-    dealer.twenty_one?
+      human.twenty_one? ||
+      dealer.busted? ||
+      dealer.twenty_one?
   end
 
   def init_players
@@ -270,25 +286,21 @@ class TwentyOne
   end
 
   def player_choice
-    puts "\n#{human.name}'s turn: (h)it or (s)tay?"
+    display_player_turn
     case gets.chomp.strip.downcase.chr
     when 'h'
       puts "\nYou chose to hit!"
       human.add_card(deck.deal_one)
       human.show_hand
     when 's'
-      puts "\nYou chose to stay!"
       'stay'
-    else
-      puts "\nInvalid choice, try again."
+    else puts "\nInvalid choice, try again."
     end
   end
 
   def dealer_turn
     return if game_over?
-    clear_screen
-    puts "\n#{dealer.name}'s turn..."
-    sleep(1)
+    display_dealer_turn
     loop do
       choice = dealer_action
       break if dealer.busted? ||
