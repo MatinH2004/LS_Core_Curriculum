@@ -36,24 +36,16 @@ module Displayable
     sleep(1)
   end
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
-  def display_result
-    if human.total > 21
-      puts "\nYou busted! #{dealer.name} wins!"
-    elsif dealer.total > 21
-      puts "\n#{dealer.name} busted! You win!"
-    elsif human.total > dealer.total
-      puts "\nYou win!"
-    elsif dealer.total < human.total
-      puts "\n#{dealer.name} wins!"
-    else
-      puts "\nIt's a tie!"
+  def display_result(human, dealer)
+    case determine_result
+    when :human_bust  then puts "\n#{human} busted! #{dealer} wins!"
+    when :dealer_bust then puts "\n#{dealer} busted! #{human} wins!"
+    when :human       then puts "\n#{human} wins!"
+    when :dealer      then puts "\n#{dealer} wins!"
+    else puts "\nIt's a tie!"
     end
     pause
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
 
   def display_player_turn
     puts "\n#{human.name}'s turn: (h)it or (s)tay?"
@@ -148,6 +140,7 @@ module Hand
   end
 
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/CyclomaticComplexity
   def total
     total = 0
     cards.each do |card|
@@ -168,6 +161,7 @@ module Hand
 
     total
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/MethodLength
 
   def add_card(new_card)
@@ -211,7 +205,7 @@ class Human < Player
 end
 
 class Dealer < Player
-  NAMES = ['Chris Lee', 'Clare', 'Pete', 'Brandi']
+  NAMES = ['Chris L', 'Clare M', 'Pete H', 'Brandi S']
 
   def set_name
     self.name = NAMES.sample
@@ -250,7 +244,7 @@ class TwentyOne
     player_turn
     dealer_turn
     display_hands
-    display_result
+    display_result(human.name, dealer.name)
     main_game if play_again?
   end
 
@@ -318,6 +312,16 @@ class TwentyOne
       puts "\n#{dealer.name} stays!"
       'stay'
     end
+  end
+
+  def determine_result
+    human_total = human.total
+    dealer_total = dealer.total
+
+    return :human_bust  if human_total > 21
+    return :dealer_bust if dealer_total > 21
+    return :human       if human_total > dealer_total
+    return :dealer      if dealer_total > human_total
   end
 
   def play_again?
