@@ -10,10 +10,15 @@ class KrispyKreme
   #   @glazing.empty? ? @filling_type : "#{@filling_type} with #{@glazing}"
   # end
 
+  # def to_s
+  #   filling_str = @filling_type ? @filling_type : "Plain"
+  #   glazing_str = @glazing ? " with #{@glazing}" : ""
+  #   filling_str + glazing_str
+  # end
+
   def to_s
-    filling_str = @filling_type ? @filling_type : "Plain"
-    glazing_str = @glazing ? " with #{@glazing}" : ""
-    filling_str + glazing_str
+    @filling_type ||= 'Plain'
+    [@filling_type, @glazing].compact.join(' with ')
   end
 end
 
