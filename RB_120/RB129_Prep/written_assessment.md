@@ -33,6 +33,8 @@ bob = Person.new
 p bob.name
 ```
 
+* This code defines a `Person` class. Local variable `bob` is initialized to a new `Person` object. On the last line, we call the `name` getter method on our `bob` object, and pass it as an argument to the `p` method invocation. This outputs `nil` and returns `nil` as the `@name` instance variable within the class is not initialized before it is referenced. This demonstrates that instance variables can be referenced before they are initialized, however they will return `nil`. This is different from local variables, as they raise a `NameError` when called before initialization.
+
 2. What is output and why? What does this demonstrate about instance variables?
 ```ruby
 module Swimmable
@@ -50,10 +52,12 @@ class Dog
 end
 
 teddy = Dog.new
-p teddy.swim   
+p teddy.swim
 ```
 
-3. What is output and why? What does this demonstrate about constant scope? What does `self` refer to in each of the 3 methods above?
+* The code above defines a `Swimmable` module and a `Dog` class. Local variable `teddy` is bound to an instance of the `Dog` class. On the last line, the `swim` instance method is called on our `teddy` object and the return value is passed to the `p` method invocation. This outputs and returns `nil` as the `@can_swim` instance method is not initialized to a value and the `swim` instance method returns `nil`. This demonstrates that instance variables must be initialized before they are references, otherwise they return `nil`.
+
+3. What is output and why? What does this demonstrate about constant scope? What does `self` refer to in each of the 3 methods below?
 ```ruby
 module Describable
   def describe_shape
@@ -83,6 +87,14 @@ p Square.sides
 p Square.new.sides 
 p Square.new.describe_shape 
 ```
+
+* The code above outputs:
+```
+4
+4
+NameError
+```
+* We get a `NameError` since `SIDES` is not within the scope of our module definition. This demonstrates that ruby searches for constants lexically, or by looking at the surrounding code structure, in other words. In the `describe_shape` and `sides` methods, `self` refers to the instance of the class, however, in the `self.sides` class method, `self` refers to the class itself, which would be `Square` in this case.
 
 4. What is output? Is this what we would expect when using `AnimalClass#+`? If not, how could we adjust the implementation of `AnimalClass#+` to be more in line with what we'd expect the method to return?
 ```ruby
@@ -126,7 +138,17 @@ some_animal_classes = mammals + birds
 p some_animal_classes 
 ```
 
-5. We expect the code above to output `”Spartacus weighs 45 lbs and is 24 inches tall.”` Why does our `change_info` method not work as expected?
+* The code above outputs a merged array of the `Animal` classes, from `mammals` and `birds`. But, we would expect the `+` method to return a new `AnimalClass` object with the `Animal` classes merged in the `@animals` instance variable.
+
+```ruby
+def +(other_class)
+  temp = AnimalClass.new('Temporary Class')
+  temp.animals = (animals + other_class.animals)
+  temp
+end
+```
+
+5. We expect the code below to output `”Spartacus weighs 45 lbs and is 24 inches tall.”` Why does our `change_info` method not work as expected?
 ```ruby
 class GoodDog
   attr_accessor :name, :height, :weight
@@ -155,7 +177,9 @@ puts sparky.info
 # => Spartacus weighs 10 lbs and is 12 inches tall.
 ```
 
-6. In the code above, we hope to output `'BOB'` on `line 16`. Instead, we raise an error. Why? How could we adjust this code to output `'BOB'`? 
+* Within the `change_info` instance method, we are initializing local variables `name, height, weight` instead of reassigning the instance variables' values. To fix this, we must prepend `self` to the variables to let ruby know that we want to call the instance variables instead of declaring new local variables, or we can also call the instance variables directly like so: `@name, @height, @weight`.
+
+6. In the code below, we hope to output `'BOB'` on `line 16`. Instead, we raise an error. Why? How could we adjust this code to output `'BOB'`? 
 ```ruby
 class Person
   attr_accessor :name
@@ -175,7 +199,15 @@ bob.change_name
 p bob.name
 ```
 
-7. What does the code above output, and why? What does this demonstrate about class variables, and why we should avoid using class variables when working with inheritance?
+* Within the `change_name` instance method, local variable `name` is initialized to the return value of `string#upcase` being called on `name`, which raises the NoMethodError exception, because `name` references `nil`. To fix this we must call the instance variable, so we shall prepend `self` before `name` like so:
+
+```ruby
+def change_name
+  self.name = name.upcase
+end
+```
+
+7. What does the code below output, and why? What does this demonstrate about class variables, and why we should avoid using class variables when working with inheritance?
 ```ruby
 class Vehicle
   @@wheels = 4
@@ -318,7 +350,7 @@ array_of_animals.each do |animal|
 end
 ```
 
-12. We raise an error in the code above. Why? What do `kitty` and `bud` represent in relation to our `Person` object?  
+12. We raise an error in the code below. Why? What do `kitty` and `bud` represent in relation to our `Person` object?  
 ```ruby
 class Person
   attr_accessor :name, :pets
@@ -370,7 +402,7 @@ teddy = Dog.new("Teddy")
 puts teddy.dog_name   
 ```
 
-14. In the code above, we want to compare whether the two objects have the same name. `Line 11` currently returns `false`. How could we return `true` on `line 11`? 
+14. In the code below, we want to compare whether the two objects have the same name. `Line 11` currently returns `false`. How could we return `true` on `line 11`? 
 ```ruby
 class Person
   attr_reader :name
