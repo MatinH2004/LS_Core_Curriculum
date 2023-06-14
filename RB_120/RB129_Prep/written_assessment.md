@@ -233,6 +233,8 @@ p Motorcycle.wheels
 p Car.wheels     
 ```
 
+* The first `p` method call prints 4, while the rest print 2. This is because the class variable `@@wheels` is assigned to 2 within the `Motorcycle` class. We should avoid using class variables when working with inheritance, because reassigning a class variable causes a ripple effect and changes the class variable across all other super/sub-classes, because classes share the same copy of class variables.
+
 8. What is output and why? What does this demonstrate about `super`?
 ```ruby
 class Animal
@@ -254,6 +256,8 @@ bruno = GoodDog.new("brown")
 p bruno
 ```
 
+* The `GoodDog` object referenced by `bruno` is output. When `super` is called without any parentheses, all argument are sent up to the method in the super class, which sets the `@name` and `@color` instance variables to `"brown"`.
+
 9. What is output and why? What does this demonstrate about `super`?
 ```ruby
 class Animal
@@ -270,6 +274,8 @@ end
 
 bear = Bear.new("black")  
 ```
+
+* The code above will raise an `ArgumentError`, because the constructor in `Animal` class does not take any arguments, while `super` in `Bear` class' constructor is sending the `color` argument up the inheritance chain.
 
 10. What is the method lookup path used when invoking `#walk` on `good_dog`?
 ```ruby
@@ -320,6 +326,18 @@ good_dog = GoodAnimals::GoodDog.new
 p good_dog.walk
 ```
 
+```
+# OUTPUT:
+GoodAnimals::GoodDog
+Danceable
+Swimmable
+Animal
+Walkable
+Object
+Kernel
+BasicObject
+```
+
 11. What is output and why? How does this code demonstrate polymorphism? 
 ```ruby
 class Animal
@@ -349,6 +367,15 @@ array_of_animals.each do |animal|
   feed_animal(animal)
 end
 ```
+
+```
+# OUTPUT:
+I eat.
+I eat plankton.
+I eat kibble.
+```
+
+* The code above demonstrates the concept of polymorphism, because objects of different types are responding to the same method call, even though they output different strings.
 
 12. We raise an error in the code below. Why? What do `kitty` and `bud` represent in relation to our `Person` object?  
 ```ruby
@@ -382,6 +409,8 @@ bob.pets << bud
 bob.pets.jump 
 ```
 
+* The code above raises a `NoMethodError`, because `#jump` is called on `bob.pets`, which references an array object. In relation to the `Person` object, `kitty` and `bud` represent `Pet` objects which belong to `bob`, a `Person` object. To fix the code above we can change the last line to `bob.pets.each(&:jump)`.
+
 13. What is output and why?
 ```ruby
 class Animal
@@ -402,6 +431,8 @@ teddy = Dog.new("Teddy")
 puts teddy.dog_name   
 ```
 
+* The code above outputs `"bark! bark!   bark! bark!"` because in the `Dog` class constructor, we are not assignig the `name` to `@name` instance variable. We can fix this by calling `super` within the constructor of the `Dog` class.
+
 14. In the code below, we want to compare whether the two objects have the same name. `Line 11` currently returns `false`. How could we return `true` on `line 11`? 
 ```ruby
 class Person
@@ -417,7 +448,23 @@ alex = Person.new('Alexander')
 p al == alex # => true
 ```
 
+```ruby
+# Solution
+class Person
+  # code omitted for brevity...
+
+  def ==(other_class)
+    name == other_class.name # relying on String#==
+  end
+end
+```
+
 Further, since `al.name == alex.name` returns `true`, does this mean the `String` objects referenced by `al` and `alex`'s `@name` instance variables are the same object? How could we prove our case?
+
+* To check if the string objects referenced by `al` and `alex` are the same object, we can call `equal?` to check that for us:
+```ruby
+al.name.equal?(alex.name) # => false
+```
 
 15. What is output on `lines 14, 15, and 16` and why?
 ```ruby
@@ -438,3 +485,12 @@ puts bob.name
 puts bob
 puts bob.name
 ```
+
+```
+# OUTPUT:
+Bob
+My name is BOB
+BOB
+```
+
+* In the `to_s` method, we are performing a destructive action by calling `name.upcase!`, which mutates the string object referenced by `name`.
