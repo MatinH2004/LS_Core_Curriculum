@@ -55,3 +55,29 @@ puts queue.dequeue == 5
 puts queue.dequeue == 6
 puts queue.dequeue == 7
 puts queue.dequeue == nil
+
+# refactored solution
+
+class CircularQueue
+  attr_reader :queue
+
+  def initialize(size)
+    @buffer = size
+    @queue = []
+  end
+
+  def enqueue(obj)
+    dequeue if full_queue?
+    queue.push(obj)
+  end
+
+  def dequeue
+    queue.shift
+  end
+
+  private
+
+  def full_queue?
+    queue.size >= @buffer
+  end
+end
