@@ -4,7 +4,7 @@ module Foo
   VAL = 'Local'
 
   class Bar
-    VAL = "Class"
+    # VAL = "Class"
     include Foo
 
     def value1
