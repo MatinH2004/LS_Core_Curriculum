@@ -45,7 +45,9 @@ module Displayable
   end
 end
 
-class History; end
+class History
+
+end
 
 class Calculator
   VALID_OPERATIONS = %w(+ - * ** / %)
@@ -59,6 +61,9 @@ class Calculator
     play
     log_out
   end
+
+  # def show_history
+  # end
 
   private
 
@@ -151,4 +156,13 @@ class Calculator
   end
 end
 
-Calculator.new.start
+my_calculator = Calculator.new
+
+# attempt 1
+my_calculator.start
+
+# attempt 2
+my_calculator.start
+
+# check for previous history
+# my_calculator.show_history
