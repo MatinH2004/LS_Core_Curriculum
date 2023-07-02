@@ -85,7 +85,7 @@ end
 
 class Calculator
   VALID_OPERATIONS = %w(+ - * ** / %)
-  
+
   include Displayable
 
   attr_accessor :first_num, :second_num, :operation
@@ -100,37 +100,34 @@ class Calculator
     log_out
   end
 
-  
   private
-  
+
   def welcome
     welcome_message
     display_operations
   end
-  
+
   def user_input
     display_operations
     input_first_num
     input_second_num
     input_operation
   end
-  
+
   def calculate
-    begin
-      result = calculate_inputs
-      @history.log(first_num, second_num, operation, result)
-      display_calculation(result)
-    rescue ZeroDivisionError
-      puts "\nCannot divide by 0!"
-    end
+    result = calculate_inputs
+    @history.log(first_num, second_num, operation, result)
+    display_calculation(result)
+  rescue ZeroDivisionError
+    puts "\nCannot divide by 0!"
   end
-  
+
   def play
     user_input
     calculate
     play if calculate_again?
   end
-  
+
   def input_first_num
     prompt_input(:first)
     choice = nil
@@ -141,7 +138,7 @@ class Calculator
     end
     self.first_num = choice.to_f
   end
-  
+
   def input_second_num
     prompt_input(:second)
     choice = nil
@@ -152,11 +149,11 @@ class Calculator
     end
     self.second_num = choice.to_f
   end
-  
+
   def contains_only_numbers?(str)
     /^[0-9]+$/.match?(str)
   end
-  
+
   def input_operation
     prompt_input(:operation)
     choice = nil
@@ -167,18 +164,11 @@ class Calculator
     end
     self.operation = choice.to_sym
   end
-  
+
   def calculate_inputs
-    case operation
-    when :+  then (first_num + second_num)
-    when :-  then (first_num - second_num)
-    when :/  then (first_num / second_num)
-    when :*  then (first_num * second_num)
-    when :%  then (first_num % second_num)
-    when :** then (first_num ** second_num)
-    end
+    first_num.send operation, second_num
   end
-  
+
   def show_history
     clear_screen
     @history.display_log
@@ -192,4 +182,3 @@ my_calculator.start
 
 # view history
 my_calculator.send :show_history
-
