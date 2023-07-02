@@ -1,21 +1,18 @@
 # OO Calculator
 
-# 1. Welcome user
-# 2. ask for first number
-# 3. ask for second number
-# 4. ask for operation
-# 5. display result
-# 6. calculate again?
-
-# valid operations: + - / * ** % 
-
 module Displayable
+  def clear_screen
+    (system 'clear') || (system 'cls')
+  end
+
   def start_button
-    puts "\n    press [enter] to start"
-    gets
+    puts "\npress [enter] to calculate"
+    puts "type [history] to view history"
+    show_history if gets.chomp.strip.downcase.chr == 'h'
   end
 
   def welcome_message
+    clear_screen
     puts "=== Welcome to Calculator ==="
     start_button
   end
@@ -23,6 +20,16 @@ module Displayable
   def display_operations
     clear_screen
     puts "Valid Operations: [+] [-] [/] [*] [**] [%]"
+  end
+
+  def calculate_again?
+    puts "\nCalculate again? y/n"
+    gets.chomp.strip.downcase.chr == 'y'
+  end
+
+  def log_out
+    time = Time.now.strftime("%H:%M:%S")
+    puts "\nLogged out at #{time}"
   end
 
   def prompt_input(choice)
@@ -46,15 +53,46 @@ module Displayable
 end
 
 class History
+  attr_reader :list
 
+  def initialize
+    @list = []
+  end
+
+  def log(first, second, operation, result)
+    list << "#{first} #{operation} #{second} = #{result}"
+  end
+
+  def display_log
+    list.empty? ? no_history : display_history
+    gets
+  end
+
+  private
+
+  def display_history
+    puts "___Calculator History___"
+    list.each do |equation|
+      puts "\n=> #{equation}"
+    end
+    puts "\npress [enter] to continue"
+  end
+
+  def no_history
+    puts "\nHistory is clear."
+  end
 end
 
 class Calculator
   VALID_OPERATIONS = %w(+ - * ** / %)
   
+  include Displayable
+
   attr_accessor :first_num, :second_num, :operation
 
-  include Displayable
+  def initialize
+    @history = History.new
+  end
 
   def start
     welcome
@@ -62,37 +100,37 @@ class Calculator
     log_out
   end
 
-  # def show_history
-  # end
-
+  
   private
-
+  
   def welcome
     welcome_message
     display_operations
   end
-
+  
   def user_input
     display_operations
     input_first_num
     input_second_num
     input_operation
   end
-
+  
   def calculate
     begin
-      display_calculation(calculate_inputs)
+      result = calculate_inputs
+      @history.log(first_num, second_num, operation, result)
+      display_calculation(result)
     rescue ZeroDivisionError
       puts "\nCannot divide by 0!"
     end
   end
-
+  
   def play
     user_input
     calculate
     play if calculate_again?
   end
-
+  
   def input_first_num
     prompt_input(:first)
     choice = nil
@@ -103,7 +141,7 @@ class Calculator
     end
     self.first_num = choice.to_f
   end
-
+  
   def input_second_num
     prompt_input(:second)
     choice = nil
@@ -114,11 +152,11 @@ class Calculator
     end
     self.second_num = choice.to_f
   end
-
+  
   def contains_only_numbers?(str)
     /^[0-9]+$/.match?(str)
   end
-
+  
   def input_operation
     prompt_input(:operation)
     choice = nil
@@ -129,7 +167,7 @@ class Calculator
     end
     self.operation = choice.to_sym
   end
-
+  
   def calculate_inputs
     case operation
     when :+  then (first_num + second_num)
@@ -140,29 +178,18 @@ class Calculator
     when :** then (first_num ** second_num)
     end
   end
-
-  def calculate_again?
-    puts "\nCalculate again? y/n"
-    gets.chomp.strip.downcase.chr == 'y'
-  end
-
-  def clear_screen
-    (system 'clear') || (system 'cls')
-  end
-
-  def log_out
-    time = Time.now.strftime("%H:%M:%S")
-    puts "\nLogged out at #{time}"
+  
+  def show_history
+    clear_screen
+    @history.display_log
   end
 end
 
 my_calculator = Calculator.new
 
-# attempt 1
+# calculate
 my_calculator.start
 
-# attempt 2
-my_calculator.start
+# view history
+my_calculator.send :show_history
 
-# check for previous history
-# my_calculator.show_history
