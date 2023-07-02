@@ -44,7 +44,7 @@ module Displayable
   end
 
   def prompt_play_again
-    puts "\nWould like to play again? (y/n)"
+    puts "Would like to play again? (y/n)"
   end
 
   def prompt_search_for_player
@@ -71,7 +71,7 @@ module Displayable
   end
 
   def display_board
-    puts "First to win 3 rounds wins!\n\n"
+    puts "First to win #{TTTGame::WIN_SCORE} rounds wins!\n\n"
     print "#{human.name} is #{human.marker}. "
     print "#{computer.name} is #{computer.marker}.\n\n"
     puts "\n#{board.draw}"
