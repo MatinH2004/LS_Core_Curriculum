@@ -1,3 +1,5 @@
+# NOT FUNCTIONING - TO BE CONTINUED LATER...
+
 module Displayable
   def display_main_menu
     puts "What would you like to do?"
