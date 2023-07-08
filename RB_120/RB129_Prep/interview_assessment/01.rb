@@ -20,3 +20,20 @@ puts roger
 
 # Output:
 # "My name is Roger and I am a Carpenter"
+
+# Nick's Solution (absolute genius)
+
+class Person
+  attr_reader :name, :to_s
+
+  def initialize(name, job)
+    @name = name
+    @to_s = "My name is #{name} and I am a #{job}"
+  end
+end
+
+eugene = Person.new("Eugene", "Restaurant Owner")
+puts eugene
+
+# Note: can define #to_s as an instance variable and call it through
+# an accessor method.
