@@ -1,0 +1,3 @@
+To run rubocop, run the following:
+
+`bundle exec rubocop`
