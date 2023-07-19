@@ -97,3 +97,21 @@ p minSubLength([1, 10, 5, 2, 7], 9) == 1
 p minSubLength([1, 11, 100, 1, 0, 200, 3, 2, 1, 250], 280) == 4
 p minSubLength([1, 2, 4], 8) == 0
 
+# ---------------------- New Solution - July 19/23
+
+def minSubLength(arr, int)
+  sub_arrays = []
+
+  (0...arr.size).each do |i|
+    (i...arr.size).each do |j|
+       sub_arrays << arr[i..j] if arr[i..j].sum >= int
+    end
+  end
+
+  sub_arrays.empty? ? 0 : sub_arrays.min_by(&:size).size
+end
+
+p minSubLength([2, 3, 1, 2, 4, 3], 7) == 2
+p minSubLength([1, 10, 5, 2, 7], 9) == 1
+p minSubLength([1, 11, 100, 1, 0, 200, 3, 2, 1, 250], 280) == 4
+p minSubLength([1, 2, 4], 8) == 0
