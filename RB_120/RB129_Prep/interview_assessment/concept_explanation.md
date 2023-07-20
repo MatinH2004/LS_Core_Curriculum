@@ -112,6 +112,19 @@ Class inheritance is a fundamental concept in object-oriented programming (OOP) 
 Ruby provides a mechanism called modules to achieve multiple inheritance-like behavior.
 
 ## Method Access Control
+Method access control is a way to implement encapsulation, by hiding a class’ functionality from the rest of the code base, so that code is not changed or manipulated without obvious intent.
+
+* `public`
+
+Instance methods in classes are public by default. These methods can be called by the object in the public interface.
+
+* `private`
+
+Instance methods defined below the private keyword can only be called within the class definition. If the private method is called in the public interface, Ruby raises a “private method error”.
+
+* `protected`
+
+Protected methods are similar to private methods in that they cannot be invoked outside the class. The main difference between them is that protected methods allow access between class instances, while private methods do not. “Protected method error” is raised if called publicly.
 
 ## Modules
 In Ruby, modules can be used in 3 different ways: **namespacing**, **mixins**, and **method container**.
@@ -144,7 +157,7 @@ We can also use modules as "containers" for out of place methods.
 ```ruby
 module Mammal
   ...
-  
+
   def self.some_out_of_place_method(num)
     num ** 2
   end
