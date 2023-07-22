@@ -5,6 +5,39 @@ Encapsulation is hiding pieces of functionality and making it unavailable to the
 
 It is implemented in Ruby by using the `public`, `private`, and `protected` access modifiers.
 
+```ruby
+# Example
+
+class Person
+  attr_reader :name
+
+  def initialize(name, id)
+    @name = name
+    @id = id
+  end
+
+  def to_s
+    <<-DOC
+    Name: #{name}
+    ID: #{id}"
+    DOC
+  end
+
+  private
+
+  def id
+    last_four = @id.to_s[-4..-1]
+    "**** - #{last_four}"
+  end
+end
+
+jon = Person.new('Jon B', 12345678)
+puts jon
+
+# Name: Jon B
+# ID: **** - 5678"
+```
+
 ## Polymorphism
 **Brief summary**:
 Polymorphism allows different classes to share the same method names but behave differently based on their individual implementations. Polymorphism can be implemented by using **class inheritance**, **interface inheritance**, or **duck-typing**.
