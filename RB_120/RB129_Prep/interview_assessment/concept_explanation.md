@@ -110,6 +110,7 @@ Instance methods defined below the private keyword can only be called within the
 Protected methods are similar to private methods in that they cannot be invoked outside the class. The main difference between them is that protected methods allow access between class instances, while private methods do not. “Protected method error” is raised if called publicly.
 
 ## Modules
+A module is a collection of behaviors that is usable in other classes via mixins. A module is "mixed in" to a class using the `include` method invocation.
 In Ruby, modules can be used in 3 different ways: **namespacing**, **mixins**, and **method container**.
 
 Namespacing allows us to group similar classes into one module, which also prevents name collision.
@@ -162,5 +163,43 @@ class Example
 
 	def self.class_method # defines class method
 	end
+end
+```
+
+## Getter / Setter Methods
+Getter methods are used to access instance varibles, and setter methods are used to modify (set) the values of instance variables.
+
+```ruby
+# Example
+
+class Animal
+  def initialize(name, weight)
+    @name = name
+    @weight = weight
+  end
+  def weight
+    @weight
+  end
+  def weight=(new_weight)
+    @weight = new_weight
+  end
+end
+```
+As you can see, it takes quite a bit of lines to define getter/setter methods for instance variables, so we can use accessor methods.
+1. `attr_reader`
+  * Creates getter method
+2. `attr_writer`
+  * Creates setter method
+3. `attr_accessor`
+  * Creates both getter and setter method
+
+```ruby
+class Animal
+  attr_accessor :weight
+
+  def initialize(name, weight)
+    @name = name
+    @weight = weight
+  end
 end
 ```
