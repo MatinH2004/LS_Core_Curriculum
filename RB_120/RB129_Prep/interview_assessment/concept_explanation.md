@@ -1,41 +1,21 @@
 # RB120 Concept Explanations
 
 ## Encapsulation
-Encapsulation is hiding pieces of functionality and making it unavailable to the rest of the code base. It is a form of data protection, so that data cannot be manipulated or changed without obvious intention.
+Encapsulation is a form of data protection. It allows us to hide pieces of functionality and make it unavailable to the rest of the code base, so that data cannot be manipulated or changed without obvious intention.
 
-It is implemented in Ruby by using the `public`, `private`, and `protected` access modifiers.
+In the example below, the initialize method encapsulates the attributes @name, making it private to the outside world.
 
 ```ruby
 # Example
 
-class Person
-  attr_reader :name
-
-  def initialize(name, id)
+class Cat
+  def initialize(name)
     @name = name
-    @id = id
-  end
-
-  def to_s
-    <<-DOC
-    Name: #{name}
-    ID: #{id}"
-    DOC
-  end
-
-  private
-
-  def id
-    last_four = @id.to_s[-4..-1]
-    "**** - #{last_four}"
   end
 end
 
-jon = Person.new('Jon B', 12345678)
-puts jon
-
-# Name: Jon B
-# ID: **** - 5678"
+whiskers = Cat.new("Whiskers")
+boots = Cat.new("Boots")
 ```
 
 ## Polymorphism
@@ -45,25 +25,16 @@ Polymorphism allows different classes to share the same method names but behave 
 ```ruby
 # Class inheritance
 
-class Animal
-  def walk
-    "I am walking"
-  end
+class Vehicle
+	def accelerate
+		puts "#{self.class} is moving forward"
+	end
 end
 
-class Dog < Animal; end
-class Cat < Animal; end
+class Car < Vehicle; end
+class Truck < Vehicle; end
 
-class Fish < Animal
-  def walk
-    "Cant walk :("
-  end
-end
-
-[Dog.new, Cat.new, Fish.new].each(&:walk)
-# => "I am walking"
-# => "I am walking"
-# => "Cant walk :("
+[Vehicle.new, Car.new, Truck.new].each(&:accelerate)
 ```
 ```ruby
 # Mixin module
@@ -74,34 +45,15 @@ module Swimmable
   end
 end
 
-class Animal
-  def walk
-    "I am walking"
-  end
-end
-
-class Dog < Animal
+class Duck
   include Swimmable
 end
 
-class Cat < Animal
-  def swim
-    "Cant swim.."
-  end
-end
-
-class Fish < Animal
+class Fish
   include Swimmable
-
-  def walk
-    "Cant walk :("
-  end
 end
 
-[Dog.new, Cat.new, Fish.new].each(&:swim)
-# => "Swimming!"
-# => "Cant swim.."
-# => "Swimming!"
+[Duck.new, Fish.new].each(&:swim)
 ```
 ```ruby
 # Duck-typing
@@ -119,8 +71,6 @@ class Duck
 end
 
 [Dog.new, Duck.new].each(&:make_sound)
-# => "Woof! Woof!"
-# => "Quack! Quack!"
 ```
 
 **Important**: If classes have the same method name, but for different purposes, the method name is simply coincidental and doesn't provide the benefits of polymorphism. This is called name collision.
