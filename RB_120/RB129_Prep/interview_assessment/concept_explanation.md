@@ -167,7 +167,7 @@ end
 ```
 
 ## Getter / Setter Methods
-Getter methods are used to access instance varibles, and setter methods are used to modify (set) the values of instance variables.
+Getter methods are used to access instance variables, and setter methods are used to modify (set) the values of instance variables.
 
 ```ruby
 # Example
