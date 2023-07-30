@@ -3,7 +3,7 @@
 ## Encapsulation
 Encapsulation is a form of data protection. It allows us to hide pieces of functionality and make it unavailable to the rest of the code base, so that data cannot be manipulated or changed without obvious intention.
 
-In the example below, the initialize method encapsulates the attributes @name, making it private to the outside world.
+In the example below, the initialize method encapsulates the attributes `@name`, making it private to the outside world.
 
 ```ruby
 # Example
@@ -17,6 +17,8 @@ end
 whiskers = Cat.new("Whiskers")
 boots = Cat.new("Boots")
 ```
+
+The initialize method in Ruby supports encapsulation by hiding internal state, providing a controlled way to initialize objects, defining a clear interface for object creation, and allowing for flexibility and validation during the initialization process.
 
 ## Polymorphism
 **Brief summary**:
