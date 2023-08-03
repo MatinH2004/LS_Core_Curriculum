@@ -2,12 +2,13 @@
 
 module Displayable
   def display_main_menu
-    puts "What would you like to do?"
-    puts "1 - withdraw"
-    puts "2 - deposit"
-    puts "3 - check balance"
-    puts "4 - log out"
-    puts "\nChoose option:"
+    <<-DOC
+    Choose an option:
+    1 - withdraw
+    2 - deposit
+    3 - check balance
+    4 - log out
+    DOC
   end
 end
 
@@ -23,18 +24,14 @@ class Bank
   MAX_DEPOSIT = 500_000
 
   def initialize(name, initial_amount, pin)
-    @name = name.split.each {|x| x.capitalize}.join(' ')
+    @name = name.split.map(&:capitalize).join(' ')
     @amount = initial_amount
     @pin = pin
   end
 
   def run_program
-    begin
-      validate_access
-      main_menu
-    rescue BankError => error
-      puts error.message
-    end
+    validate_access
+    main_menu
   end
 
   private
@@ -43,7 +40,7 @@ class Bank
     input = nil
     loop do
       puts "\nInput withdraw amount:"
-      input = gets.chomp.strip.to_i
+      input = gets.chomp.strip.to_f
       input > @amount ? (raise OverdraftError, "Insufficient Balance") : break
     end
     self.amount -= input
@@ -51,8 +48,23 @@ class Bank
   end
 
   def deposit
-    # maximum deposit is $500,000
-    raise DepositAmountError, "Exceeded Maximum Deposit Amount"
+    deposit_amount = 0
+    loop do
+      puts "Enter deposit amount:"
+      deposit_amount = gets.chomp.to_f
+      validate_deposit(deposit_amount)
+      break if deposit_amount >= 0 && deposit_amount <= MAX_DEPOSIT
+    end
+    self.amount += deposit_amount
+    puts "Deposit successful!"
+  end
+
+  def validate_deposit(deposit_amount)
+    if deposit_amount > MAX_DEPOSIT
+      raise DepositAmountError, "Exceeded Maximum Deposit Amount"
+    elsif deposit_amount < 0
+      raise DepositAmountError, "Deposit Amount Cannot Be Lower Than $0"
+    end
   end
 
   def check_balance
@@ -61,6 +73,7 @@ class Bank
 
   def log_out
     puts "\nThanks for banking with us, goodbye #{name}!"
+    self.logged_in = false
   end
 
   def validate_access
@@ -70,23 +83,28 @@ class Bank
       gets.chomp.to_i == @pin ? break : (raise InvalidPinError, "Invalid PIN")
     end
     puts "Authorization successful!"
+    self.logged_in = true
     # sleep 2
   end
 
   def main_menu
-    display_main_menu
-    input = choose_main_option
-    process_choice(input)
+    while logged_in
+      display_main_menu
+      input = choose_main_option
+      process_choice(input)
+    rescue BankError => error
+      puts error.message
+    end
   end
 
   def choose_main_option
     choice = nil
     loop do
-      choice = gets.chomp.strip
-      break unless (choice.empty? || !choice.is_a?(Integer))
+      choice = gets.chomp.strip.to_i
+      break unless (1..4).include?(choice)
       puts "Invalid input, please choose 1, 2, 3, or 4:"
     end
-    choice.to_i
+    choice
   end
 
   def process_choice(input)
@@ -98,8 +116,12 @@ class Bank
     end
   end
 
+  def clear_screen
+    system('clear') || system('cls')
+  end
+
   attr_reader :name, :pin
-  attr_accessor :amount
+  attr_accessor :amount, :logged_in
 end
 
 Bank.new('Matin hassan Pour', 200, 1234).run_program
