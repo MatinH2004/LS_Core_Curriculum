@@ -101,8 +101,7 @@ class TodoList
   end
 
   def remove_at(index)
-    todo = todos.fetch(index)
-    todos.delete(todo)
+    todos.delete(item_at(index))
   end
 
   def to_s
@@ -136,7 +135,7 @@ class TodoList
   end
 
   def mark_done(title)
-    find_by_title && find_by_title(title).done!
+    find_by_title(title) && find_by_title(title).done!
   end
 
   def mark_all_done
