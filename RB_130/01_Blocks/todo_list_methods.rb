@@ -105,7 +105,7 @@ class TodoList
   end
 
   def to_s
-    <<~STR
+    <<~STR.chomp
     ---- #{title} ----
     #{todos.join("\n")}
     STR
