@@ -115,7 +115,7 @@ class TodoList
   end
 
   def find_by_title(title)
-    select { |todo| todo == title }.first
+    select { |todo| todo.title == title }.first
   end
 
   def all_done
