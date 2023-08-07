@@ -163,4 +163,37 @@ class TodoListTest < Minitest::Test
     assert_equal(list.to_s, @list.select(&:done?).to_s)
   end
   
+  def test_find_by_title
+    assert_equal(@todo1, @list.find_by_title(@todo1.title))
+    assert_equal(@todo2, @list.find_by_title(@todo2.title))
+    assert_equal(@todo3, @list.find_by_title(@todo3.title))
+  end
+
+  def test_all_done
+    [@todo1, @todo2].each(&:done!)
+    assert_equal([@todo1, @todo2], @list.all_done.to_a)
+  end
+
+  def test_all_not_done
+    @todo2.done!
+    assert_equal([@todo1, @todo3], @list.all_not_done.to_a)
+  end
+
+  def test_mark_done
+    @list.mark_done(@todo1.title)
+    @list.mark_done(@todo2.title)
+    assert_equal([@todo1, @todo2], @list.all_done.to_a)
+  end
+
+  def test_mark_all_done
+    @list.mark_all_done
+    assert_equal([@todo1, @todo2, @todo3], @list.all_done.to_a)
+  end
+
+  def test_mark_all_undone
+    [@todo1, @todo3].each(&:done!)
+    @list.mark_all_undone
+    assert_equal([@todo1, @todo2, @todo3], @list.all_not_done.to_a)
+  end
+
 end
