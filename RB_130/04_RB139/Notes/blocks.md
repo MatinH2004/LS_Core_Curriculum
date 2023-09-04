@@ -98,5 +98,69 @@ test { sleep(1) }
 - methods and blocks can return a chunk of code by returning a Proc or lambda.
 
 ## Blocks and Variable Scope
+```ruby
+def call_me(some_code)
+  some_code.call    # call will execute the "chunk of code" that gets passed in
+end
 
+name = "Robert"
+chunk_of_code = Proc.new {puts "hi #{name}"}
+
+call_me(chunk_of_code)
+
+# hi Robert
+# => nil
+```
+
+- We can call local variables initialized in the main scope within blocks, as long as the variables are initialized before the block is defined.
+- The variables calls in the block are preprocessed, meaning we can invoke the block within method definitions without getting a NameError
+
+```ruby
+def call_me(some_code)
+  some_code.call
+end
+
+name = "Robert"
+chunk_of_code = Proc.new {puts "hi #{name}"}
+name = "Griffin III"        # re-assign name after Proc initialization
+
+call_me(chunk_of_code)
+
+# hi Griffin III
+# => nil
+```
+
+- Proc objects keep track of local variables that get reassigned
+- The closure **binds** to its surrounding structure
+- This not only includes local variables, but also method references, constants and other artifacts in your code -- whatever it needs to execute correctly, it will drag all of it around
+---
 ## Symbol to Proc
+```ruby
+[1, 2, 3, 4, 5].map(&:to_s)        # => ["1", "2", "3", "4", "5"]
+#  (&:to_s) same as => { |n| n.to_s }
+```
+- `&:to_s` tells Ruby to convert the Symbol `:to_s` to a block
+- Since `:to_s` is not a Proc, Ruby first calls `Symbol#to_proc` to convert the symbol to a Proc
+- Now it is a Proc, Ruby then converts this Proc to a block
+- We can do this with methods that don't take an argument
+
+```ruby
+def my_method
+  yield(2)
+end
+
+# turns the symbol into a Proc, then & turns the Proc into a block
+my_method(&:to_s)               # => "2"
+```
+
+### Summary
+- blocks are just one way Ruby implements closures. Procs and lambdas are others.
+- closures drag their surrounding context/environment around, and this is at the core of how variable scope works.
+- blocks are great for pushing some decisions to method invocation time.
+- blocks are great for wrapping logic, where you need to perform some before/after actions.
+- we can write our own methods that take a block with the yield keyword.
+- when we yield, we can also pass arguments to the block.
+- when we yield, we have to be aware of the block's return value.
+- once we understand blocks, we can re-implement many of the common methods in the Ruby core library in our own classes.
+- the Symbol#to_proc is a nice shortcut when working with collections.
+- how to return a chunk of code from a method or block
