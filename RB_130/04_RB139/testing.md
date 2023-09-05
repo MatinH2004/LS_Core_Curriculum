@@ -3,7 +3,9 @@
 ## Minitest
 
 **Test Suite:** Entire set of tests that accompanies your program.
+
 **Test:** A situation or context in which tests are run. A test can contain multiple assertions.
+
 **Assertion:** The verification step to confirm that the data returned by your program is indeed what is expected.
 
 ```ruby
