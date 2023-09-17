@@ -27,17 +27,37 @@ A: /* given an odd integer */
    - 
 
 =end
-def print_row(grid_size, distance_from_center)
-  number_of_stars = grid_size - 2 * distance_from_center
-  stars = '*' * number_of_stars
-  puts stars.center(grid_size)
-end
 
-def diamond(grid_size)
-  max_distance = (grid_size - 1) / 2
-  max_distance.downto(0) { |distance| print_row(grid_size, distance) }
-  1.upto(max_distance)   { |distance| print_row(grid_size, distance) }
-end
-
-p diamond(3)
-p diamond(27)
+def diamond(n)
+   first_half = []
+ 
+   (0..(n/2)).each do |idx|
+     stars = '*' * (((idx + 1) * 2) - 1)
+     first_half << stars.center(n, ' ')
+   end
+ 
+   mirrored_half = first_half[0..-2].reverse
+   first_half << mirrored_half
+   first_half.join("\n")
+ end
+ 
+ puts diamond(5)
+ 
+ def hollow_diamod(n)
+   first_half = []
+ 
+   (0..(n/2)).each do |idx|
+     if idx.zero?
+       first_half << '*'.center(n, ' ')
+     else
+       space = ' ' * (idx * 2 - 1)
+       first_half << ('*' + space + '*').center(n, ' ')
+     end
+   end
+ 
+   mirrored_half = first_half[0..-2].reverse
+   first_half << mirrored_half
+   first_half.join("\n")
+ end
+ 
+ puts hollow_diamod(5)
