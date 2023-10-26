@@ -1,6 +1,7 @@
+require_relative 'monroe'
 require_relative 'advice'
 
-class HelloWorld
+class App < Monroe
   def call(env)
     case env['REQUEST_PATH']
     when '/'
@@ -23,20 +24,6 @@ class HelloWorld
         erb :not_found
       end
     end
-  end
-
-  private
-
-  def erb(filename)
-    b = binding
-    message = local[:message]
-    content = File.read("views/#{filename}.erb")
-    ERB.new(content).result(b)
-  end
-
-  def response(status, headers, body = '')
-    body = yield if block_given?
-    [status, headers, [body]]
   end
 end
 
