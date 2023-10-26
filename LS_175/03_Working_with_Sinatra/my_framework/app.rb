@@ -19,7 +19,7 @@ class App < Monroe
       end
     else
       status = '404'
-      headers = {"Content-Type" => "text/html", "Content-Length" => '61'}
+      headers = {"Content-Type" => "text/html", "Content-Length" => '60'}
       response(status, headers) do
         erb :not_found
       end
