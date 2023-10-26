@@ -10,13 +10,13 @@ class HelloWorld
       [
         '200',
         {'Content-Type' => 'text/html'},
-        ["<html><body><b><em>#{piece_of_advice}</em></b></body></html>"]
+        [erb(:advice, message: piece_of_advice)]
       ]
     else
       [
         '404',
         {"Content-Type" => 'text/html', "Content-Length" => '48'},
-        ["<html><body><h4>404 Not Found</h4></body></html>"]
+        [erb(:not_found)]
       ]
     end
   end
