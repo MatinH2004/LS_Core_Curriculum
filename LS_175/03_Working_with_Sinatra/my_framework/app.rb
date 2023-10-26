@@ -27,4 +27,8 @@ class App < Monroe
   end
 end
 
+# To run server:
 # bundle exec rackup config.ru -p 9595
+
+# To make request using curl:
+# curl -X GET localhost:9595/ -m 30 -v
