@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= @title %></title>
+  </head>
+
+  <body>
+    <h2><a href="/users">Users and Interests</a></h2>
+    <hr>
+
+    <div>
+      <%= yield %>
+    </div>
+
+    <hr>
+
+    <p>There are <%= @users.keys.size %> users with a total of <%= count_interests() %> interests</p>
+
+  </body>
+</html>
