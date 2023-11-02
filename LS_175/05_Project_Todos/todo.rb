@@ -107,7 +107,7 @@ post "/list/:list_id/todo" do
     session[:error] = error
     erb :list, layout: :layout
   else
-    @list[:todos] << {name: param[:todo], completed: false}
+    @list[:todos] << {name: param[:todo], completed: "false"}
     session[:success] = "The todo was added."
     redirect "/lists/#{@list_id}"
   end
@@ -123,3 +123,16 @@ post "/lists/:list_id/todos/:id/destroy" do
   session[:success] = "The todo has been deleted."
   redirect "/lists/#{@list_id}"
 end
+
+# Update the status of the todo
+post "/list/:list_id/todos/:id"
+  @list_id = params[:list_id].to_i
+  @list = session[:lists][@list_id]
+
+  todo_id = params[:id].to_i
+  is_completed = params[:completed] == "true"
+  @list[:todos][todo_id][:completed] = is_completed
+  session[:success] = "The todo has been updated."
+  redirect "lists/#{@list_id}"
+end
+
