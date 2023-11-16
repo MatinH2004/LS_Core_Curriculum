@@ -14,7 +14,7 @@ get "/" do
   @files = Dir.glob(root + "/data/*").map do |path|
     File.basename(path)
   end
-  erb :layout
+  erb :index
 end
 
 get "/:filename" do
