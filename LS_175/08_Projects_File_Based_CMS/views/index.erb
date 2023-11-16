@@ -5,9 +5,7 @@
   <body>
 
     <% if session[:error] %>
-      <div>
         <p><%= session.delete(:error) %></p>
-      </div>
     <% end %>
 
     <ul>
