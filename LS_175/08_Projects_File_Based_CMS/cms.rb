@@ -21,6 +21,7 @@ def load_file_content(path)
   case File.extname(path)
   when ".txt"
     headers["Content-Type"] = "text/plain"
+    content
   when ".md" then render_markdown(content)
   end
 end
@@ -36,8 +37,7 @@ get "/:filename" do
   file_path = root + "/data/" + params[:filename]
 
   if File.file?(file_path)
-    headers["Content-Type"] = "text/plain"
-    File.read(file_path)
+    load_file_content(file_path)
   else
     session[:error] = "#{params[:filename]} does not exist"
     redirect "/"
