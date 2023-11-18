@@ -11,6 +11,20 @@ end
 
 root = File.expand_path("..", __FILE__)
 
+def render_markdown(text)
+  markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+  markdown.render(text)
+end
+
+def load_file_content(path)
+  content = File.read(path)
+  case File.extname(path)
+  when ".txt"
+    headers["Content-Type"] = "text/plain"
+  when ".md" then render_markdown(content)
+  end
+end
+
 get "/" do
   @files = Dir.glob(root + "/data/*").map do |path|
     File.basename(path)
