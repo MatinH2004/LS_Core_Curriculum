@@ -2,7 +2,6 @@ ENV["RACK_ENV"] = "test"
 
 require "minitest/autorun"
 require "rack/test"
-require "redcarpet"
 
 require_relative "../cms"
 
