@@ -40,7 +40,8 @@ class CMSTest < Minitest::Test
   end
 
   def test_history
-    skip
+    create_document "history.txt", "Ruby 0.95 released"
+
     get "/history.txt"
 
     assert_equal 200, last_response.status
@@ -49,7 +50,6 @@ class CMSTest < Minitest::Test
   end
 
   def test_document_not_found
-    skip
     get "/not_a_file.txt" # Attempt to access a nonexistent file
 
     assert_equal 302, last_response.status # Assert that the user was redirected
@@ -64,7 +64,8 @@ class CMSTest < Minitest::Test
   end
 
   def test_viewing_markdown_document
-    skip
+    create_document "about.md", "<h1>Ruby is...</h1>"
+
     get "/about.md"
 
     assert_equal 200, last_response.status
@@ -73,7 +74,8 @@ class CMSTest < Minitest::Test
   end
 
   def test_editing_document
-    skip
+    create_document "changes.txt"
+
     get "/changes.txt/edit"
 
     assert_equal 200, last_response.status
@@ -82,7 +84,8 @@ class CMSTest < Minitest::Test
   end
 
   def test_updating_document
-    skip
+    create_document "changes.txt"
+
     post "/changes.txt", content: "new content"
 
     assert_equal 302, last_response.status
