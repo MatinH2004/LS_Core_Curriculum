@@ -1,0 +1,22 @@
+<html>
+  <header>
+    <link rel="stylesheet" href="/stylesheets/cms.css">
+  </header>
+
+  <body>
+
+    <% if session[:message] %>
+        <p><%= session.delete(:message) %></p>
+    <% end %>
+
+    <ul>
+      <% @files.each do |file| %>
+      <li>
+        <a href="/<%=file%>"><%= file %></a>
+        <a href="/<%=file%>/edit">Edit</a>
+      </li>
+      <% end %>
+    </ul>
+
+  </body>
+</html>
