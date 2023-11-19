@@ -56,10 +56,6 @@ end
 post "/:filename" do
   file_path = root + "/data/" + params[:filename]
 
-  # File.open(file_path, 'w') do |file|
-  #   file.puts params[:content]
-  # end
-
   File.write(file_path, params[:content])
 
   session[:message] = "#{params[:filename]} has been updated."
