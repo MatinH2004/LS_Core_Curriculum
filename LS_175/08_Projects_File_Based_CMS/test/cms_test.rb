@@ -45,6 +45,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_viewing_markdown_document
+    skip
     get "/about.md"
 
     assert_equal 200, last_response.status

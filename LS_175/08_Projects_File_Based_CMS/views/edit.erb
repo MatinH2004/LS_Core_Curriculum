@@ -1,0 +1,16 @@
+<html>
+  <header>
+  </header>
+
+  <body>
+
+    <form method="post" action="/<%= @filename %>">
+      <label for="edit">Edit content of <%= @filename %>:</label>
+      <div>
+        <textarea id="content" name="content" cols="100" rows="20"><%= @content %></textarea>
+      </div>
+      <button type="submit">Save Changes</button>
+    </form>
+
+  </body>
+</html>
