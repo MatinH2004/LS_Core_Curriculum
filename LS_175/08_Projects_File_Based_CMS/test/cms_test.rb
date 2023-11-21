@@ -98,6 +98,20 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_includes last_response.body, "new content"
   end
+
+  def test_delete_document
+    create_document "temp.txt"
+
+    post "/temp.txt/delete"
+
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+    assert_includes last_response.body, "temp.txt has been deleted"
+
+    get "/"
+    refute_includes last_response.body, "temp.txt"
+  end
 end
 
 # run: bundle exec ruby test/cms_test.rb
