@@ -3,6 +3,9 @@
   <li>
     <a href="/<%=file%>"><%= file %></a>
     <a href="/<%=file%>/edit">Edit</a>
+    <form method="post" action="/<%= file %>/delete">
+      <button type="submit">Delete</button>
+    </form>
   </li>
   <% end %>
 
