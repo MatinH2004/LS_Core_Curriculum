@@ -1,8 +1,9 @@
 ENV["RACK_ENV"] = "test"
 
+require "fileutils"
+
 require "minitest/autorun"
 require "rack/test"
-require "fileutils"
 
 require_relative "../cms"
 
@@ -27,6 +28,10 @@ class CMSTest < Minitest::Test
     end
   end
 
+  def session
+    last_request.env["rack.session"]
+  end
+
   def test_index
     create_document "about.md"
     create_document "changes.txt"
@@ -39,7 +44,7 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "changes.txt"
   end
 
-  def test_history
+  def test_viewing_text_document
     create_document "history.txt", "Ruby 0.95 released"
 
     get "/history.txt"
@@ -49,28 +54,21 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "Ruby 0.95 released"
   end
 
-  def test_document_not_found
-    get "/not_a_file.txt" # Attempt to access a nonexistent file
-
-    assert_equal 302, last_response.status # Assert that the user was redirected
-
-    get last_response["Location"] # Request the page that the user was redirected to
-
-    assert_equal 200, last_response.status
-    assert_includes last_response.body, "not_a_file.txt does not exist"
-
-    get "/" # Reload the page
-    refute_includes last_response.body, "not_a_file.ext does not exist" # Assert that our message has been removed
-  end
-
   def test_viewing_markdown_document
-    create_document "about.md", "<h1>Ruby is...</h1>"
+    create_document "about.md", "# Ruby is..."
 
     get "/about.md"
 
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes last_response.body, "<h1>Ruby is...</h1>"
+  end
+
+  def test_document_not_found
+    get "/notafile.ext"
+
+    assert_equal 302, last_response.status
+    assert_equal "notafile.ext does not exist.", session[:message]
   end
 
   def test_editing_document
@@ -84,33 +82,48 @@ class CMSTest < Minitest::Test
   end
 
   def test_updating_document
-    create_document "changes.txt"
-
     post "/changes.txt", content: "new content"
 
     assert_equal 302, last_response.status
+    assert_equal "changes.txt has been updated.", session[:message]
 
-    get last_response["Location"]
-
-    assert_includes last_response.body, "changes.txt has been updated"
-
-    get "changes.txt"
+    get "/changes.txt"
     assert_equal 200, last_response.status
     assert_includes last_response.body, "new content"
   end
 
-  def test_delete_document
-    create_document "temp.txt"
+  def test_view_new_document_form
+    get "/new"
 
-    post "/temp.txt/delete"
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "<input"
+    assert_includes last_response.body, %q(<button type="submit")
+  end
 
+  def test_create_new_document
+    post "/create", filename: "test.txt"
     assert_equal 302, last_response.status
-
-    get last_response["Location"]
-    assert_includes last_response.body, "temp.txt has been deleted"
+    assert_equal "test.txt has been created.", session[:message]
 
     get "/"
-    refute_includes last_response.body, "temp.txt"
+    assert_includes last_response.body, "test.txt"
+  end
+
+  def test_create_new_document_without_filename
+    post "/create", filename: ""
+    assert_equal 422, last_response.status
+    assert_includes last_response.body, "A name is required"
+  end
+
+  def test_deleting_document
+    create_document("test.txt")
+
+    post "/test.txt/delete"
+    assert_equal 302, last_response.status
+    assert_equal "test.txt has been deleted.", session[:message]
+
+    get "/"
+    refute_includes last_response.body, %q(href="/test.txt")
   end
 
   def test_signin_form
@@ -124,29 +137,29 @@ class CMSTest < Minitest::Test
   def test_signin
     post "/users/signin", username: "admin", password: "secret"
     assert_equal 302, last_response.status
+    assert_equal "Welcome!", session[:message]
+    assert_equal "admin", session[:username]
 
     get last_response["Location"]
-    assert_includes last_response.body, "Welcome"
     assert_includes last_response.body, "Signed in as admin"
   end
 
   def test_signin_with_bad_credentials
     post "/users/signin", username: "guest", password: "shhhh"
     assert_equal 422, last_response.status
+    assert_nil session[:username]
     assert_includes last_response.body, "Invalid credentials"
   end
 
   def test_signout
-    post "/users/signin", username: "admin", password: "secret"
-    get last_response["Location"]
-    assert_includes last_response.body, "Welcome"
+    get "/", {}, {"rack.session" => { username: "admin" } }
+    assert_includes last_response.body, "Signed in as admin"
 
     post "/users/signout"
-    get last_response["Location"]
+    assert_equal "You have been signed out.", session[:message]
 
-    assert_includes last_response.body, "You have been signed out."
+    get last_response["Location"]
+    assert_nil session[:username]
     assert_includes last_response.body, "Sign In"
   end
 end
-
-# run: bundle exec ruby test/cms_test.rb
