@@ -68,7 +68,7 @@ get "/:filename" do
   if File.file?(file_path)
     load_file_content(file_path)
   else
-    session[:message] = "#{params[:filename]} does not exist"
+    session[:message] = "#{params[:filename]} does not exist."
     redirect "/"
   end
 end
