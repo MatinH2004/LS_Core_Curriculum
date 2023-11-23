@@ -100,7 +100,7 @@ post "/create" do
   end
 end
 
-get "/:filename" do
+get "/view" do
   file_path = File.join(data_path, File.basename(params[:filename]))
 
   if File.file?(file_path)
