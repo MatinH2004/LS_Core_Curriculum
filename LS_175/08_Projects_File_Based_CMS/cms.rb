@@ -67,6 +67,10 @@ def require_signed_in_user
   end
 end
 
+def valid_file_ext?(filename)
+  %w(txt md).include?(filename.split(".")[-1])
+end
+
 get "/" do
   pattern = File.join(data_path, "*")
   @files = Dir.glob(pattern).map do |path|
@@ -90,6 +94,10 @@ post "/create" do
     session[:message] = "A name is required."
     status 422
     erb :new
+  elsif !valid_file_ext?(filename)
+    session[:message] = "Only .txt and .md files are supported."
+    status 422
+    erb :new
   else
     file_path = File.join(data_path, filename)
 
@@ -100,7 +108,7 @@ post "/create" do
   end
 end
 
-get "/view" do
+get "/:filename" do
   file_path = File.join(data_path, File.basename(params[:filename]))
 
   if File.file?(file_path)
