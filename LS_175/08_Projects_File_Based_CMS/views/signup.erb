@@ -1,0 +1,23 @@
+<form method="post" action="/users/signup">
+  <div>
+    <label for="username">Username:
+      <br>
+      <input id="username" name="username" value="<%= session[:username] %>" />
+    </label>
+  </div>
+
+  <div>
+    <label for="password">Password:
+      <br>
+      <input type="password" id="password" name="password" />
+    </label>
+  </div>
+  <div>
+    <label for="confirm_password">Confirm Password:
+      <br>
+      <input type="password" id="confirm_password" name="confirm_password" />
+    </label>
+  </div>
+
+  <button type="submit">Sign Up</button>
+</form>

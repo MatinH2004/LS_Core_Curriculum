@@ -171,6 +171,35 @@ post "/users/signin" do
   end
 end
 
+get "/users/signup" do
+  erb :signup
+end
+
+post "/users/signup" do
+  credentials = load_user_credentials
+  session[:username] = params[:username]
+  password = params[:password]
+  confirm_password = params[:confirm_password]
+
+  if session[:username].size == 0
+    session[:message] = "Username cannot be empty."
+    status 422
+    erb :signup
+  elsif password != confirm_password
+    session[:message] = "Passwords do not match. Please confirm password."
+    status 422
+    erb :signup
+  else
+    # create new user credential
+    credentials[session[:username]] = password
+    # apply changes in yaml file
+    File.open("./users.yml", "w") { |f| f.write(YAML.dump(credentials)) }
+
+    session[:message] = "Account created successfully."
+    redirect "/"
+  end
+end
+
 post "/users/signout" do
   session.delete(:username)
   session[:message] = "You have been signed out."

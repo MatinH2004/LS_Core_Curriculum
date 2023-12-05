@@ -1,7 +1,7 @@
 <ul>
   <% @files.each do |file| %>
   <li>
-    <a href="/view?filename=<%=file%>"><%= file %></a>
+    <a href="/<%=file%>"><%= file %></a>
     <a href="/<%=file%>/edit">Edit</a>
     <form class="inline" method="post" action="/<%= file %>/delete">
       <button type="submit">Delete</button>
@@ -22,5 +22,6 @@
     </form>
   <% else %>
     <p class="user-status"><a href="/users/signin">Sign In</a></p>
+    <p class="user-status"><a href="/users/signup">Sign Up</a></p>
   <% end %>
 </ul>
