@@ -366,6 +366,7 @@ SELECT users.full_name, books.title,
 ```
 
 ## Aliasing
+
 Aliasing allows us to specify another name for a column or table using `AS` and then use that name in later parts of a query to allow for more concise syntax.
 
 ```sql
