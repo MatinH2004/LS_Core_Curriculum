@@ -168,7 +168,6 @@ DROP TABLE all_users;
 ```
 
 ## Data
-
 Add data to tables using INSERT
 ```sql
 INSERT INTO users (column1, column2, column3)
