@@ -15,7 +15,7 @@
 ### Terminal Commands
 - Create db: `$ createdb`
 - Delete db: `$ dropdb`
-- Db dump: `$ pg_dump`
+- Db dump: `$ pg_dump database_name > dump_file.sql`
 - Import SQL file: `$ psql -d db_name < filename.sql`
 
 ### Meta-commands
