@@ -2,6 +2,7 @@
 
 require "pg"
 require "date"
+require "io/console"
 
 class ExpenseData
   def initialize
@@ -11,10 +12,16 @@ class ExpenseData
   def list_expenses
     result = @connection.exec("SELECT * FROM expenses ORDER BY created_on ASC")
     if result.ntuples == 0
-      puts "You haven't logged any expenses."
+      puts "No data. Add expenses to see them here."
     else
       display_expenses(result)
     end
+  end
+
+  def search_expenses(query)
+    sql = "SELECT * FROM expenses WHERE memo ILIKE $1"
+    result = @connection.exec_params(sql, [query])
+    display_expenses(result)
   end
 
   def add_expense(amount, memo)
@@ -38,10 +45,9 @@ class ExpenseData
     end
   end
 
-  def search_expenses(query)
-    sql = "SELECT * FROM expenses WHERE memo ILIKE $1"
-    result = @connection.exec_params(sql, [query])
-    display_expenses(result)
+  def delete_all_expenses
+    @connection.exec("DELETE FROM expenses")
+    puts "All expenses have been deleted."
   end
 
   private
@@ -74,6 +80,10 @@ class CLI
     when "delete"
       id = arguments[0]
       @application.delete_expense(id)
+    when "clear"
+      puts "This will remove all expenses. Are you sure? (y/n)"
+      response = $stdin.getch
+      @application.delete_all_expenses if response == "y"
     when "list"
       @application.list_expenses
     when "search"
