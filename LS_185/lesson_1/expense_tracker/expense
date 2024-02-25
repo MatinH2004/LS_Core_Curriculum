@@ -19,6 +19,21 @@ class ExpenseData
     @connection.exec_params(sql, [amount, memo, date])
   end
 
+  def delete_expense(id)
+    sql = "SELECT * FROM expenses WHERE id = $1"
+    result = @connection.exec_params(sql, [id])
+
+    if result.ntuples == 1
+      sql = "DELETE FROM expenses WHERE id = $1"
+      @connection.exec_params(sql, [id])
+
+      puts "The following expense has been deleted."
+      display_expenses(result)
+    else
+      puts "There is no expense with the id '#{id}'."
+    end
+  end
+
   def search_expenses(query)
     sql = "SELECT * FROM expenses WHERE memo ILIKE $1"
     result = @connection.exec_params(sql, [query])
@@ -52,6 +67,9 @@ class CLI
       memo = arguments[1]
       abort "You must provide an amount and memo." unless amount && memo
       @application.add_expense(amount, memo)
+    when "delete"
+      id = arguments[0]
+      @application.delete_expense(id)
     when "list"
       @application.list_expenses
     when "search"
