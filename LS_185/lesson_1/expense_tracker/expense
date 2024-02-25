@@ -10,7 +10,11 @@ class ExpenseData
 
   def list_expenses
     result = @connection.exec("SELECT * FROM expenses ORDER BY created_on ASC")
-    display_expenses(result)
+    if result.ntuples == 0
+      puts "You haven't logged any expenses."
+    else
+      display_expenses(result)
+    end
   end
 
   def add_expense(amount, memo)
