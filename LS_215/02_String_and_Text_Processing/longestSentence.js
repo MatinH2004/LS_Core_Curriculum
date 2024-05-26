@@ -30,10 +30,10 @@ let longText = 'Four score and seven years ago our fathers brought forth' +
 
 function longestSentence(text) {
   const sentences = text.match(/[^.!?]+[.!?]/g).map(sentence => sentence.trim());
-  const longestSentence = sentences.sort(sortByLength)[0];
+  const longest = sentences.sort(sortByLength)[0];
 
-  console.log(longestSentence);
-  console.log(`\nThe longest sentence has ${countWords(longestSentence)} words.`);
+  console.log(longest);
+  console.log(`\nThe longest sentence has ${countWords(longest)} words.`);
 }
 
 function sortByLength(a, b) {
