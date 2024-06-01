@@ -62,35 +62,30 @@ function validLuhn(numStr) {
   if (numStr[0] === undefined) return false;
 
   let digits = numStr.match(/\d/g);
-  let checksum = digits.reverse().reduce((arr, val, idx) => {
-    if (idx % 2 !== 0) {
-      arr.push(double(val));
-    } else {
-      arr.push(Number(val));
-    }
+  
+  let checksum = digits.reverse().reduce((sum, val, idx) => {
+    let num = Number(val);
+    return (idx % 2 === 1) ? sum + double(num) : sum + num;
+    }, 0);
 
-    return arr;
-  }, []);
-
-  checksum = checksum.reduce((total, num) => total + num, 0);
   return checksum % 10 === 0;
 }
 
-function double(numStr) {
-  let num = Number(numStr);
+function double(num) {
   num *= 2
   return num >= 10 ? (num - 9) : num;
 }
 
 // valid numbers
-console.log(validLuhn("2323 2005 7766 3554") === true);  // true
-console.log(validLuhn("8763") === true);                 // true
-console.log(validLuhn("5454") === true);                 // true
+console.log(validLuhn("2323 2005 7766 3554") === true);      // true
+console.log(validLuhn("2323/.2005x7766LOL3554") === true);   // true
+console.log(validLuhn("8763") === true);                     // true
+console.log(validLuhn("5454") === true);                     // true
 
 // invalid numbers
-console.log(validLuhn("1111") === false);                // false
-console.log(validLuhn("9999") === false);                // false
-console.log(validLuhn("4545") === false);                // false
+console.log(validLuhn("1111") === false);                    // false
+console.log(validLuhn("9999") === false);                    // false
+console.log(validLuhn("4545") === false);                    // false
 
-// invalid inputs
-console.log(validLuhn("") === false);                     // false
+// invalid input
+console.log(validLuhn("") === false);                        // false
