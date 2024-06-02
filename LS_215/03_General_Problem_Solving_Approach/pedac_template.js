@@ -9,9 +9,6 @@ OUTPUT:
 EXAMPLES:
 
 ----------- RULES -----------
-EXPLICIT:
-
-IMPLICIT:
 
 ------- DATA STRUCTURE ------
 
