@@ -1,6 +1,4 @@
 /*
-Start time:
-
 ---------- PROBLEM ----------
 INPUT:
 
