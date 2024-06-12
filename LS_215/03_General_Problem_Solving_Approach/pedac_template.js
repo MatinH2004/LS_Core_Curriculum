@@ -10,8 +10,6 @@ EXAMPLES:
 
 ------- DATA STRUCTURE ------
 
---------- SCRATCH PAD -------
-
 ---------- ALGORITHM --------
 
 */
