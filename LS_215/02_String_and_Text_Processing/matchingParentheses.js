@@ -1,18 +1,28 @@
-function isBalanced(string) {
-  let parensCount = 0;
-  for (let i = 0; i < string.length; i += 1) {
-    if (string[i] === '(') {
-      parensCount += 1;
-    } else if (string[i] === ')') {
-      parensCount -= 1;
-    }
+// Using for loop
+function isBalanced(str) {
+  let count = 0;
 
-    if (parensCount < 0) {
-      return false;
-    }
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '(') count += 1;
+    if (str[i] === ')') count -= 1;
+    if (count < 0) return false;
   }
 
-  return parensCount === 0;
+  return count === 0;
+}
+
+// Using forEach()
+function isBalanced(str) {
+  let count = 0;
+  let unbalanced = false;
+
+  [...str].forEach(char => {
+    if (char === '(') count += 1;
+    if (char === ')') count -= 1;
+    if (count < 0) unbalanced = !unbalanced;
+  });
+
+  return unbalanced ? false : count === 0;
 }
 
 
