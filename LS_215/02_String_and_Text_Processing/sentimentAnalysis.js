@@ -37,6 +37,7 @@ let textExcerpt = 'To be or not to be-that is the question:\n' +
 let positiveWords = ['fortune', 'dream', 'love', 'respect', 'patience', 'devout', 'noble', 'resolution'];
 let negativeWords = ['die', 'heartache', 'death', 'despise', 'scorn', 'weary', 'trouble', 'oppress'];
 
+// --- INITAL SOLUTION:
 function sentiment(text) {
   let wordList = text.toLowerCase().match(/[a-z']+/g);
 
@@ -73,3 +74,28 @@ sentiment(textExcerpt);
 // Negative sentiments: die, heartache, die, death, weary, death
 
 // The sentiment of the text is Negative.
+
+// --- UPDATED SOLUTION:
+
+function sentiment(text) {
+  const [positive, negative] = [[], []];
+  let sentiment;
+
+  text.toLowerCase().match(/[a-z']+/g)
+                    .forEach(word => {
+                      if (positiveWords.indexOf(word) !== -1) positive.push(word);
+                      if (negativeWords.indexOf(word) !== -1) negative.push(word);
+                    });
+
+  if (positive.length - negative.length > 0) sentiment = 'positive';
+  if (positive.length - negative.length < 0) sentiment = 'negative';
+  if (positive.length - negative.length === 0) sentiment = 'neutral';
+  
+  console.log(`\nThere are ${positive.length} positive words in the text.`);
+  console.log(`Positive sentiments: ${positive.join(', ')}`);
+
+  console.log(`\nThere are ${negative.length} negative words in the text.`);
+  console.log(`Negative sentiments: ${negative.join(', ')}`);
+
+  console.log(`\nThe sentiment of the text is ${sentiment}`);
+}
