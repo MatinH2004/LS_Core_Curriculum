@@ -37,6 +37,7 @@ let textExcerpt = 'To be or not to be-that is the question:\n' +
 let positiveRegex = /\bfortunes?\b|\bdream(s|t|ed)?\b|love(s|d)?\b|respect(s|ed)?\b|\bpatien(ce|t)?\b|\bdevout(ly)?\b|\bnobler?\b|\bresolut(e|ion)?\b/gi;
 let negativeRegex = /\bdie(s|d)?\b|\bheartached?\b|death|despise(s|d)?\b|\bscorn(s|ed)?\b|\bweary\b|\btroubles?\b|\boppress(es|ed|or('s)?)?\b/gi;
 
+// --- INITIAL SOLUTION:
 function sentiment(text) {
   let wordList = text.toLowerCase().match(/[a-z']+/g);
 
@@ -73,3 +74,23 @@ sentiment(textExcerpt);
 // Negative sentiments: troubles, die, heartache, die, death, scorns, oppressor's, despised, weary, death
 
 // The sentiment of the text is Negative.
+
+// --- UPDATED SOLUTION:
+function sentiment(text) {
+  const positive = text.match(positiveRegex) || [];
+  const negative = text.match(negativeRegex) || [];
+
+  let sentiment;
+
+  if (positive.length - negative.length > 0) sentiment = 'positive';
+  if (positive.length - negative.length < 0) sentiment = 'negative';
+  if (positive.length - negative.length === 0) sentiment = 'neutral';
+                    
+  console.log(`\nThere are ${positive.length} positive words in the text.`);
+  console.log(`Positive sentiments: ${positive.join(', ')}`);
+
+  console.log(`\nThere are ${negative.length} negative words in the text.`);
+  console.log(`Negative sentiments: ${negative.join(', ')}`);
+
+  console.log(`\nThe sentiment of the text is ${sentiment}`);
+}
