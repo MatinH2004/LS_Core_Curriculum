@@ -37,13 +37,9 @@ function longestSentence(text) {
 }
 
 function sortByLength(a, b) {
-  if (countWords(a) > countWords(b)) {
-    return -1;
-  } else if (countWords(a) < countWords(b)) {
-    return 1;
-  } else {
-    return 0
-  }
+  if (countWords(a) > countWords(b)) return -1;
+  if (countWords(a) < countWords(b)) return 1;
+  return 0;
 }
 
 function countWords(sentence) {
