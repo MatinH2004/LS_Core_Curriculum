@@ -80,3 +80,16 @@ console.log(cleanPhoneNumber('one two three') === '0000000000');
 console.log(cleanPhoneNumber(123456789) === '0000000000');
 console.log(cleanPhoneNumber() === '0000000000');
 console.log(cleanPhoneNumber([1,2,3,4,5]) === '0000000000');
+
+// Updated Solution:
+
+function cleanNumber(input) {
+  if (typeof input !== 'string') return '0'.repeat(10);
+  
+  const digits = input.replace(/\D/g, '');
+
+  if (digits.length === 10) return digits;
+  if (digits.length === 11 && digits[0] === '1') return digits.slice(1);
+
+  return '0'.repeat(10);
+}
