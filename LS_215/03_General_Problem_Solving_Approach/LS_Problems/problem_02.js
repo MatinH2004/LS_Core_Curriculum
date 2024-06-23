@@ -89,3 +89,13 @@ console.log(validLuhn("4545") === false);                    // false
 
 // invalid input
 console.log(validLuhn("") === false);                        // false
+
+// Updated Solution:
+
+function checksum(input = '') {
+  if (input.length === 0) return false;
+
+  return (input.match(/\d/g) || []).map(Number)
+                                   .map((num, idx) => idx % 2 === 0 ? double(num) : num)
+                                   .reduce((acc, num) => num + acc, 0) % 10 === 0;
+}
