@@ -61,10 +61,13 @@ function primeNumberPrinter(input) {
 }
 
 function unique(array) {
-  return array.reduce((arr, num) => {
-    if (arr.indexOf(num) === -1) arr.push(num);
-    return arr;
-  }, []);
+  // return array.reduce((arr, num) => {
+  //   if (arr.indexOf(num) === -1) arr.push(num);
+  //   return arr;
+  // }, []);
+
+  // refactor:
+  return [...new Set(array)];
 }
 
 function isPrime(target) {
