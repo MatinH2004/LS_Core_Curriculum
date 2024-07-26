@@ -16,7 +16,6 @@ RULES:
   - assume the objects will not be empty
   - assume the objects will always contain a "name" and "notes" property
   - assume the "notes" property will always contain integer values
-  - assume result object is ordered in descending order
   - valid notes are 1, 2, 3, 4, 5. Ignore all other notes
   - goal: return an object with counts of all notes from all students
 
