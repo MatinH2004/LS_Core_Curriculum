@@ -58,103 +58,99 @@
     - logs to the console the names of all items in stock
     - ex. football, kitchen pot
 
---- Data Structure
-
-ItemCreator should be the parent class of ItemManager
-  - contains .create method
-
 */
 
-class ItemCreator {
-  create(itemName, category, quantity) {
-    if (this.validItem(itemName, category, quantity)) {
-      this.#items.push({
-        skuCode: this.generateSku(itemName, category),
-        itemName,
-        category,
-        quantity
-      });
+const ItemCreator = (() => {
+  function generateSkuCode(itemName, category) {
+    return (deleteSpaces(itemName).slice(0, 3) + deleteSpaces(category).slice(0, 2)).toUpperCase();
+  }
+
+  function isValidItemName(itemName) {
+    return deleteSpaces(itemName).length >= 5;
+  }
+
+  function isValidCategory(category) {
+    return deleteSpaces(category).length >= 5 && category.split(' ').length === 1;
+  }
+
+  function isValidQuantity(quantity) {
+    return quantity && Number.isInteger(quantity);
+  }
+
+  function deleteSpaces(string) {
+    return string.replace(/\s/g, '');
+  }
+
+  return function(itemName, category, quantity) {
+    if (isValidItemName(itemName) && isValidCategory(category) && isValidQuantity(quantity)) {
+      this.skuCode = generateSkuCode(itemName, category);
+      this.itemName = itemName;
+      this.category = category;
+      this.quantity = quantity;
     } else {
       return { notValid: true };
     }
-  }
+  };
+})();
 
-  generateSku(name, category) {
-    return (name.replace(' ', '').slice(0, 3) + category.slice(0, 2)).toUpperCase();
-  }
+const ItemManager = {
+  items: [],
+  
+  getItem(skuCode) {
+    return this.items.find(item => item.skuCode === skuCode);
+  },
 
-  actualLength(str) {
-    return str.replace(' ', '').length;
-  }
-
-  validItem(name, category, quantity) {
-    return (this.actualLength(name) >= 5 &&
-            this.actualLength(category) >= 5 &&
-            Number.isInteger(quantity));
-  }
-}
-
-class _ItemManager extends ItemCreator {
-  #items;
-
-  constructor() {
-    super();
-    this.#items = [];
-  }
-
-  update(skuCode, propObj) {
-    const item = this.findBySku(skuCode);
-    const keys = Object.keys(propObj);
-
-    for (let key of keys) {
-      item[key] = propObj[key];
+  create(itemName, category, quantity) {
+    const item = new ItemCreator(itemName, category, quantity);
+    if (item.notValid) {
+      return false;
+    } else {
+      this.items.push(item);
     }
-  }
+  },
+
+  update(skuCode, itemInfo) {
+    Object.assign(this.getItem(skuCode), itemInfo);
+  },
 
   delete(skuCode) {
-    const item = this.findBySku(skuCode);
-    this.#items = this.#items.filter(product => product[skuCode] !== item[skuCode]);
-  }
+    this.items.splice(this.items.indexOf(this.getItem(skuCode)), 1);
+  },
 
-  itemsInCategory(category) {
-    return this.#items.filter(product => product['category'] === category).join(', ');
-  }
-
-  items() {
-    return this.#items.join(', ')
-  }
+  list() {
+    return this.items;
+  },
 
   inStock() {
-    return this.#items.filter(product => product['quantity'] > 0).join(', ');
-  }
+    return this.items.filter(({quantity}) => quantity > 0);
+  },
 
-  findBySku(sku) {
-    return this.#items.find(({skuCode}) => sku === skuCode);
-  }
-}
+  itemsInCategory(targetCategory) {
+    return this.items.filter(({category}) => category === targetCategory);
+  },
+};
 
-class _ReportManager {
-  constructor(obj) {
-    this.items = obj;
-  }
+const ReportManager = {
+  init(itemManager) {
+    this.items = itemManager;
+  },
 
-  createReporter(sku) {
-    const item = this.items.findBySku(sku);
-    item = Object.create({}, item);
-    item.itemInfo = function() {
-      for (let key in item) {
-        console.log(`${key}: ${item[key]}`);
-      }
-    }
-  }
+  createReporter(skuCode) {
+    const item = this.items.getItem(skuCode);
+
+    return {
+      itemInfo() {
+        Object.keys(item).forEach(key => {
+          console.log(`${key}: ${item[key]}`);
+        });
+      },
+    };
+  },
 
   reportInStock() {
-    return this.items.inStock();
+    console.log(this.items.inStock().map(({itemName}) => itemName).join(', '));
   }
 }
-
-const ItemManager = new _ItemManager();
-const ReportManager = new _ReportManager(ItemManager);
 
 ItemManager.create('basket ball', 'sports', 0);           // valid item
 ItemManager.create('asd', 'sports', 0);
