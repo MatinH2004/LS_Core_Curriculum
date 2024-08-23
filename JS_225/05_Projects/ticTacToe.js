@@ -110,10 +110,23 @@ class Square {
 class Player {
   constructor(marker) {
     this.marker = marker;
+    this.score = 0;
   }
 
   getMarker() {
     return this.marker;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  incrementScore() {
+    this.score += 1;
+  }
+
+  resetScore() {
+    this.score = 0;
   }
 }
 
@@ -130,6 +143,7 @@ class CPU extends Player {
 }
 
 class TTTGame {
+  static WINNING_SCORE = 3;
   static WINNING_LINES = [
     ["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], // rows
     ["1", "4", "7"], ["2", "5", "8"], ["3", "6", "9"], // cols
@@ -144,29 +158,38 @@ class TTTGame {
 
   play() {
     this.displayWelcomeMessages();
+    this.resetPlayerScores();
 
-    let currentPlayer = this.human;
-
-    this.board.reset();
-    this.board.display();
-
-    while (true) {
-      this.playerMoves(currentPlayer);
-      if (this.gameOver()) break;
-
+    while (!this.gameWinner()) {
+      this.displayScores();
+      let currentPlayer = this.human;
+  
+      this.board.reset();
+      this.board.display();
+  
+      while (true) {
+        this.playerMoves(currentPlayer);
+        if (this.gameOver()) break;
+  
+        this.board.displayWithClear();
+        currentPlayer = this.togglePlayer(currentPlayer);
+      }
+  
+      this.displayResult();
       this.board.displayWithClear();
-      currentPlayer = this.togglePlayer(currentPlayer);
     }
 
-    this.board.displayWithClear();
-    this.displayResult();
+    this.displayGameResults();
+    this.displayScores();
 
+    if (this.restartGame()) this.play();
     this.displayGoodbyeMessage();
   }
 
   displayWelcomeMessages() {
     this.clearScreen()
     this.prompt("Welcome to Tic Tac Toe!");
+    this.prompt("First to 3 points WINS!")
   }
 
   displayGoodbyeMessage() {
@@ -181,6 +204,23 @@ class TTTGame {
     } else {
       this.prompt('This round is a tie!');
     }
+
+    this.pressEnter();
+  }
+
+  displayGameResults() {
+    if (this.human.getScore() === TTTGame.WINNING_SCORE) {
+      this.prompt('You are the GAME WINNER!');
+    } else if (this.cpu.getScore() === TTTGame.WINNING_SCORE) {
+      this.prompt('You lost the GAME. Idiot.')
+    }
+
+    this.pressEnter();
+  }
+
+  displayScores() {
+    this.prompt(`Your Score: ${this.human.getScore()}`);
+    this.prompt(`Comp Score: ${this.cpu.getScore()}`);
   }
 
   playerMoves(currentPlayer) {
@@ -254,13 +294,43 @@ class TTTGame {
   }
 
   someoneWon() {
-    return this.isWinner(this.human) || this.isWinner(this.cpu);
+    if (this.isWinner(this.human)) {
+      this.human.incrementScore();
+      return true;
+    } else if (this.isWinner(this.cpu)) {
+      this.cpu.incrementScore();
+      return true;
+    }
+
+    return false;
   }
 
   isWinner(player) {
     return TTTGame.WINNING_LINES.some(row => {
       return this.board.countMarkersFor(player, row) === 3;
     });
+  }
+
+  gameWinner() {
+    return (this.human.score === TTTGame.WINNING_SCORE) ||
+           (this.cpu.score === TTTGame.WINNING_SCORE);
+  }
+
+  restartGame() {
+    let choice;
+    this.prompt('That was fun! Play again? [yes] / [no]:')
+
+    while (true) {
+      choice = rlSync.question().toLowerCase();
+      if (choice.startsWith('y')) return true;
+      if (choice.startsWith('n')) return false;
+      this.prompt('Sorry, that\'s not an option.');
+    }
+  }
+
+  resetPlayerScores() {
+    this.human.resetScore();
+    this.cpu.resetScore();
   }
 
   togglePlayer(currentPlayer) {
@@ -272,7 +342,7 @@ class TTTGame {
   }
 
   pressEnter() {
-    this.prompt('\nPress [enter] to continue');
+    this.prompt('Press [enter] to continue');
     rlSync.question();
   }
 
