@@ -1,93 +1,30 @@
-let me = {
-  firstName: 'Matin',
-  lastName: 'HP',
-};
-
-// let me = {};
-// me.firstName = 'Matin';
-// me.lastName = 'HP';
-
-// function fullName(person) {
-//   console.log(person.firstName + ' ' + person.lastName);
-// }
-
-let friend = {
-  firstName: 'Eric',
-  lastName: 'Bullington',
-};
-
-// fullName(friend);
-
-let mother = {
-  firstName: 'Amber',
-  lastName: 'Doe',
-};
-
-let father = {
-  firstName: 'Shane',
-  lastName: 'Doe',
-};
-
-// fullName(mother); // => Amber Doe
-// fullName(father); // => Shane Doe
-
-// let people = [];
-
-// people.push(me);
-// people.push(friend);
-// people.push(mother);
-// people.push(father);
-
-// First go:
-
-// function rollCall(collection) {
-//   let length;
-//   let i;
-//   for (i = 0, length = collection.length; i < length; i += 1) {
-//     fullName(collection[i]);
-//   }
-// }
-
-// rollCall(people);
-
-// Second go:
-
-// function rollCall(collection) {
-//   collection.forEach(function(item) {
-//     fullName(item);
-//   });
-// }
-
-// rollCall(people);
-
-// Third go:
-
-// function rollCall(collection) {
-//   collection.forEach(fullName);
-// }
-
-// rollCall(people);
-
 let people = {
-  collection: [me, friend, mother, father],
+  collection: [],
+  index: 0,
+
   fullName(person) {
     console.log(person.firstName + ' ' + person.lastName);
   },
 
   rollCall() {
-    this.collection.forEach(this.fullName);
+    this.collection.forEach(person => this.fullName(person));
   },
 
   add(person) {
+    if (this.isInvalidPerson(person, false)) {
+      return;
+    }
+
+    person.index = ++this.index;
     this.collection.push(person);
   },
 
   getIndex(person) {
     let index = -1;
-    this.collection.forEach((comparator, i) => {
+    this.collection.forEach((comparator) => {
       if (comparator.firstName === person.firstName &&
           comparator.lastName === person.lastName) {
-        index = i;
+        index = comparator.index;
       }
     });
 
@@ -95,11 +32,12 @@ let people = {
   },
 
   remove(person) {
-    let index = this.getIndex(person);
+    let index;
     if (this.isInvalidPerson(person)) {
       return;
-    } 
+    }
 
+    index = this.getIndex(person);
     if (index === -1) {
       return;
     }
@@ -107,12 +45,10 @@ let people = {
     this.collection.splice(index, 1);
   },
 
-  add(person) {
-    if (this.isInvalidPerson(person)) {
-      return;
-    }
-
-    this.collection.push(person);
+  isInvalidPerson(person, checkIndex = true) {
+    return typeof person.firstName !== 'string' ||
+           typeof person.lastName !== 'string' ||
+           (checkIndex && typeof person.index !== 'number');
   },
 
   get(person) {
@@ -134,15 +70,16 @@ let people = {
     } else {
       this.collection[existingPersonId] = person;
     }
-  },
+  }
+}
 
-  isInvalidPerson(person) {
-    return typeof person.firstName === 'string' ||
-           typeof person.lastName === 'string';
-  },
-};
+let p1 = { firstName: 'John', lastName: 'Smith' };
+let p2 = { firstName: 'Jane', lastName: 'Doe' };
 
-console.log(people.getIndex(friend));
-people.remove(friend);
-console.log(people.getIndex(friend));
+people.add(p1);
+people.add(p2);
+
 console.log(people.collection);
+people.rollCall();
+
+console.log(people.getIndex(p2));
