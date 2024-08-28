@@ -10,14 +10,11 @@ const invoices = {
   },
 
   payInvoice(name) {
-    let unpaid = [];
+    const unpaid = [];
 
     this.unpaid.forEach(invoice => {
-      if (invoice['name'] === name) {
-        this.paid.push(invoice);
-      } else {
-        unpaid.push(invoice);
-      }
+      if (invoice.name === name) this.paid.push(invoice);
+      else unpaid.push(invoice);
     });
 
     this.unpaid = unpaid;
