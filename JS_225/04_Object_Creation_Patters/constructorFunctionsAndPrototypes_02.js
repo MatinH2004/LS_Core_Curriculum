@@ -56,7 +56,7 @@ function User(first, last) {
 function createObject(obj) {
   function F() {};
   F.prototype = obj;
-  return F();
+  return new F();
 }
 
 function createdObject(obj) {
