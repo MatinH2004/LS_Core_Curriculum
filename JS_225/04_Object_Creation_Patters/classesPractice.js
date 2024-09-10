@@ -213,78 +213,79 @@
 
 // -------
 
-// class Pet {
-//   constructor(type, name) {
-//     this.type = type;
-//     this.name = name;
-//   }
+class Pet {
+  constructor(animal, name) {
+    this.animal = animal;
+    this.name = name;
+  }
 
-//   get info() {
-//     return `a ${this.type} named ${this.name}`;
-//   }
-// }
+  toString() {
+    return `a ${this.animal} named ${this.name}`;
+  }
+}
 
-// class Owner {
-//   constructor(name) {
-//     this.name = name;
-//     this.pets = [];
-//   }
+class Owner {
+  constructor(name) {
+    this.name = name;
+    this.pets = [];
+  }
 
-//   numberOfPets() {
-//     return this.pets.length;
-//   }
+  numberOfPets() {
+    return this.pets.length;
+  }
 
-//   adoptPet(pet) {
-//     this.pets.push(pet);
-//   }
-// }
+  toString() {
+    return this.name;
+  }
+}
 
-// class Shelter {
-//   constructor() {
-//     this.clients = [];
-//   }
+class Shelter {
+  constructor() {
+    this.owners = [];
+  }
 
-//   adopt(person, pet) {
-//     if (this.clients.indexOf(person) === -1) {
-//       this.clients.push(person);
-//     }
-//     person.adoptPet(pet);
-//   }
+  adopt(person, animal) {
+    if (this.owners.indexOf(person) === -1) {
+      this.owners.push(person);
+    }
 
-//   printAdoptions() {
-//     this.clients.forEach(owner => {
-//       console.log(`\n${owner.name} has adopted the following pets:`);
-//       owner.pets.forEach(pet => {
-//         console.log(pet.info);
-//       });
-//     });
-//   }
-// }
+    person.pets.push(animal);
+  }
 
-// let butterscotch = new Pet('cat', 'Butterscotch');
-// let pudding      = new Pet('cat', 'Pudding');
-// let darwin       = new Pet('bearded dragon', 'Darwin');
-// let kennedy      = new Pet('dog', 'Kennedy');
-// let sweetie      = new Pet('parakeet', 'Sweetie Pie');
-// let molly        = new Pet('dog', 'Molly');
-// let chester      = new Pet('fish', 'Chester');
+  printAdoptions() {
+    this.owners.forEach(owner => {
+      console.log(`${owner} has adopted the following pets:`);
+      owner.pets.forEach(animal => {
+        console.log(`${animal}`);
+      });
+    });
+  }
+}
 
-// let phanson = new Owner('P Hanson');
-// let bholmes = new Owner('B Holmes');
+let butterscotch = new Pet('cat', 'Butterscotch');
+let pudding      = new Pet('cat', 'Pudding');
+let darwin       = new Pet('bearded dragon', 'Darwin');
+let kennedy      = new Pet('dog', 'Kennedy');
+let sweetie      = new Pet('parakeet', 'Sweetie Pie');
+let molly        = new Pet('dog', 'Molly');
+let chester      = new Pet('fish', 'Chester');
 
-// let shelter = new Shelter();
-// shelter.adopt(phanson, butterscotch);
-// shelter.adopt(phanson, pudding);
-// shelter.adopt(phanson, darwin);
-// shelter.adopt(bholmes, kennedy);
-// shelter.adopt(bholmes, sweetie);
-// shelter.adopt(bholmes, molly);
-// shelter.adopt(bholmes, chester);
+let phanson = new Owner('P Hanson');
+let bholmes = new Owner('B Holmes');
 
-// shelter.printAdoptions();
+let shelter = new Shelter();
+shelter.adopt(phanson, butterscotch);
+shelter.adopt(phanson, pudding);
+shelter.adopt(phanson, darwin);
+shelter.adopt(bholmes, kennedy);
+shelter.adopt(bholmes, sweetie);
+shelter.adopt(bholmes, molly);
+shelter.adopt(bholmes, chester);
 
-// console.log(`${phanson.name} has ${phanson.numberOfPets()} adopted pets.`);
-// console.log(`${bholmes.name} has ${bholmes.numberOfPets()} adopted pets.`);
+shelter.printAdoptions();
+
+console.log(`${phanson.name} has ${phanson.numberOfPets()} adopted pets.`);
+console.log(`${bholmes.name} has ${bholmes.numberOfPets()} adopted pets.`);
 
 // P Hanson has adopted the following pets:
 // a cat named Butterscotch
