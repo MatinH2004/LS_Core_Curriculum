@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice</title>
+  <style>
+    body {
+      margin: 50px;
+    }
+
+    ul {
+      background-color: #a7ceff;
+      border: 10px solid blue;
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      display: inline-block;
+      background-color: #ffc;
+      border: 10px solid red;
+      box-sizing: border-box;
+      line-height: 120px;
+      min-height: 120px;
+      text-align: center;
+      width: 25%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fix - Using comments -->
+  <ul>
+    <li>Item 1</li><!--
+    --><li>Item 2</li><!--
+    --><li>Item 3</li><!--
+    --><li>Item 4</li>
+  </ul>
+
+  <!-- Fix - Skipping closing tags -->
+  <ul>
+    <li>Item 1
+    <li>Item 2
+    <li>Item 3
+    <li>Item 4
+  </ul>
+
+  <!-- Fix - By removing spaces -->
+  <ul>
+    <li>Item 1</li
+    ><li>Item 2</li
+    ><li>Item 3</li
+    ><li>Item 4</li>
+  </ul>
+
+  <!-- Fix - set nav css rule to font-size: 0 -->
+  <!-- A space that has zero font-size is zero width -->
+</body>
+</html>
