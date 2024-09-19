@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probelem 1</title>
+  <style>
+    table {
+      background-color: cyan;
+      /* border-spacing: 0; */
+      border-collapse: collapse;
+    }
+
+    /* .odd-row {
+      background-color: orange;
+    }
+
+    .even-row {
+      background-color: yellow;
+    } */
+
+    tbody tr:nth-child(2n+1) {
+      background-color: orange;
+    }
+
+    tbody tr:nth-child(2n+2) {
+      background-color: yellow;
+    }
+
+    /* This variation of :nth-child() uses the 2n+ part of the
+       parameter to select every other row. */
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="odd-row">
+        <td>Apple</td>
+        <td>34</td>
+        <td>$3.99/lb</td>
+      </tr>
+      <tr class="even-row">
+        <td>Banana</td>
+        <td>116</td>
+        <td>$1.69/lb</td>
+      </tr>
+      <tr class="odd-row">
+        <td>Carrot</td>
+        <td>42</td>
+        <td>$2.49/lb</td>
+      </tr>
+      <tr class="even-row">
+        <td>Kiwi</td>
+        <td>18</td>
+        <td>$0.69 ea</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
