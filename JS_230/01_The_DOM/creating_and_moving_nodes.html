@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Empty Page</title>
+  </head>
+  <body>
+  </body>
+  <script>
+    // create element
+    let paragraph = document.createElement('p');
+    paragraph.textContent = 'This is a test.';
+    document.body.appendChild(paragraph);
+
+    // create text node
+    let text = document.createTextNode('This is a text node');
+    document.body.appendChild(text);
+
+    // copying elements
+    let paragraph2 = paragraph.cloneNode(true);
+    document.body.appendChild(paragraph2);
+
+    // remove paragraphs
+    paragraph.remove();
+    paragraph2.remove();
+  </script>
+</html>

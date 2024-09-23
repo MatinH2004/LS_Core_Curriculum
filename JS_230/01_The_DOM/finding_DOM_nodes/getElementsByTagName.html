@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>On the River</title>
+  </head>
+  <body>
+    <h1>On The River</h1>
+    <p>The sun is low</p>
+    <p>The waters flow</p>
+  </body>
+  <script>
+    function walk(node, callback) {
+      callback(node);
+      for (let index = 0; index < node.childNodes.length; index += 1) {
+        walk(node.childNodes[index], callback);
+      }
+    }
+
+    function getElementsByTagName(tagName) {
+      let matches = [];
+      
+      walk(document.body, node => {
+        if (node.nodeName.toLowerCase() === tagName) {
+          matches.push(node);
+        }
+      });
+
+      return matches;
+    }
+
+    // brute force method
+    getElementsByTagName('p').forEach(paragraph => {
+      paragraph.classList.add('article-text');
+    });
+
+    // using built in method
+    let pTags = document.getElementsByClassName('intro');
+    [].slice.call(pTags).forEach(node => node.classList.add('article-text'));
+  </script>
+</html>
