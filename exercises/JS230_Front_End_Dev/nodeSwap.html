@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Node Swap</title>
+    <script>
+      // function nodeSwap(id1, id2) {
+      //   const node1 = document.getElementById(id1);
+      //   const node2 = document.getElementById(id2);
+
+      //   if (!node1 || !node2) return undefined;
+      //   if (node1.contains(node2) || node2.contains(node1)) return undefined;
+
+      //   const clone1 = node1.cloneNode(true);
+      //   const clone2 = node2.cloneNode(true);
+
+      //   node1.parentNode.replaceChild(clone2, node1);
+      //   node2.parentNode.replaceChild(clone1, node2);
+
+      //   return true;
+      // }
+
+      // further exploration
+      function nodeSwap(id1, id2) {
+        const node1 = document.getElementById(id1);
+        const node2 = document.getElementById(id2);
+
+        if (!node1 || !node2 || node1.parentNode !== node2.parentNode) return;
+
+        let tempNode = document.createElement('div');
+
+        node1.replaceWith(tempNode);
+        node2.replaceWith(node1);
+        tempNode.replaceWith(node2);
+
+        return true;
+      }
+
+      window.onload = () => {
+        // invalid swaps
+        console.log(nodeSwap(1, 20)); // undefined
+        console.log(nodeSwap(1, 4)); // undefined
+        console.log(nodeSwap(9, 3)); // undefined
+
+        // valid swaps
+        console.log(nodeSwap(1, 2)); // true
+        console.log(nodeSwap(3, 1)); // true
+        console.log(nodeSwap(7, 9)); // true
+      }
+    </script>
+  </head>
+  <body>
+    <div id="1">
+      <div id="4"></div>
+      <div id="5">
+        <div id="6"></div>
+      </div>
+    </div>
+    <div id="2"></div>
+    <div id="3">
+      <div id="7"></div>
+      <div id="8"></div>
+      <div id="9"></div>
+    </div>
+  </body>
+</html>
