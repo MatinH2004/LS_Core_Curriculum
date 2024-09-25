@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Nodes to Array</title>
+    <script>
+      function nodesToArr(currentGen = document.body) {
+        return [currentGen.tagName, [...currentGen.children].map(nodesToArr)];
+      }
+    </script>
+  </head>
+  <body>
+    <div id="1">
+      <div id="4"></div>
+      <div id="5">
+        <div id="6"></div>
+      </div>
+    </div>
+    <div id="2"></div>
+    <div id="3">
+      <div id="7"></div>
+      <div id="8"></div>
+      <div id="9"></div>
+    </div>
+  </body>
+</html>
