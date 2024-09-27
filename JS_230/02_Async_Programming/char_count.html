@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Char Counter</title>
+  <style>
+    .composer {
+      background: #f5f5f5;
+      padding:  1em;
+      width:  30em;
+    }
+
+    .composer textarea {
+      width: 100%;
+      height: 4em;
+    }
+
+    .composer textarea.invalid {
+      color: red;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let composer = document.querySelector('.composer');
+      let textarea = document.querySelector('textarea');
+      let counter = composer.querySelector('.counter');
+      let button = composer.querySelector('button');
+
+      function updateCounter() {
+        let length = textarea.value.length;
+        let remaining = 140 - length;
+        let message = `${remaining.toString()} characters remaining`;
+        let invalid = remaining < 0;
+
+        textarea.classList.toggle('invalid', invalid);
+        button.disabled = invalid;
+        counter.textContent = message;
+      }
+
+      textarea.addEventListener('keyup', updateCounter);
+
+      updateCounter();
+    })
+
+  </script>
+</head>
+<body>
+  <div class="composer">
+    <textarea placeholder="Enter your message"></textarea>
+    <p class="counter"></p>
+    <button type="submit">Post Message</button>
+  </div>
+</body>
+</html>
