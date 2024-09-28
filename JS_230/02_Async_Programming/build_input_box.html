@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Input Box</title>
+  <style>
+    .text-field {
+      border: solid 1px #ccc;
+      padding: 1em;
+      cursor: pointer;
+      font-family: sans-serif;
+      font-size: 18px;
+      overflow: hidden;
+      width: 300px; 
+    }
+
+    .text-field .content {
+      display: inline-block;
+      height: 21px;
+      float: left;
+      white-space: pre;
+    }
+
+    .text-field.focused {
+      border-color: black;
+    }
+
+    .text-field.cursor .content {
+      border-right: solid 2px black;
+    }
+  </style>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      let textField = document.querySelector('.text-field');
+      let cursorInterval;
+
+      textField.addEventListener('click', event => {
+        event.stopPropagation();
+        textField.classList.add('focused');
+
+        cursorInterval = cursorInterval || setInterval(() => textField.classList.toggle('cursor'), 500);
+      });
+
+      document.addEventListener('keydown', event => {
+        if (textField.classList.contains('focused')) {
+          let contentDiv = textField.querySelector('.content');
+
+          if (event.key === 'Backspace') {
+            contentDiv.textContent = contentDiv.textContent.slice(0, contentDiv.textContent.length - 1);
+          } else if (event.key.length === 1) {
+            contentDiv.textContent += event.key;
+          }
+        }
+      });
+
+      document.addEventListener('click', event => {
+        clearInterval(cursorInterval);
+        cursorInterval = null;
+        
+        if (textField.classList.contains('focused')) {
+          textField.classList.remove('focused');
+          textField.classList.remove('cursor');
+        }
+      });
+    });
+
+  </script>
+</head>
+<body>
+  <div class="text-field">
+    <div class="content"></div>
+  </div>
+</body>
+</html>
