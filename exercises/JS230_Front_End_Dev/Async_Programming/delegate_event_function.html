@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <title>Event Delegation Function</title>
+    <script defer>
+      document.addEventListener('DOMContentLoaded', () => {
+        function delegateEvent(parentElement, selector, eventType, callback) {
+          if (parentElement && parentElement instanceof Element) {
+            return !parentElement.addEventListener(eventType, event => {
+              const validTargets = [].slice.call(parentElement.querySelector(selector));
+              if (validTargets.includes(event.target)) {
+                callback(event);
+              }
+            });
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <main>
+      <section>
+        <h1>Header</h1>
+        <p>Content</p>
+      </section>
+      <aside>
+        <h2>Sub Side Notes</h2>
+        <p>Note 1</p>
+        <p>Note 2</p>
+      </aside>
+    </main>
+    <nav>
+      <p>Side Note</p>
+    </nav>
+  </body>
+</html>

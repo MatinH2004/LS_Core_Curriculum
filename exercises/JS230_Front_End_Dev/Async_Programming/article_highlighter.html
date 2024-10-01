@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Highlighter</title>
+</head>
+<body>
+  <header>
+    <h1>Nav</h1>
+    <ul> 
+      <li><a href="#article-1">Article 1</a></li>
+      <li><a href="#article-2">Article 2</a></li>
+      <li><a href="#article-3">Article 3</a></li>    
+      <li><a href="#article-4">Article 4</a></li>
+    </ul>
+  </header>
+  <style>
+    .highlight {
+      border: 1px dotted black;
+    }
+
+    header li {
+      display: inline-block;
+    }
+
+    header ul {
+      padding: 0;
+    }
+  </style>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+    //   function highlight({target}) {
+    //     let element;
+    //     let id;
+        
+    //     removeHighlight();
+        
+    //     if (target.tagName === 'A') {
+    //       id = target.href.match('#article-[0-9]+')[0];
+    //       element = document.querySelector(id);
+    //     } else {
+    //       element = document.querySelector('main');
+    //     }
+        
+    //     element.classList.add('highlight');
+    //   }
+      
+    //   function removeHighlight() {
+    //     const highlighted = document.querySelector('.highlight');
+    //     if (highlighted) {
+    //       highlighted.classList.remove('highlight');
+    //     }
+    //   }
+      
+    //   const nav = document.querySelector('header ul');
+    //   const main = document.querySelector('main');
+      
+    //   nav.addEventListener('click', highlight);
+    //   document.addEventListener('click', highlight);
+      
+    //   main.addEventListener('click', e => {
+    //     e.preventDefault();
+    //     let article = e.target;
+    //     if (article.tagName !== 'ARTICLE') {
+    //       article = article.parentNode;
+    //     }
+        
+    //     if (article.tagName === 'ARTICLE') {
+    //       e.stopPropagation();
+    //       removeHighlight();
+    //       article.classList.add('highlight');
+    //     }
+    //   });
+
+    // REFACTORED SOLUTION:
+
+      function highlight(element) {
+        const articles = document.querySelectorAll('main, article');
+        console.log(articles);
+        articles.forEach(article => article.classList.remove('highlight'));
+        element.classList.add('highlight');
+      }
+
+      document.addEventListener('click', e => {
+        const clicked = e.target;
+        let toHighlight = document.querySelector(clicked.getAttribute('href'));
+        toHighlight = toHighlight || clicked.closest('article');
+        toHighlight = toHighlight || document.querySelector('main');
+        highlight(toHighlight);
+      });
+    });
+  </script>
+  <main>
+    <h1>Articles</h1>
+    <article id="article-1">
+      <h2>Article 1</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras varius pulvinar aliquam. Suspendisse sed metus vel diam pulvinar lacinia. Mauris odio ante, volutpat vitae arcu sit amet, sodales iaculis nibh. Morbi tincidunt, est non pharetra finibus, risus eros rhoncus velit, et eleifend ligula erat quis odio. Pellentesque sit amet nulla lacus. Fusce mollis aliquet ex vitae pellentesque. Suspendisse ex velit, eleifend in porta vel, porttitor a felis. Vivamus vestibulum, nulla ut iaculis dapibus, eros nisl molestie elit, at viverra neque arcu vel tellus. Vestibulum sed eros purus.
+  
+  Donec rhoncus commodo lorem. Ut id porta massa. Etiam accumsan risus eget nunc convallis convallis. Etiam eleifend metus vel libero aliquet, non convallis velit pellentesque. Maecenas vitae posuere libero. Nullam maximus sagittis metus vitae condimentum. Praesent rutrum scelerisque vulputate. Suspendisse egestas dui magna, a tempus turpis placerat vel. Integer venenatis varius feugiat. Quisque a diam eget ex lacinia porttitor. Aliquam congue sapien in tempor accumsan. Morbi sollicitudin est eget ipsum eleifend, et vestibulum risus fringilla. Vestibulum fringilla nibh est, lacinia commodo justo mollis ac. Cras vestibulum odio in varius vehicula. Praesent at sodales nisl.
+  
+  Phasellus elit enim, fermentum et finibus ut, commodo non lorem. Aliquam bibendum sapien at arcu semper, eget ultrices elit lacinia. In sed nulla quis massa sagittis cursus eu tempor odio. Nulla at imperdiet ex. Maecenas hendrerit ornare dui, nec porta dolor aliquam quis. Curabitur sollicitudin enim vel vulputate suscipit. Quisque vitae lobortis velit. Maecenas a dui pretium, suscipit elit non, gravida odio. Etiam feugiat a turpis vitae sagittis. Etiam ac nulla id metus semper aliquam eget vitae justo. Vivamus sed odio ornare, commodo tortor eget, pretium metus. Sed a aliquam ligula. Nullam a quam dui. Cras hendrerit viverra nisi, et faucibus orci elementum at.</p>
+    </article>
+    <article id="article-2">
+      <h2>Article 2</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras varius pulvinar aliquam. Suspendisse sed metus vel diam pulvinar lacinia. Mauris odio ante, volutpat vitae arcu sit amet, sodales iaculis nibh. Morbi tincidunt, est non pharetra finibus, risus eros rhoncus velit, et eleifend ligula erat quis odio. Pellentesque sit amet nulla lacus. Fusce mollis aliquet ex vitae pellentesque. Suspendisse ex velit, eleifend in porta vel, porttitor a felis. Vivamus vestibulum, nulla ut iaculis dapibus, eros nisl molestie elit, at viverra neque arcu vel tellus. Vestibulum sed eros purus.
+  
+  Donec rhoncus commodo lorem. Ut id porta massa. Etiam accumsan risus eget nunc convallis convallis. Etiam eleifend metus vel libero aliquet, non convallis velit pellentesque. Maecenas vitae posuere libero. Nullam maximus sagittis metus vitae condimentum. Praesent rutrum scelerisque vulputate. Suspendisse egestas dui magna, a tempus turpis placerat vel. Integer venenatis varius feugiat. Quisque a diam eget ex lacinia porttitor. Aliquam congue sapien in tempor accumsan. Morbi sollicitudin est eget ipsum eleifend, et vestibulum risus fringilla. Vestibulum fringilla nibh est, lacinia commodo justo mollis ac. Cras vestibulum odio in varius vehicula. Praesent at sodales nisl.
+  
+  Phasellus elit enim, fermentum et finibus ut, commodo non lorem. Aliquam bibendum sapien at arcu semper, eget ultrices elit lacinia. In sed nulla quis massa sagittis cursus eu tempor odio. Nulla at imperdiet ex. Maecenas hendrerit ornare dui, nec porta dolor aliquam quis. Curabitur sollicitudin enim vel vulputate suscipit. Quisque vitae lobortis velit. Maecenas a dui pretium, suscipit elit non, gravida odio. Etiam feugiat a turpis vitae sagittis. Etiam ac nulla id metus semper aliquam eget vitae justo. Vivamus sed odio ornare, commodo tortor eget, pretium metus. Sed a aliquam ligula. Nullam a quam dui. Cras hendrerit viverra nisi, et faucibus orci elementum at.</p>
+    </article>
+    <article id="article-3">
+      <h2>Article 3</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras varius pulvinar aliquam. Suspendisse sed metus vel diam pulvinar lacinia. Mauris odio ante, volutpat vitae arcu sit amet, sodales iaculis nibh. Morbi tincidunt, est non pharetra finibus, risus eros rhoncus velit, et eleifend ligula erat quis odio. Pellentesque sit amet nulla lacus. Fusce mollis aliquet ex vitae pellentesque. Suspendisse ex velit, eleifend in porta vel, porttitor a felis. Vivamus vestibulum, nulla ut iaculis dapibus, eros nisl molestie elit, at viverra neque arcu vel tellus. Vestibulum sed eros purus.
+  
+  Donec rhoncus commodo lorem. Ut id porta massa. Etiam accumsan risus eget nunc convallis convallis. Etiam eleifend metus vel libero aliquet, non convallis velit pellentesque. Maecenas vitae posuere libero. Nullam maximus sagittis metus vitae condimentum. Praesent rutrum scelerisque vulputate. Suspendisse egestas dui magna, a tempus turpis placerat vel. Integer venenatis varius feugiat. Quisque a diam eget ex lacinia porttitor. Aliquam congue sapien in tempor accumsan. Morbi sollicitudin est eget ipsum eleifend, et vestibulum risus fringilla. Vestibulum fringilla nibh est, lacinia commodo justo mollis ac. Cras vestibulum odio in varius vehicula. Praesent at sodales nisl.
+  
+  Phasellus elit enim, fermentum et finibus ut, commodo non lorem. Aliquam bibendum sapien at arcu semper, eget ultrices elit lacinia. In sed nulla quis massa sagittis cursus eu tempor odio. Nulla at imperdiet ex. Maecenas hendrerit ornare dui, nec porta dolor aliquam quis. Curabitur sollicitudin enim vel vulputate suscipit. Quisque vitae lobortis velit. Maecenas a dui pretium, suscipit elit non, gravida odio. Etiam feugiat a turpis vitae sagittis. Etiam ac nulla id metus semper aliquam eget vitae justo. Vivamus sed odio ornare, commodo tortor eget, pretium metus. Sed a aliquam ligula. Nullam a quam dui. Cras hendrerit viverra nisi, et faucibus orci elementum at.</p>
+    </article>
+    <article id="article-4">
+      <h2>Article 4</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras varius pulvinar aliquam. Suspendisse sed metus vel diam pulvinar lacinia. Mauris odio ante, volutpat vitae arcu sit amet, sodales iaculis nibh. Morbi tincidunt, est non pharetra finibus, risus eros rhoncus velit, et eleifend ligula erat quis odio. Pellentesque sit amet nulla lacus. Fusce mollis aliquet ex vitae pellentesque. Suspendisse ex velit, eleifend in porta vel, porttitor a felis. Vivamus vestibulum, nulla ut iaculis dapibus, eros nisl molestie elit, at viverra neque arcu vel tellus. Vestibulum sed eros purus.
+  
+  Donec rhoncus commodo lorem. Ut id porta massa. Etiam accumsan risus eget nunc convallis convallis. Etiam eleifend metus vel libero aliquet, non convallis velit pellentesque. Maecenas vitae posuere libero. Nullam maximus sagittis metus vitae condimentum. Praesent rutrum scelerisque vulputate. Suspendisse egestas dui magna, a tempus turpis placerat vel. Integer venenatis varius feugiat. Quisque a diam eget ex lacinia porttitor. Aliquam congue sapien in tempor accumsan. Morbi sollicitudin est eget ipsum eleifend, et vestibulum risus fringilla. Vestibulum fringilla nibh est, lacinia commodo justo mollis ac. Cras vestibulum odio in varius vehicula. Praesent at sodales nisl.
+  
+  Phasellus elit enim, fermentum et finibus ut, commodo non lorem. Aliquam bibendum sapien at arcu semper, eget ultrices elit lacinia. In sed nulla quis massa sagittis cursus eu tempor odio. Nulla at imperdiet ex. Maecenas hendrerit ornare dui, nec porta dolor aliquam quis. Curabitur sollicitudin enim vel vulputate suscipit. Quisque vitae lobortis velit. Maecenas a dui pretium, suscipit elit non, gravida odio. Etiam feugiat a turpis vitae sagittis. Etiam ac nulla id metus semper aliquam eget vitae justo. Vivamus sed odio ornare, commodo tortor eget, pretium metus. Sed a aliquam ligula. Nullam a quam dui. Cras hendrerit viverra nisi, et faucibus orci elementum at.</p>
+    </article>
+  </main>
+</body>
+</html>
