@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example</title>
+</head>
+<style>
+  #store {
+  border: solid 1px black;
+  padding: 0 1em;
+  float: left;
+  h1 {
+    font-size: 1.2em;
+  }
+  
+  h2 {
+    font-size: 1em;
+  }
+}
+</style>
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    let store = document.getElementById('store');
+
+    let request = new XMLHttpRequest();
+    request.open('GET', 'https://ls-230-web-store-demo.herokuapp.com/products');
+
+    request.addEventListener('load', () => store.innerHTML = request.response);
+    request.send();
+
+    store.addEventListener('click', event => {
+      let target = event.target;
+      if (target.tagName !== 'A') return;
+
+      event.preventDefault();
+
+      let request = new XMLHttpRequest();
+      request.open(
+        'GET',
+        'https://ls-230-web-store-demo.herokuapp.com' + target.getAttribute('href')
+      );
+
+      request.addEventListener('load', () => store.innerHTML = request.response);
+      request.send();
+    })
+  });
+</script>
+<body>
+  <h1>Existing Page</h1>
+
+  <div id="store"></div>
+</body>
+</html>

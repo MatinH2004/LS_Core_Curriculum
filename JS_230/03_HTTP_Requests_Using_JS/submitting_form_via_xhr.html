@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example</title>
+</head>
+<script defer>
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let form = document.getElementById('form');
+
+    form.addEventListener('submit', event => {
+      // prevent browser from submitting the form
+      event.preventDefault();
+
+      // access the inputs using form.elements and serialize into a string
+      let keysAndValues = [];
+      for (let idx = 0; idx < form.elements.length; idx++) {
+        let element = form.elements[idx];
+        let key;
+        let value;
+
+        if (element.type !== 'submit') {
+          key = encodeURIComponent(element.name);
+          value = encodeURIComponent(element.value);
+          keysAndValues.push(`${key}=${value}`);
+        }
+      }
+
+      let data = keysAndValues.join('&');
+
+      // submit the data
+      let request = new XMLHttpRequest();
+      request.open(form.method, `https://lsjs230-book-catalog.herokuapp.com/${form.getAttribute('action')}`);
+      request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+      request.addEventListener('load', () => {
+        if (request.status === 201) {
+          console.log(`This book was added to the catalog: ${request.responseText}`);
+        }
+      });
+
+      request.send(data);
+    });
+  })
+  
+</script>
+<body>
+  <form id="form" method="POST" action="books">
+    <p><label>Title: <input type="text" name="title"></label></p>
+    <p><label>Author: <input type="text" name="author"></label></p>
+    <p><button type="submit">Submit</button></p>
+  </form>
+</body>
+</html>
