@@ -1,0 +1,13 @@
+{
+  "name": "autocomplete-node",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "pug": "2.0.0-beta11"
+  }
+}
