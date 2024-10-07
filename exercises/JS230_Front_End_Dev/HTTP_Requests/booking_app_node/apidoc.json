@@ -1,0 +1,11 @@
+{
+  "name": "Booking App",
+  "version": "0.0.0",
+  "description": "Booking API Documentation",
+  "title": "Booking App",
+  "url": "/api",
+  "groups": ["Student", "Staff", "Schedule"],
+  "template": {
+    "withCompare": "false"
+  }
+}

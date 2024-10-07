@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    dl {
+         padding: 0.5em;
+     }
+     dt {
+         float: left;
+         clear: left;
+         width: 100px;
+         text-align: right;
+         font-weight: bold;
+         color: #f0595b;
+     }
+     dt::after {
+         content: ":";
+     }
+     dd {
+         margin: 0 0 0 110px;
+         padding: 0 0 0.5em 0;
+     }
+
+     input[type="submit"] {
+         display: inline-block;
+         margin-top: 15px;
+         color: #fff;
+         background: #f0595b;
+         border-color: #f0595b;
+         border-radius: 5px;
+         width: 100px;
+         height: 50px;
+     }
+
+     button {
+         display: inline-block;
+         margin-top: 15px;
+         color: #fff;
+         background: #5CAFDE;
+         border-color: #5CAFDE;
+         border-radius: 5px;
+         width: 100px;
+         height: 50px;
+     }
+   </style>
+  <title>Exercise 4</title>
+</head>
+<body>
+  <script>
+    function scheduleTemplate({number, staffs}) {
+      const container = document.createElement('div');
+      const legend = document.createElement('legend');
+      legend.textContent = `Schedule ${number}`;
+      container.appendChild(legend);
+
+      const dl = document.createElement('dl');
+      const dtStaff = document.createElement('dt');
+      const dtLabelStaff = document.createElement('label');
+      dtLabelStaff.textContent = 'Staff Name';
+      dtLabelStaff.setAttribute('for', `staff_${number}`);
+      dtStaff.appendChild(dtLabelStaff);
+      dl.appendChild(dtStaff);
+
+      const ddStaff = document.createElement('dd');
+      const ddSelectStaff = document.createElement('select');
+      ddSelectStaff.setAttribute('id', `staff_${number}`);
+      ddSelectStaff.setAttribute('name', `staff_${number}`);
+      staffs.forEach(({id, name}) => {
+        const option = document.createElement('option');
+        option.setAttribute('value', id);
+        option.textContent = name;
+        ddSelectStaff.appendChild(option);
+      });
+      ddStaff.appendChild(ddSelectStaff);
+      dl.appendChild(ddStaff);
+
+      const dtDate = document.createElement('dt');
+      const dtLabelDate = document.createElement('label');
+      dtLabelDate.textContent = 'Date';
+      dtLabelDate.setAttribute('for', `date_${number}`);
+      dtDate.appendChild(dtLabelDate);
+      dl.appendChild(dtDate);
+
+      const ddDate = document.createElement('dd');
+      const ddInputDate = document.createElement('input');
+      ddInputDate.setAttribute('type', 'text');
+      ddInputDate.setAttribute('id', `date_${number}`);
+      ddInputDate.setAttribute('name', `date_${number}`);
+      ddInputDate.setAttribute('placeholder', 'mm-dd-yy');
+      ddDate.appendChild(ddInputDate);
+      dl.appendChild(ddDate);
+
+      const dtTime = document.createElement('dt');
+      const dtLabelTime = document.createElement('label');
+      dtLabelTime.textContent = 'Time';
+      dtLabelDate.setAttribute('for', `time_${number}`);
+      dtTime.appendChild(dtLabelTime);
+      dl.appendChild(dtTime);
+
+      const ddTime = document.createElement('dd');
+      const ddInputTime = document.createElement('input');
+      ddInputTime.setAttribute('type', 'text');
+      ddInputTime.setAttribute('id', `time_${number}`);
+      ddInputTime.setAttribute('name', `time_${number}`);
+      ddInputTime.setAttribute('placeholder', `hh:mm`);
+      ddTime.appendChild(ddInputTime);
+      dl.appendChild(ddTime);
+
+      container.appendChild(dl);
+      return container;
+    }
+  </script>
+
+  <button id="btnAdd">Add more schedules</button>
+  <form method="POST" action="/api/schedules">
+    <div id="schedules"></div>
+    <input id="btnSubmit" type="submit">
+  </form>
+
+  <script>
+    const form = document.querySelector('form');
+      let staffs = [];
+      let scheduleCount = 0;
+
+      (() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/staff_members');
+        xhr.responseType = 'json'
+        xhr.send();
+        xhr.addEventListener('load', event => {
+             staffs = xhr.response;
+        });
+      })();
+
+      document.querySelector('#btnAdd').addEventListener('click', event => {
+        event.preventDefault();
+        const el = document.createElement('fieldset');
+        scheduleCount += 1;
+        el.id = `schedule_${String(scheduleCount)}`;
+        el.appendChild(scheduleTemplate({ number: scheduleCount, staffs }));
+        document.querySelector('#schedules').appendChild(el);
+      });
+
+      function formInputsToJson() {
+        const json = [];
+
+        for (let i = 0; i < scheduleCount; i += 1) {
+          let schedule = {};
+          schedule.staff_id = form[`staff_${String(i + 1)}`].value;
+          schedule.date = form[`date_${String(i + 1)}`].value;
+          schedule.time = form[`time_${String(i + 1)}`].value;
+          json.push(schedule);
+        }
+
+        return {schedules: json};
+      }
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const json = JSON.stringify(formInputsToJson());
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', form.action);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(json);
+
+        xhr.addEventListener('load', event => {
+          if (xhr.status === 201) form.reset();
+          alert(xhr.responseText);
+        });
+      });
+  </script>
+</body>
+</html>

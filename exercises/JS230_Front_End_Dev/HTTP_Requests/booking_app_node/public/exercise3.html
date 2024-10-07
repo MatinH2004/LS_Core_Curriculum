@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="./javascripts/addingStaff.js" defer></script>
+  <style>
+
+    label {
+      display: block;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      font-size: 22px;
+      font-weight: bold;
+      color: red;
+    }
+
+    div {
+      border-style: double;
+      padding: 30px;
+    }
+
+    button {
+      background-color: rgb(239, 89, 89);
+      color: white;
+      border-radius: 8px;
+      width: 100px;
+      height: 60px;
+    }
+
+    button:hover {
+      background-color: black;
+    }
+
+  </style>
+  <title>Exercise 3</title>
+</head>
+<body>
+  <form action="/api/staff_members" method="POST">
+    <div>
+      <p><label>Email:<input type="text" name="email"></label></p>
+      <p><label>Name:<input type="text" name="name"></label></p>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
