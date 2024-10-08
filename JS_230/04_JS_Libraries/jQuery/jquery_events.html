@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>jQuery Selectors</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="jquery_events_stylesheet.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script defer>
+    $(function() {
+      $('form').on('submit', function(e) {
+        e.preventDefault();
+        var character = $('#key').val();
+        
+        $(document).off('keypress').on('keypress', function(e) {
+          if (e.key !== character) return;
+          $('a').trigger('click');
+        });
+      });
+
+      $('a').on('click', function(e) {
+        e.preventDefault();
+        $('#accordion').slideToggle();
+      });
+    });
+  </script>
+</head>
+<body>
+  <main>
+    <form action="" method="get">
+      <fieldset>
+        <h1>Type a key to toggle accordion with</h1>
+        <input type="text" id="key" name="key" maxlength="1">
+        <input type="submit" value="Set">
+      </fieldset>
+    </form>
+    <p><a href="#">Toggle accordion</a></p>
+    <div id="accordion">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+  </main>
+</body>
+</html>
