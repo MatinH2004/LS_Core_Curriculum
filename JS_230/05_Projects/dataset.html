@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script>
+    $(() => {
+      // var $a = $('a[data-block=gold]');
+
+      $('a').on('click', function(e) {
+        e.preventDefault();
+        
+        $('article').hide().filter('[data-block=' + $(this).attr('data-block') + ']').show();
+      });
+      
+      var gold = document.getElementById('gold');
+      console.table(gold.dataset);
+
+      gold.dataset.block = 'silver';
+      gold.dataset.sponsor = 'Newman\'s Own';
+
+      delete gold.dataset.block;
+
+      // <article id="gold" data-sponsor="Newman's Own">
+      //   <h1>Gold Sponsors</h1>
+      // </article>
+
+      $('body').append('<div data-date-of-birth="28-02-1981">My Birthdate</div>');
+      let $div = $('div:last');
+    });
+  </script>
+  <title>Document</title>
+</head>
+<body>
+  <ul>
+    <li><a href="#" data-block="gold">Gold Sponsors</a></li>
+    <li><a href="#" data-block="silver">Silver Sponsors</a></li>
+    <li><a href="#" data-block="bronze">Bronze Sponsors</a></li>
+  </ul>
+  
+  <article id="gold" data-block="gold">
+    <h1>Gold Sponsors</h1>
+  </article>
+  
+  <article data-block="silver">
+    <h1>Silver Sponsors</h1>
+  </article>
+  
+  <article data-block="bronze">
+    <h1>Bronze Sponsors</h1>
+  </article>
+</body>
+</html>
