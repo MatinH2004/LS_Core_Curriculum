@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Calculator</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <script src="javascripts/calculator.js"></script>
+  </head>
+
+  <body>
+    <main>
+      <h1 id="result">0</h1>
+
+      <form action="" method="post">
+        <fieldset>
+          <input
+            type="number"
+            name="first-number"
+            id="first-number"
+            value="0"
+          />
+          <select name="operator" id="operator">
+            <option>+</option>
+            <option>-</option>
+            <option>*</option>
+            <option>/</option>
+          </select>
+          <input
+            type="number"
+            name="second-number"
+            id="second-number"
+            value="0"
+          />
+          <input type="submit" value="=" />
+        </fieldset>
+      </form>
+    </main>
+  </body>
+</html>
