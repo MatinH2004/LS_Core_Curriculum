@@ -1,0 +1,105 @@
+body {
+  background-color: #7c28f9;
+  background-image: url("data:image/svg+xml,%3Csvg width='32' height='64' viewBox='0 0 32 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 28h20V16h-4v8H4V4h28v28h-4V8H8v12h4v-8h12v20H0v-4zm12 8h20v4H16v24H0v-4h12V36zm16 12h-4v12h8v4H20V44h12v12h-4v-8zM0 36h8v20H0v-4h4V40H0v-4z' fill='%23ffffff' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+body.win {
+  background-color: #00ff00;
+  animation: win 3s;
+}
+
+body.lose {
+  background-color: #b00b00;
+  animation: lose 3s;
+}
+
+@keyframes win {
+  0% {
+    background-color: #f0f0f0;
+  }
+  100% {
+    background-color: #00ff00;
+  }
+}
+
+@keyframes lose {
+  0% {
+    background-color: #f0f0f0;
+  }
+  100% {
+    background-color: #b00b00;
+  }
+}
+
+main {
+  width: 800px;
+  padding: 20px;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+#tree {
+  position: relative;
+  width: 678px;
+  height: 517px;
+  background: url("../images/tree.png") 0 0 no-repeat;
+}
+
+#apples {
+  position: absolute;
+  left: 170px;
+  top: 20px;
+  z-index: 1;
+  width: 374px;
+  height: 322px;
+  background: url("../images/apples.png") 0 0 no-repeat;
+}
+
+#apples.guess_1 { background-position: 0 -322px; }
+#apples.guess_2 { background-position: 0 -644px; }
+#apples.guess_3 { background-position: 0 -966px; }
+#apples.guess_4 { background-position: 0 -1288px; }
+#apples.guess_5 { background-position: 0 -1610px; }
+#apples.guess_6 { display: none; }
+
+#spaces,
+#guesses,
+p {
+  padding: 0 0 40px 0;
+}
+
+p {
+  padding-bottom: 25px;
+  font-size: 20px;
+}
+
+p:empty {
+  display: none;
+}
+
+span {
+  display: inline-block;
+  width: 30px;
+  height: 35px;
+  margin: 0 10px 0 0;
+  font-size: 28px;
+  text-transform: uppercase;
+  text-align: center;
+  vertical-align: top;
+  border-bottom: 3px solid #333333;
+}
+
+h2 {
+  display: inline-block;
+  width: 100px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+#replay {
+  display: none;
+}
+
+#replay.visible {
+  display: inline;
+}
