@@ -69,6 +69,20 @@
       const elementsArray = Array.from(htmlCollection);
       return elementsArray.map(({tagName}) => tagName);
     }
+
+    // Updated Solution:
+    function domTreeTracer(id) {
+      let tree = [];
+      let element = document.getElementById(String(id));
+
+      do {
+        tree.push([...element.parentElement.children].map(el => el.tagName));
+        element = element.parentElement;
+
+      } while (element.tagName !== 'BODY');
+
+      return tree;
+    }
   </script>
 </body>
 
