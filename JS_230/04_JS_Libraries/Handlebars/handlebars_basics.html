@@ -1,40 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Handlebars Basics</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+  <title>Handlebars</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="./handlebars_basics.js" defer></script>
-
-  <script id="tag" type="text/x-handlebars">
-    <strong>{{this}}</strong>
-  </script>
-
-  <script id="posts" type="text/x-handlebars">
-    {{#each posts}}
-    <article>
-      <h1>{{title}}</h1>
-      <p><time>Posted on {{published}}</time></p>
-      {{{body}}}
-      <footer>
-        <p>
-          {{#if tags}}
-          Tags:
-          {{#each tags}}
-          {{>tag}}
-          {{/each}}
-          {{else}}
-          Not tagged
-          {{/if}}
-        </p>
-      </footer>
-    </article>
-    {{/each}}
-  </script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
 </head>
 <body>
 </body>
+
+<script id="posts" type="text/x-handlebars">
+  {{#each posts}}
+  <article>
+    <h1>{{title}}</h1>
+    <p><time>Posted on {{published}}</time></p>
+    {{{body}}}
+    <footer>
+      <p>
+        {{#if tags}}
+        Tags:
+        {{#each tags}}
+        {{>tag}}
+        {{/each}}
+        {{else}}
+        Not tagged.
+        {{/if}}
+      </p>
+    </footer>
+  </article>
+  {{/each}}
+</script>
+
+<script id="tag" type="text/x-handlebars">
+    <strong>{{this}}</strong>
+</script>
+
+<script type="text/javascript">
+  let posts = [
+    {
+      title: 'Lorem ipsum dolor sit amet',
+      published: 'April 1, 2024',
+      body: '<p>Sed ut <strong>perspiciatis</strong> unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.</p>',
+      tags: ['Home', 'Work', 'Gym'],
+    },
+    {
+      title: 'Shrek 2 Review',
+      published: 'March 22, 2018',
+      body: '<p>Yo this new shrek movie kinda fire bro. The donkey is so funny and stupid, lmaoo. 10/10 would watch again. NOT. Hello Matin in the future. I am hoping you are a software engineer the next time you are reading this. Jesus loves you!</p>',
+      tags: [],
+    },
+  ];
+
+  let postsTemplate = Handlebars.compile($('#posts').html());
+  Handlebars.registerPartial('tag', $('#tag').html());
+
+  $('body').append(postsTemplate({ posts: posts }));
+</script>
 </html>
