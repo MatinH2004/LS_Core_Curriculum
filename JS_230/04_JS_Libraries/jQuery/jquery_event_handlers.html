@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>jQuery Selectors</title>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.2/jquery.min.js"></script>
+    <script>
+      $(function() {
+        const OUTPUT = 'Your favourite fruit is ';
+        let $p = $('p');
+
+        $('a').on('click', function(event) {
+          event.preventDefault();
+          let $anchor = $(this);
+          $p.text(OUTPUT + $anchor.text());
+        });
+
+        $('form').on('submit', function(event) {
+          event.preventDefault();
+          let $input = $(this).find('input[type=text]');
+          $p.text(OUTPUT + $input.val());
+        });
+      })
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#">Apples</a></li>
+      <li><a href="#">Bananas</a></li>
+      <li><a href="#">Oranges</a></li>
+    </ul>
+
+    <form action="#" method="post">
+      <fieldset>
+        <input type="text">
+        <input type="submit" value="Choose">
+      </fieldset>
+    </form>
+
+    <p>Choose your favourite fruit!</p>
+  </body>
+</html>
