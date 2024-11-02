@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ex 1</title>
+  <script defer>
+    
+    function getSchedules() {
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', 'http://localhost:3000/api/schedules');
+      xhr.timeout = 5000;
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', event => {
+        const schedules = xhr.response;
+
+        if (schedules.length > 0) {
+          alert(sortStaffSchedules(schedules));
+        } else {
+          alert('There are currently no schedules available.')
+        }
+      });
+
+      xhr.addEventListener('timeout', event => {
+        alert('Request timed out. Please try again.')
+      });
+
+      xhr.addEventListener('loadend', event => {
+        alert('The request was completed.');
+      });
+
+      xhr.send();
+    }
+
+    function sortStaffSchedules(scheduleArray) {
+      const schedule = scheduleArray.map(({staff_id}) => staff_id);
+
+      return [...new Set(schedule)].map(id => {
+        return `\nstaff ${id}: ${schedule.filter(staff_id => staff_id === id).length}`;
+      });
+    }
+
+  </script>
+</head>
+<body>
+  <h1>Getting Schedules</h1>
+</body>
+</html>

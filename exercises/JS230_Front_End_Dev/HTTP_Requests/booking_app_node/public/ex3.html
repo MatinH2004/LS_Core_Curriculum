@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ex 3</title>
+  <style>
+    .schedule {
+      border: solid 1px black;
+      padding: 10px;
+      margin: 15px;
+    }
+  </style>
+</head>
+<body>
+  <button id="add-schedule">Add more schedules</button>
+  <main>
+    <div class="schedule">
+      <h2>Schedule 1</h2>
+      <form action="#" method="post">
+        <label for="staff">Staff Member: <select name="staff"></select></label>
+        </select>
+        <label for="date">Date: <input type="date" name="date"></label>
+        <label for="time">Time: <input type="time" name="time"></label>
+      </form>
+    </div>
+  </main>
+  <button id="submit-schedules">Submit</button>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let lastScheduleNumber = 1;
+
+      function loadStaffMembers() {
+        let request = new XMLHttpRequest();
+        request.open('GET', '/api/staff_members');
+        request.responseType = 'json';
+
+        request.addEventListener('load', event => {
+          let members = request.response.map(staff => ({ id: staff.id, name: staff.name}));
+          members.forEach(member => {
+            let staffSelect = document.querySelector('select');
+            let option = document.createElement('option');
+            option.value = member.id;
+            option.append(member.name);
+            staffSelect.append(option);
+          });
+        });
+
+        request.send();
+      }
+
+      function cloneSchedule() {
+        lastScheduleNumber += 1;
+
+        let original = document.querySelector('.schedule');
+        let clone = original.cloneNode(true);
+        let scheduleTitle = clone.querySelector('h2').textContent;
+
+        clone.querySelector('h2').textContent = scheduleTitle.replace(/\d+/, lastScheduleNumber);
+        document.querySelector('main').append(clone);
+      }
+
+      function submitScheduleData(data) {
+        let json = JSON.stringify(data);
+        let request = new XMLHttpRequest();
+        
+        request.open('POST', '/api/schedules');
+        request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        request.responseType = 'json';
+
+        request.addEventListener('load', event => {
+          if (request.status !== 201) {
+            alert('Bad Request');
+            return;
+          }
+
+          alert('Schedules added successfully');
+        });
+
+        request.send(data);
+      }
+
+      loadStaffMembers();
+
+      document.querySelector('#add-schedule').addEventListener('click', event => {
+        cloneSchedule();
+      });
+
+      document.querySelector('#submit-schedules').addEventListener('click', event => {
+        let schedules = document.querySelectorAll('.schedule');
+        let scheduleData = { schedules: [] };
+
+        schedules.forEach(schedule => {
+          let data = new FormData(schedule.querySelector('form'));
+          scheduleData.schedules.push({
+            staff_id: data.get('staff'),
+            date: data.get('date'),
+            time: data.get('time'),
+          });
+        });
+
+        submitScheduleData(scheduleData);
+      });
+    });
+  </script>
+</body>
+</html>
