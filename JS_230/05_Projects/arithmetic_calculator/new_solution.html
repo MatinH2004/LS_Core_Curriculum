@@ -98,19 +98,18 @@
         return num1 / num2
       },
     };
-
+    
+    const getValueOf = selector => document.querySelector(selector).value;
+    
     const form = document.querySelector('form');
-    const num1 = document.querySelector('#num1');
-    const num2 = document.querySelector('#num2');
-    const operand = document.querySelector('#operand');
     const result = document.querySelector('#result');
 
     form.addEventListener('submit', event => {
       event.preventDefault();
 
-      let firstNum = +num1.value;
-      let secondNum = +num2.value;
-      let operation = Calculate[operand.value];
+      let firstNum = +getValueOf('#num1');
+      let secondNum = +getValueOf('#num2');
+      let operation = Calculate[getValueOf('#operand')];
       let calculated = operation(firstNum, secondNum);
 
       result.textContent = calculated ? calculated.toFixed(2) : 'error';
