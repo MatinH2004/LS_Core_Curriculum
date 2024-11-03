@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Arithmetic Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <style>
+    body {
+      background-color: #ff9035fc;
+      font-family: sans-serif;
+    }
+
+    h1 {
+      margin: auto;
+      justify-content: center;
+      text-align: center;
+      color: #494949fc;
+    }
+
+    #container {
+      background-color: #494949fc;
+      width: 700px;
+      height: 400px;
+      margin: auto;
+      margin-top: 20px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      flex-direction: column;
+    }
+
+    #result-container p {
+      display: inline;
+      font-size: 70px;
+      color: white;
+    }
+
+    input[type="text"] {
+      font-size: 20px;
+      border-radius: 5px;
+      width: 120px;
+      height: 25px;
+      margin-left: 20px;
+      margin-right: 20px;
+      border-style: none;
+    }
+
+    input[type="submit"] {
+      font-size: 20px;
+      width: 40px;
+      height: 30px;
+      border-radius: 5px;
+      border-style: none;
+      background-color: white;
+    }
+
+    input[type="submit"]:hover {
+      background-color: black;
+      color: white;
+    }
+
+    select {
+      width: 50px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Arithmetic Calculator</h1>
+  <div id="container">
+    <div id="result-container">
+      <p>= </p>
+      <p id="result">0</p>
+    </div>
+    <form action="#">
+      <input type="text" name="num1" id="num1" maxlength="10">
+      <select name="operand" id="operand">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+      </select>
+      <input type="text" name="num2" id="num2" maxlength="10">
+      <input type="submit" value="=">
+    </form>
+  </div>
+</body>
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    const Calculate = {
+      '+': (num1, num2) => num1 + num2,
+      '-': (num1, num2) => num1 - num2,
+      '*': (num1, num2) => num1 * num2,
+      '/': (num1, num2) => {
+        if (num2 === 0) return null;
+        return num1 / num2
+      },
+    };
+
+    const form = document.querySelector('form');
+    const num1 = document.querySelector('#num1');
+    const num2 = document.querySelector('#num2');
+    const operand = document.querySelector('#operand');
+    const result = document.querySelector('#result');
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      let firstNum = +num1.value;
+      let secondNum = +num2.value;
+      let operation = Calculate[operand.value];
+      let calculated = operation(firstNum, secondNum);
+
+      result.textContent = calculated ? calculated.toFixed(2) : 'error';
+    });
+  });
+</script>
+</html>
