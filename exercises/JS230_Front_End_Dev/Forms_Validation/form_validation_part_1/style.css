@@ -1,0 +1,81 @@
+/* Whitespace Reset */
+ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, body, html, p, blockquote, fieldset, input, dl, dt, dd, figure, figcaption {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #52be43;
+  font-size: 18px;
+  font-family: sans-serif;
+}
+
+h1 {
+  margin: 70px auto 0 auto;
+  width: 800px;
+  font-size: 24px;
+  color: #fff;
+}
+
+form {
+  padding: 20px;
+  margin: 15px auto;
+  width: 800px;
+  height: 513px;
+  background-color: #fff;
+}
+
+fieldset {
+  border: none;
+}
+
+dt {
+  padding: 20px 0 5px 0;
+}
+
+input {
+  font-size: 18px;
+  width: 300px;
+  height: 38px;
+  padding: 3px 10px;
+  outline: none;
+  border-radius: 4px;
+  border: 1px solid #ccc
+}
+
+input:focus {
+  border: 1px solid #52be43;
+}
+
+.invalid_field {
+  border: 1px solid #a93333;
+}
+
+.error_message {
+  display: inline-block;
+  margin-left: 30px;
+}
+
+.form_errors, .error_message {
+  color: #a93333;
+}
+
+label {
+  cursor: default;
+}
+
+button {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  outline: none;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 4px;
+  background: #52be52;
+  border: none;
+}
