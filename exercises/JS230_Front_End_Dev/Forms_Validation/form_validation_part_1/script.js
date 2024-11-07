@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   const inputs = document.querySelectorAll('input');
 
+  inputs.forEach(input => {
+    if (input.id === 'first_name' || input.id === 'last_name') {
+      input.addEventListener('keypress', characterBlockingInput);
+    }
+  });
+
   form.addEventListener('focusout', requiredFieldError);
 
   form.addEventListener('focus', event => {
@@ -83,4 +89,8 @@ function requiredFieldError(event) {
       errorSpan.textContent = fieldErrorMsg(labelText);
     }
   }
+}
+
+function characterBlockingInput(event) {
+  if (!/[a-zA-Z'\s]/.test(event.key)) event.preventDefault();
 }
