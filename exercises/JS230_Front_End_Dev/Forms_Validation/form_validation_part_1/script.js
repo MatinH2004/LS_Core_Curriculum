@@ -59,21 +59,21 @@ function requiredFieldError(event) {
   const errorSpan = ddElement.querySelector('.error_message');
   const labelText = document.querySelector('label[for=' + input.name + ']').textContent;
 
-  if (['first_name', 'last_name', 'email'].includes(input.id)) {
+  if (['first_name', 'last_name', 'email'].includes(input.name)) {
     if (input.value.trim().length === 0) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText);
     }
   }
 
-  if ('email' === input.id) {
+  if ('email' === input.name) {
     if (input.validity.patternMismatch) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText, { invalidEmail: true });
     }
   }
 
-  if ('password' === input.id) {
+  if ('password' === input.name) {
     if (input.value.length === 0) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText);
@@ -83,7 +83,7 @@ function requiredFieldError(event) {
     }
   }
 
-  if ('phone_number' === input.id) {
+  if ('phone_number' === input.name) {
     if (input.value.length === 0) return;
 
     if (input.validity.patternMismatch) {
