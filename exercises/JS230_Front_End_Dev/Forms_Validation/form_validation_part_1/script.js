@@ -68,7 +68,7 @@ function requiredFieldError(event) {
   const labelText = document.querySelector('label[for=' + input.name + ']').textContent;
 
   if (['first_name', 'last_name', 'email'].includes(input.name)) {
-    if (input.value.trim().length === 0) {
+    if (input.validity.valueMissing) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText);
     }
@@ -82,7 +82,7 @@ function requiredFieldError(event) {
   }
 
   if ('password' === input.name) {
-    if (input.value.length === 0) {
+    if (input.validity.valueMissing) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText);
     } else if (input.validity.patternMismatch) {
@@ -92,7 +92,7 @@ function requiredFieldError(event) {
   }
 
   if ('phone_number' === input.name) {
-    if (input.value.length === 0) return;
+    if (input.validity.valueMissing) return;
 
     if (input.validity.patternMismatch) {
       input.classList.add('invalid_field');
@@ -101,7 +101,7 @@ function requiredFieldError(event) {
   }
 
   if ('credit_card' === input.name) {
-    if (input.value.length === 0) return;
+    if (input.validity.valueMissing) return;
 
     if (input.validity.patternMismatch) {
       input.classList.add('invalid_field');
