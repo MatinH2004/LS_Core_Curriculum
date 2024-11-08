@@ -43,11 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function fieldErrorMsg(name, { invalidPassword = false, invalidEmail = false } = {}) {
+function fieldErrorMsg(name, { invalidPassword, invalidEmail, invalidCC} = {}) {
   if (invalidPassword) {
     return `${name} must be at least 10 characters long.`;
   }
-  if (invalidEmail || name === 'Phone Number') {
+  if (invalidEmail || invalidCC || name === 'Phone Number') {
     return `Please enter a valid ${name}.`;
   }
   return `${name} is a required field.`;
@@ -89,6 +89,15 @@ function requiredFieldError(event) {
     if (input.validity.patternMismatch) {
       input.classList.add('invalid_field');
       errorSpan.textContent = fieldErrorMsg(labelText);
+    }
+  }
+
+  if ('credit_card' === input.name) {
+    if (input.value.length === 0) return;
+
+    if (input.validity.patternMismatch) {
+      input.classList.add('invalid_field');
+      errorSpan.textContent = fieldErrorMsg(labelText, { invalidCC: true });
     }
   }
 }
