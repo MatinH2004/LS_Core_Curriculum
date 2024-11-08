@@ -3,8 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputs = document.querySelectorAll('input');
 
   inputs.forEach(input => {
-    if (input.id === 'first_name' || input.id === 'last_name') {
-      input.addEventListener('keypress', characterBlockingInput);
+    if (['first_name', 'last_name'].includes(input.name)) {
+      input.addEventListener('keypress', blockNonAlpha);
+    }
+    if (['phone_number', 'credit_card'].includes(input.name)) {
+      input.addEventListener('keydown', blockNonDigit);
     }
   });
 
@@ -50,12 +53,11 @@ function fieldErrorMsg(name, { invalidPassword = false, invalidEmail = false } =
   return `${name} is a required field.`;
 }
 
-
 function requiredFieldError(event) {
   const input = event.target;
   const ddElement = event.target.closest('dd');
   const errorSpan = ddElement.querySelector('.error_message');
-  const labelText = document.querySelector('label[for=' + input.id + ']').textContent;
+  const labelText = document.querySelector('label[for=' + input.name + ']').textContent;
 
   if (['first_name', 'last_name', 'email'].includes(input.id)) {
     if (input.value.trim().length === 0) {
@@ -91,6 +93,14 @@ function requiredFieldError(event) {
   }
 }
 
-function characterBlockingInput(event) {
+function blockNonAlpha(event) {
   if (!/[a-zA-Z'\s]/.test(event.key)) event.preventDefault();
+}
+
+function blockNonDigit(event) {
+  const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+
+  if (!/[0-9]/.test(event.key) && !allowedKeys.includes(event.key)) {
+    event.preventDefault();
+  }
 }
