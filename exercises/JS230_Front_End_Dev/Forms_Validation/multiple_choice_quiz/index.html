@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Quizzz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Multiple Choice Quiz</h1>
+    <form action="#" method="post">
+      <fieldset></fieldset>
+      <a class="submit">Submit Quiz</a>
+      <a class="reset_form disabled">Reset</a>
+    </form>
+  </div>
+
+  <script id="question_template" type="text/x-handlebars">
+    <div class="question" data-id="{{id}}">
+      <p class="description">Q{{id}}. {{{description}}}</p>
+      {{#each options}}
+      <label>
+        <input type="radio" name="{{../id}}" value="{{.}}">
+        {{.}}
+      </label>
+      {{/each}}
+      <p class="result"></p>
+    </div>
+  </script>
+
+</body>
+</html>
