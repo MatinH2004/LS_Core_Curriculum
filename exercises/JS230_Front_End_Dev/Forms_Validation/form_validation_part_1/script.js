@@ -2,12 +2,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   const inputs = document.querySelectorAll('input');
 
-  inputs.forEach(input => {
+  inputs.forEach((input, idx) => {
     if (['first_name', 'last_name'].includes(input.name)) {
       input.addEventListener('keypress', blockNonAlpha);
     }
     if (['phone_number', 'credit_card'].includes(input.name)) {
       input.addEventListener('keydown', blockNonDigit);
+    }
+    // auto tab functionality - cc number
+    if (['cd1', 'cd2', 'cd3'].includes(input.id)) {
+      input.addEventListener('input', event => {
+        if (event.target.value.length === 4) {
+          inputs[idx + 1].focus();
+        }
+      });
     }
   });
 
