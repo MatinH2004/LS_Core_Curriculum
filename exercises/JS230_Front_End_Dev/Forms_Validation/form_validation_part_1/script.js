@@ -3,117 +3,92 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputs = document.querySelectorAll('input');
 
   inputs.forEach((input, idx) => {
+    // character blocking for specific inputs
     if (['first_name', 'last_name'].includes(input.name)) {
       input.addEventListener('keydown', blockNonAlpha);
-    }
-    if (['phone_number', 'credit_card'].includes(input.name)) {
+    } else if (['phone_number', 'credit_card'].includes(input.name)) {
       input.addEventListener('keydown', blockNonDigit);
     }
+
+    // automatically focus the next credit card field
     if (['cd1', 'cd2', 'cd3'].includes(input.id)) {
-      input.addEventListener('input', event => {
-        if (event.target.value.length === 4) {
+      input.addEventListener('input', () => {
+        if (input.value.length === 4) {
           inputs[idx + 1].focus();
         }
       });
     }
   });
 
+  // display error message and styling on focus
   form.addEventListener('focusout', requiredFieldError);
 
+  // clear error message and styling on focus
   form.addEventListener('focus', event => {
-    if (event.target.tagName === 'INPUT') {
-      const inputElement = event.target;
-      const ddElement = event.target.closest('dd');
-      const errorSpan = ddElement.querySelector('.error_message');
+    if (event.target.tagName === 'INPUT') clearError(event.target);
+  });
 
-      inputElement.classList.remove('invalid_field');
-      errorSpan.textContent = '';
-    }
-  }, true);
-
+  // display errors if any fields are invalid
+  // otherwise display serialized data
   form.addEventListener('submit', event => {
-    event.preventDefault()
+    event.preventDefault();
+
     let formErrors = false;
 
     inputs.forEach(input => {
       requiredFieldError({ target: input });
-
-      if (input.classList.contains('invalid_field')) {
-        formErrors = true;
-      }
+      if (input.classList.contains('invalid_field')) formErrors = true;
     });
 
     if (formErrors) {
-      document.querySelector('.form_errors')
-              .textContent = 'Form cannot be submitted until errors are corrected.';
-    };
+      form.querySelector('.form_errors').textContent = 'Form cannot be submitted until errors are corrected.';
+      return;
+    }
 
-    (function() {
-      let p = document.createElement('p');
-      p.textContent = serializeFormData(form);
-
-      document.querySelector('.serialized').appendChild(p);
-    })()
+    const serializedData = document.createElement('p');
+    serializedData.textContent = serializeFormData(form);
+    document.querySelector('.serialized').appendChild(serializedData);
   });
 });
 
-function fieldErrorMsg(name, { invalidPassword, invalidEmail, invalidCC} = {}) {
-  if (invalidPassword) {
-    return `${name} must be at least 10 characters long.`;
-  }
-  if (invalidEmail || invalidCC || name === 'Phone Number') {
-    return `Please enter a valid ${name}.`;
-  }
-  return `${name} is a required field.`;
+function fieldErrorMsg(name, options={}) {
+  const { invalidPassword, invalidEmail, invalidCC } = options;
+
+  if (invalidPassword) return `${name} must be at least 10 characters long.`;
+  if (invalidEmail || invalidCC || name === 'Phone Number') return `Please enter a valid ${name}.`;
+  return `${name} is a required field`;
 }
 
 function requiredFieldError(event) {
   const input = event.target;
-  const ddElement = event.target.closest('dd');
+  const ddElement = input.closest('dd');
   const errorSpan = ddElement.querySelector('.error_message');
-  const labelText = document.querySelector('label[for=' + input.name + ']').textContent;
+  const labelText = document.querySelector(`label[for="${input.name}"]`).textContent;
 
-  if (['first_name', 'last_name', 'email'].includes(input.name)) {
-    if (input.validity.valueMissing) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText);
-    }
+  // Define custom error messages based on the validity state
+  if (input.validity.valueMissing) {
+    showError(input, errorSpan, `${labelText} is a required field.`);
+  } else if (input.validity.patternMismatch) {
+    // For pattern mismatch, show a specific message based on the input type
+    const message = fieldErrorMsg(labelText, {
+      invalidEmail: input.name === 'email',
+      invalidPassword: input.name === 'password' && input.value.length < 10,
+      invalidCC: input.name === 'credit_card'
+    });
+    showError(input, errorSpan, message);
+  } else {
+    clearError(input, errorSpan);
   }
+}
 
-  if ('email' === input.name) {
-    if (input.validity.patternMismatch) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText, { invalidEmail: true });
-    }
-  }
+function showError(input, errorSpan, message) {
+  input.classList.add('invalid_field');
+  errorSpan.textContent = message;
+}
 
-  if ('password' === input.name) {
-    if (input.validity.valueMissing) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText);
-    } else if (input.validity.patternMismatch) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText, { invalidPassword: true });
-    }
-  }
-
-  if ('phone_number' === input.name) {
-    if (input.validity.valueMissing) return;
-
-    if (input.validity.patternMismatch) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText);
-    }
-  }
-
-  if ('credit_card' === input.name) {
-    if (input.validity.valueMissing) return;
-
-    if (input.validity.patternMismatch) {
-      input.classList.add('invalid_field');
-      errorSpan.textContent = fieldErrorMsg(labelText, { invalidCC: true });
-    }
-  }
+function clearError(input, errorSpan) {
+  input.classList.remove('invalid_field');
+  errorSpan.textContent = '';
 }
 
 function blockNonAlpha(event) {
@@ -122,29 +97,20 @@ function blockNonAlpha(event) {
 
 function blockNonDigit(event) {
   const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-
-  if (!/[0-9\-]/.test(event.key) && !allowedKeys.includes(event.key)) {
-    event.preventDefault();
-  }
+  if (!/[0-9\-]/.test(event.key) && !allowedKeys.includes(event.key)) event.preventDefault();
 }
 
 function serializeFormData(form) {
   const inputs = form.querySelectorAll('input:not([name="credit_card"])');
   const ccInputs = form.querySelectorAll('input[name="credit_card"]');
-  
-  const keysAndValues = [];
-  
-  inputs.forEach(input => {
-    let key = encodeURIComponent(input.name);
-    let value = encodeURIComponent(input.value);
-    keysAndValues.push(`${key}=${value}`);
+
+  const keysAndValues = Array.from(inputs, input => {
+    return `${encodeURIComponent(input.name)}=${encodeURIComponent(input.value)}`;
   });
 
-  let ccKey = encodeURIComponent(ccInputs[0].name);
-  let ccValues = encodeURIComponent(
-    [].slice.call(ccInputs).map(input => input.value).join('')
-  );
-  keysAndValues.push(`${ccKey}=${ccValues}`);
+  const ccKey = encodeURIComponent(ccInputs[0].name);
+  const ccValue = Array.from(ccInputs, input => input.value).join('');
+  keysAndValues.push(`${ccKey}=${encodeURIComponent(ccValue)}`);
 
   return keysAndValues.join('&');
 }
