@@ -21,10 +21,16 @@ h1 {
   color: #fff;
 }
 
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
 form {
   padding: 20px;
   margin: 15px auto;
   width: 800px;
+  border-radius: 4px;
   background-color: #fff;
 }
 
@@ -81,4 +87,18 @@ button {
 
 #cd1, #cd2, #cd3, #cd4 {
   width: 64px;
+}
+
+.serialized {
+  padding: 20px;
+  margin: 15px auto;
+  width: 800px;
+  border-radius: 4px;
+  overflow: auto;
+  background-color: #fff;
+}
+
+.serialized p {
+  margin-bottom: 20px;
+  width: 760px;
 }

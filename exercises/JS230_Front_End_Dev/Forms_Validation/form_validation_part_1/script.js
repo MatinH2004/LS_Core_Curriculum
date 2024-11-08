@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }, true);
 
   form.addEventListener('submit', event => {
+    event.preventDefault()
     let formErrors = false;
 
     inputs.forEach(input => {
@@ -43,10 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (formErrors) {
-      event.preventDefault()
       document.querySelector('.form_errors')
               .textContent = 'Form cannot be submitted until errors are corrected.';
     };
+
+    (function() {
+      let p = document.createElement('p');
+      p.textContent = serializeFormData(form);
+
+      document.querySelector('.serialized').appendChild(p);
+    })()
   });
 });
 
@@ -116,7 +123,28 @@ function blockNonAlpha(event) {
 function blockNonDigit(event) {
   const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
-  if (!/[0-9]/.test(event.key) && !allowedKeys.includes(event.key)) {
+  if (!/[0-9\-]/.test(event.key) && !allowedKeys.includes(event.key)) {
     event.preventDefault();
   }
+}
+
+function serializeFormData(form) {
+  const inputs = form.querySelectorAll('input:not([name="credit_card"])');
+  const ccInputs = form.querySelectorAll('input[name="credit_card"]');
+  
+  const keysAndValues = [];
+  
+  inputs.forEach(input => {
+    let key = encodeURIComponent(input.name);
+    let value = encodeURIComponent(input.value);
+    keysAndValues.push(`${key}=${value}`);
+  });
+
+  let ccKey = encodeURIComponent(ccInputs[0].name);
+  let ccValues = encodeURIComponent(
+    [].slice.call(ccInputs).map(input => input.value).join('')
+  );
+  keysAndValues.push(`${ccKey}=${ccValues}`);
+
+  return keysAndValues.join('&');
 }
