@@ -78,3 +78,7 @@ button {
   background: #52be52;
   border: none;
 }
+
+#cd1, #cd2, #cd3, #cd4 {
+  width: 64px;
+}
