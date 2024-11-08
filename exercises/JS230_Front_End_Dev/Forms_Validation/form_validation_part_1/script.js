@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   inputs.forEach((input, idx) => {
     if (['first_name', 'last_name'].includes(input.name)) {
-      input.addEventListener('keypress', blockNonAlpha);
+      input.addEventListener('keydown', blockNonAlpha);
     }
     if (['phone_number', 'credit_card'].includes(input.name)) {
       input.addEventListener('keydown', blockNonDigit);
