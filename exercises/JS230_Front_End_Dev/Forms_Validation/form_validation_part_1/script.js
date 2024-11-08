@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (['phone_number', 'credit_card'].includes(input.name)) {
       input.addEventListener('keydown', blockNonDigit);
     }
-    // auto tab functionality - cc number
     if (['cd1', 'cd2', 'cd3'].includes(input.id)) {
       input.addEventListener('input', event => {
         if (event.target.value.length === 4) {
