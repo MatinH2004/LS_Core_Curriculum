@@ -1,24 +1,4 @@
-const todos = [
-  {
-    id: 1,
-    todo: 'Homework',
-  },
-
-  {
-    id: 2,
-    todo: 'Shopping',
-  },
-
-  {
-    id: 3,
-    todo: 'Call Mom',
-  },
-
-  {
-    id: 4,
-    todo: 'Coffee with John',
-  },
-];
+const todos = ['Homework', 'Shopping', 'Calling Mom', 'Coffee with John'];
 
 const App = {
   init() {
@@ -30,7 +10,7 @@ const App = {
     const template = Handlebars.compile($('#todo_template').html());
   
     todos.forEach(todo => {
-      let li = template(todo);
+      let li = template({ todo: todo, id: todos.indexOf(todo) });
       $('#todos').append(li);
     });
   },
