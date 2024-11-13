@@ -28,6 +28,11 @@ const languages = [
     'language in widespread use today. Only Fortran is older, by one year. Lisp has changed ' +
     'since its early days, and many dialects have existed over its history. Today, the best '+
     'known general-purpose Lisp dialects are Common Lisp and Scheme.'
+  },
+
+  {
+    name: 'Python',
+    description: 'Python is newer langauge, thanks to it\'s all purpose design, it is very popular',
   }
 ];
 
@@ -38,8 +43,13 @@ $(function() {
   
       $langDiv.attr('data-lang', lang.name);
       $langDiv.append($('<h2>').text(lang.name));
-      $langDiv.append($('<p>').text(lang.description.slice(0, 120) + ' ...'));
-      $langDiv.append($('<button class=more></button>').text('Show More'));
+
+      if (lang.description.length > 120) {
+        $langDiv.append($('<p>').text(lang.description.slice(0, 120) + ' ...'));
+        $langDiv.append($('<button class=more></button>').text('Show More'));
+      } else {
+        $langDiv.append($('<p>').text(lang.description));
+      }
   
       $('#languages').append($langDiv);
     });
