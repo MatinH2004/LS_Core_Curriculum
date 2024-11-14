@@ -1,0 +1,113 @@
+@import url('whitespace-reset.css');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 18px;
+  background-color: #357242;
+}
+
+h1 {
+  font-size: 28px;
+  color: #fff;
+  margin: 50px 0 0 25px;
+}
+
+#todos {
+  display: flex;
+  flex-direction: column;
+}
+
+li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 600px;
+  margin: 20px 0 0 70px;
+  padding: 15px 20px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.overlay {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgb(0, 0, 0, 0.3);
+}
+
+.confirm_prompt {
+  display: none;
+  width: 500px;
+  height: 150px;
+  position: absolute;
+  z-index: 10;
+  top: 150px;
+  left: 50%;
+  margin-left: -200px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #eee;
+}
+
+.confirm_prompt .actions {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+}
+
+.confirm_prompt .actions a {
+  display: inline-block;
+  width: 60px;
+  height: 35px;
+  text-align: center;
+  padding-top: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #fff;
+}
+
+a.confirm_yes {
+  background-color: red;
+}
+
+a.confirm_no {
+  background-color: #23cc47;
+}
+
+#context_menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 10;
+  width: 150px;
+  border-radius: 2px;
+  background-color: #ccc;
+}
+
+#context_menu.disabled {
+  display: none;
+}
+
+#context_menu .menu_item {
+  padding: 8px 10px;
+  /* font-size: 15px; */
+  color: black;
+}
+
+#context_menu .menu_item:hover {
+  background-color: #999;
+  color: #fff;
+}
+
+#context_menu hr {
+  margin: 1px 0;
+  border-color: #fff;
+}
