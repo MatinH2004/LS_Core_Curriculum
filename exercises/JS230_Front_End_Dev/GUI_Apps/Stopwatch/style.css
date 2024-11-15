@@ -1,0 +1,45 @@
+@import url('whitespace-reset.css');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: #fff;
+  background-color: #9463f7;
+  font-family: monospace;
+}
+
+p#timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+  margin-bottom: 50px;
+  font-size: 84px;
+  font-weight: bold;
+  letter-spacing: 5px;
+}
+
+a {
+  display: inline;
+  width: 100px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid white;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+a:hover {
+  background-color: rgb(0, 0, 0, 0.1);
+}
+
+#actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
